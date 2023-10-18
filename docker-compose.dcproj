@@ -13,5 +13,6 @@
     <None Include=".dockerignore" />
     <None Include="db.env" />
     <None Include="jwt.env" />
+    <None Include="README.md" />
   </ItemGroup>
 </Project>
