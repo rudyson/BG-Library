@@ -1,0 +1,29 @@
+<div>
+  <div *ngIf="!books">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+  <div *ngIf="books && books.length > 0">
+    <mat-list>
+      <mat-divider></mat-divider>
+      <div mat-subheader>Books</div>
+      <button mat-icon-button color="accent" aria-label="Refresh" (click)="this.reloadBooks()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <mat-list-item *ngFor="let book of books">
+        <mat-icon matListItemIcon>book</mat-icon>
+        <h4 matListItemTitle>{{ book.title }}</h4>
+        <p matListItemLine>{{ book.publishYear }} • {{ book.genre }} • Id: {{ book.id }}</p>
+        <!--<p matListItemLine *ngIf="!(book.author)">Author: {{ book.author }}</p>-->
+        <p matListItemMeta>
+          <button mat-icon-button color="warn" aria-label="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button color="accent" aria-label="View information">
+            <mat-icon>info</mat-icon>
+          </button>
+        </p>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+    </mat-list>
+  </div>
+</div>

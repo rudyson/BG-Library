@@ -1,0 +1,8 @@
+<mat-toolbar color="primary">
+    <mat-icon>book</mat-icon>
+    <span>BG Library</span>
+  <span class="spacer"></span>
+  <mat-icon *ngIf="authorized" aria-hidden="false" aria-label="**Username**">account_circle</mat-icon>
+  <mat-icon *ngIf="authorized" aria-hidden="false" aria-label="**Username**" (click)="logout()">logout</mat-icon>
+  <mat-icon *ngIf="!authorized" aria-hidden="false" aria-label="Not logged in">no_accounts</mat-icon>
+</mat-toolbar>

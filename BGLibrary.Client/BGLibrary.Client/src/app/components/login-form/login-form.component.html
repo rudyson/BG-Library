@@ -1,0 +1,9 @@
+<div>
+  <form ngNativeValidate class="login-form" #loginForm="ngForm" (ngSubmit)="login(loginForm)">
+    <p *ngIf="invalidLogin" color="red">Wrong username or password</p>
+    <input type="text" id="username" ngModel name="username" placeholder="Username" required autofocus>
+    <input  [type]="isPasswordVisible?'text':'password'" id="password" ngModel name="password" placeholder="Password" required>
+    <button (click)="showPassword()" type="button">Show password</button>
+    <button type="submit">Login</button>
+  </form>
+</div>

@@ -1,0 +1,35 @@
+<form [formGroup]="postBookForm" class="form-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        Create new book
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        <mat-form-field>
+          <mat-label>Title</mat-label>
+          <input formControlName="title" matInput placeholder="The book of the books">
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field floatLabel="always">
+          <mat-label>Publish year</mat-label>
+          <input formControlName="publishYear" matInput placeholder="2000" type="number" min="0" max="3000">
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field>
+          <mat-label>Genre</mat-label>
+          <input formControlName="genre" matInput placeholder="Fiction">
+        </mat-form-field>
+      </p>
+      <p>
+        <button mat-flat-button color="primary">
+          <mat-icon>add</mat-icon>
+          Publish book
+        </button>
+      </p>
+    </mat-card-content>
+  </mat-card>
+</form>

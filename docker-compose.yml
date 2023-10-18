@@ -1,0 +1,108 @@
+version: '3.4'
+
+networks:
+  webapp:
+    driver: bridge
+
+volumes:
+  postgres:
+    driver: local
+
+services:
+  # Database
+  postgresql:
+    container_name: ${DOCKER_REGISTRY-}bgl.postgres
+    image: postgres:15
+    env_file:
+    - db.env
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - webapp
+  # API 1
+  identity:
+    image: bgl.identity
+    container_name: ${DOCKER_REGISTRY-}bgl.identity
+    build:
+      context: .
+      dockerfile: BGLibrary.Identity/Dockerfile
+    env_file:
+      - db.env
+      - jwt.env
+    depends_on: 
+      - postgresql
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      #- ASPNETCORE_URLS=https://+:443;http://+:80
+    ports:
+      - "9010:80"
+      #- "9011:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+    networks:
+      - webapp
+  # API 2
+  library:
+    image: bgl.library
+    container_name: ${DOCKER_REGISTRY-}bgl.library
+    build:
+      context: .
+      dockerfile: BGLibrary.Library/Dockerfile
+    env_file:
+      - db.env
+      - jwt.env
+    depends_on:
+      - identity
+      - postgresql
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      #- ASPNETCORE_URLS=https://+:443;http://+:80
+    ports:
+      - "9012:80"
+      #- "9013:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+    networks:
+      - webapp
+  # Frontend: Angular, Nginx
+  client:
+    container_name: bgl.client
+    image: bgl.client
+    build:
+      context: .
+      dockerfile: BGLibrary.Client/BGLibrary.Client/Dockerfile
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./BGLibrary.Client/BGLibrary.Client/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - library
+      - identity
+      - postgresql
+    networks:
+      - webapp
+  # Frontend: Nginx
+  nginx:
+    container_name: bgl.nginx
+    image: nginx:1.17.10
+    ports:
+      - "8080:80"
+    volumes:
+      - ./BGLibrary.Client/BGLibrary.Client/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./nginx/html/:/usr/share/nginx/html/
+      - ${USERPROFILE}/.aspnet/https:/etc/ssl/
+    networks:
+      - webapp
