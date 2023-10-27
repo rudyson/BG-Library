@@ -32,6 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\BG.NET.Library.BusinessLogicLayer\BG.NET.Library.BusinessLogicLayer.csproj" />
       <ProjectReference Include="..\BG.NET.Library.DataAccessLayer\BG.NET.Library.DataAccessLayer.csproj" />
       <ProjectReference Include="..\BG.NET.Library.Models\BG.NET.Library.Models.csproj" />
     </ItemGroup>
