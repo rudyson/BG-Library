@@ -1,7 +1,7 @@
 using AutoMapper;
-using BGLibrary.Library.Models.Dto;
-using BGLibrary.Library.Models.Entities;
-using BGLibrary.Library.Repositories.Interfaces;
+using BG.NET.Library.DataAccessLayer.Interfaces;
+using BG.NET.Library.Models.Dto.Library;
+using BG.NET.Library.Models.Entities.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;

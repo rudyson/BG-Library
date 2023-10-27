@@ -1,6 +1,6 @@
 using AutoMapper;
-using BGLibrary.Identity.Models.Dto;
-using BGLibrary.Identity.Models.Entities;
+using BG.NET.Library.Models.Dto.Auth;
+using BG.NET.Library.Models.Entities.Auth;
 
 namespace BGLibrary.Identity.Tools;
 

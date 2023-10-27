@@ -1,7 +1,7 @@
 using System.Text;
-using BGLibrary.Library.Contexts;
-using BGLibrary.Library.Repositories;
-using BGLibrary.Library.Repositories.Interfaces;
+using BG.NET.Library.DataAccessLayer.Repositories;
+using BG.NET.Library.DataAccessLayer.Interfaces;
+using BG.NET.Library.DataAccessLayer.Contexts;
 using BGLibrary.Library.Tools;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;

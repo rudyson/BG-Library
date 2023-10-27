@@ -7,9 +7,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGLibrary.Identity", "BGLib
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGLibrary.Library", "BGLibrary.Library\BGLibrary.Library.csproj", "{5361CA92-67B3-4E48-AFAD-86DF4FF08445}"
 EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "BGLibrary.Client", "BGLibrary.Client\BGLibrary.Client\BGLibrary.Client.esproj", "{86943EA7-7740-4680-A2DF-A6B6A852FA40}"
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "BGLibrary.Client", "BGLibrary.Client\BGLibrary.Client.esproj", "{86943EA7-7740-4680-A2DF-A6B6A852FA40}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{8F7B156E-AA72-4026-BE9C-0DA6346BA2B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BG.NET.Library.Models", "BG.NET.Library.Models\BG.NET.Library.Models.csproj", "{5AB19292-B7A6-4C6D-9C0C-A6829610D917}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BG.NET.Library.DataAccessLayer", "BG.NET.Library.DataAccessLayer\BG.NET.Library.DataAccessLayer.csproj", "{8528EAAE-824F-43EC-9156-3F81A4B6C585}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BG.NET.Library.BusinessLogicLayer", "BG.NET.Library.BusinessLogicLayer\BG.NET.Library.BusinessLogicLayer.csproj", "{4C4E6FBF-2FC2-4F7C-971E-A4F03C4AA598}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BG.NET.Library.DatabaseMigrator", "BG.NET.Library.DatabaseMigrator\BG.NET.Library.DatabaseMigrator.csproj", "{EB50BD7C-F80E-4C53-AD43-D975077C08BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +43,22 @@ Global
 		{8F7B156E-AA72-4026-BE9C-0DA6346BA2B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F7B156E-AA72-4026-BE9C-0DA6346BA2B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F7B156E-AA72-4026-BE9C-0DA6346BA2B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AB19292-B7A6-4C6D-9C0C-A6829610D917}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AB19292-B7A6-4C6D-9C0C-A6829610D917}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AB19292-B7A6-4C6D-9C0C-A6829610D917}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AB19292-B7A6-4C6D-9C0C-A6829610D917}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8528EAAE-824F-43EC-9156-3F81A4B6C585}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8528EAAE-824F-43EC-9156-3F81A4B6C585}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8528EAAE-824F-43EC-9156-3F81A4B6C585}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8528EAAE-824F-43EC-9156-3F81A4B6C585}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C4E6FBF-2FC2-4F7C-971E-A4F03C4AA598}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C4E6FBF-2FC2-4F7C-971E-A4F03C4AA598}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C4E6FBF-2FC2-4F7C-971E-A4F03C4AA598}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C4E6FBF-2FC2-4F7C-971E-A4F03C4AA598}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB50BD7C-F80E-4C53-AD43-D975077C08BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB50BD7C-F80E-4C53-AD43-D975077C08BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB50BD7C-F80E-4C53-AD43-D975077C08BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB50BD7C-F80E-4C53-AD43-D975077C08BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-using BGLibrary.Identity.Models.Entities;
+using BG.NET.Library.Models.Entities.Auth;
 using Microsoft.EntityFrameworkCore;
 
 namespace BGLibrary.Identity.Contexts;
