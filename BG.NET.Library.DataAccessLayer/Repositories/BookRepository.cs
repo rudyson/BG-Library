@@ -8,17 +8,14 @@ namespace BG.NET.Library.DataAccessLayer.Repositories;
 
 public class BookRepository : IBookRepository
 {
-    private readonly ILogger<BookRepository> _logger;
     private readonly  LibraryDbContext _context;
     private readonly DbSet<Book> _dbSet;
 
     public BookRepository(
-        LibraryDbContext context,
-        ILogger<BookRepository> logger
+        LibraryDbContext context
     )
     {
         _context = context;
-        _logger = logger;
         _dbSet = context.Set<Book>();
     }
     

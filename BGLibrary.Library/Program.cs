@@ -1,18 +1,25 @@
 using System.Text;
 using BG.NET.Library.BusinessLogicLayer;
 using BG.NET.Library.DataAccessLayer;
-using BGLibrary.Library.Tools;
+using BG.NET.Library.DatabaseMigrator;
+using BG.NET.Library.Models.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
+
+builder.Services
+    .AddOptions<JwtOptions>()
+    .Bind(config.GetSection(JwtOptions.SectionName))
+    .ValidateOnStart();
 
 builder.Services.AddSwaggerGen(options => {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -52,13 +59,11 @@ builder.Services.AddSwaggerGen(options => {
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-builder.Services.AddAutoMapper(typeof(AutomapperProfile).Assembly);
+var jwtOptions = config
+    .GetSection(JwtOptions.SectionName)
+    .Get<JwtOptions>();
 
-var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "SC1";
-var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "I1";
-var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "A1";
-
-var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions!.Secret));
 
 builder.Services.AddAuthentication(options =>
     {
@@ -75,8 +80,8 @@ builder.Services.AddAuthentication(options =>
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             
-            ValidAudience = audience,
-            ValidIssuer = issuer,
+            ValidAudience = jwtOptions.Audience,
+            ValidIssuer = jwtOptions.Issuer,
             IssuerSigningKey = signingKey,
             
             RequireExpirationTime = true
@@ -94,9 +99,9 @@ builder.Services.AddCors(
         });
     });
 
-builder.Services
-    .AddDataAccessLayer()
-    .AddBusinessLogicLayer();
+builder.Services.ExecuteDatabaseMigrator(config);
+builder.Services.AddDataAccessLayer(config);
+builder.Services.AddBusinessLogicLayer();
 
 var app = builder.Build();
 app.UseCors("AllowAll");

@@ -1,7 +1,5 @@
-using AutoMapper;
-using BG.NET.Library.DataAccessLayer.Interfaces;
+using BG.NET.Library.BusinessLogicLayer.Interfaces;
 using BG.NET.Library.Models.Dto.Library;
-using BG.NET.Library.Models.Entities.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -13,70 +11,60 @@ namespace BGLibrary.Library.Controllers;
 [ApiController]
 public class AuthorController : ControllerBase
 {
-    private readonly ILogger<AuthorController> _logger;
-    private readonly IAuthorRepository _repository;
-    private readonly IMapper _mapper;
+    private readonly IAuthorService _service;
 
     public AuthorController(
-        IAuthorRepository repository,
-        ILogger<AuthorController> logger,
-        IMapper mapper
+        IAuthorService service
     )
     {
-        _repository = repository;
-        _logger = logger;
-        _mapper = mapper;
+        _service = service;
     }
 
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAllAuthors()
     {
-        var authors = await _repository.GetAll();
-        return authors.IsNullOrEmpty() ? NotFound() : Ok(authors);
+        var authors = await _service.AllFull();
+        return authors.IsNullOrEmpty()
+            ? NotFound()
+            : Ok(authors);
     }
 
     [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetAuthor(int id)
     {
-        var author = await _repository.GetSingle(id);
-        return author == null ? NotFound() : Ok(author);
+        var author = await _service.FindFull(id);
+        return author != null
+            ? Ok(author)
+            : NotFound();
     }
-
+    
     [HttpPost]
-    public async Task<IActionResult> CreateAuthor(NewAuthorDto author)
+    public async Task<IActionResult> CreateAuthor(AuthorDtoBase author)
     {
-        if (!ModelState.IsValid) return BadRequest();
-        var bookConverted = _mapper.Map<NewAuthorDto, Author>(author);
-        return await _repository.Create(bookConverted) ? Ok() : BadRequest();
+        var authorCreated = await _service.Create(author);
+        return authorCreated != null
+            ? CreatedAtAction(nameof(CreateAuthor),authorCreated)
+            : BadRequest("Author is not created");
     }
-
+    
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateAuthor(int id, NewAuthorDto author)
+    public async Task<IActionResult> UpdateAuthor(int id, AuthorDtoUpdate author)
     {
-        var authorConverted = _mapper.Map<NewAuthorDto, Author>(author);
-        authorConverted.Id = id;
-        return await _repository.Update(authorConverted) ? Ok() : BadRequest();
+        if (await _service.FindShort(id) == null)
+            return NotFound();
+        var authorUpdated = await _service.Update(id, author);
+        return authorUpdated != null
+            ? Ok()
+            : BadRequest("No action needed");
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteAuthor(int id)
     {
-        return await _repository.Delete(id) ? Ok() : BadRequest();
-    }
-
-    [AllowAnonymous]
-    [HttpGet("{id:int}/books")]
-    public async Task<IActionResult> GetBooks(int id)
-    {
-        var books = await _repository.GetBooks(id);
-        return books.IsNullOrEmpty() ? NotFound() : Ok(books);
-    }
-
-    [HttpPost("{id:int}/books")]
-    public async Task<IActionResult> AddBook(int id, int bookId)
-    {
-        return await _repository.AddBook(id, bookId) ? Ok() : BadRequest();
+        if (await _service.FindShort(id) == null)
+            return NotFound();
+        return await _service.Delete(id) ? Ok() : BadRequest();
     }
 }

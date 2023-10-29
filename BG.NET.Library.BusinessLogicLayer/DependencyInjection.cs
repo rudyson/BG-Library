@@ -1,3 +1,4 @@
+using BG.NET.Library.BusinessLogicLayer.Helpers;
 using BG.NET.Library.BusinessLogicLayer.Interfaces;
 using BG.NET.Library.BusinessLogicLayer.Services;
 using BG.NET.Library.BusinessLogicLayer.Validators;
@@ -18,6 +19,8 @@ public static class DependencyInjection
         // Services
         services.AddScoped<IAuthorService, AuthorService>();
         services.AddScoped<IBookService, BookService>();
+        // Mapping
+        services.AddAutoMapper(typeof(AutomapperProfile).Assembly);
         return services;
     }
 }

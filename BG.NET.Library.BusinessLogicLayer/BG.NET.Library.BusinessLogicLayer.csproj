@@ -18,4 +18,8 @@
       <ProjectReference Include="..\BG.NET.Library.Models\BG.NET.Library.Models.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Helpers\" />
+    </ItemGroup>
+
 </Project>

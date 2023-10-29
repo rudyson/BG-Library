@@ -1,4 +1,5 @@
 using System.Text;
+using BG.NET.Library.Models.Configuration;
 using BGLibrary.Identity.Contexts;
 using BGLibrary.Identity.Tools;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,9 +8,15 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services
+    .AddOptions<JwtOptions>()
+    .Bind(config.GetSection(JwtOptions.SectionName))
+    .ValidateOnStart();
 
 builder.Services.AddSwaggerGen(options => {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -53,25 +60,14 @@ builder.Services.AddAutoMapper(typeof(AutomapperProfile).Assembly);
 
 builder.Services.AddDbContext<IdentityDbContext>(options =>
 {
-    var dbServer = Environment.GetEnvironmentVariable("POSTGRES_HOST") ?? "localhost";
-    var dbAddress = Environment.GetEnvironmentVariable("POSTGRES_DB") ?? "bglibrary";
-    var dbUser = Environment.GetEnvironmentVariable("POSTGRES_USER") ?? "admin";
-    var dbPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? "pswd1234";
-    
-    var connectionString = $"Server={dbServer};" +
-                           $"Database={dbAddress};" +
-                           $"Port=5432;" +
-                           $"User Id={dbUser};" +
-                           $"Password={dbPassword};";
-    
-    options.UseNpgsql(connectionString);
+    options.UseNpgsql(builder.Configuration.GetConnectionString("LibraryData"));
 });
 
-var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "SC1";
-var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "I1";
-var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "A1";
+var jwtOptions = config
+    .GetSection(JwtOptions.SectionName)
+    .Get<JwtOptions>();
 
-var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions!.Secret));
 
 builder.Services.AddAuthentication(options =>
     {
@@ -88,8 +84,8 @@ builder.Services.AddAuthentication(options =>
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             
-            ValidAudience = audience,
-            ValidIssuer = issuer,
+            ValidAudience = jwtOptions.Audience,
+            ValidIssuer = jwtOptions.Issuer,
             IssuerSigningKey = signingKey,
             
             RequireExpirationTime = true

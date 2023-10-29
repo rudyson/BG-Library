@@ -8,14 +8,12 @@ namespace BG.NET.Library.DataAccessLayer.Repositories;
 
 public class AuthorRepository : IAuthorRepository
 {
-    private readonly ILogger<AuthorRepository> _logger;
     private readonly  LibraryDbContext _context;
     private readonly DbSet<Author> _dbSet;
-    public AuthorRepository(ILogger<AuthorRepository> logger, LibraryDbContext context)
+    public AuthorRepository(LibraryDbContext context)
     {
         _context = context;
         _dbSet = context.Set<Author>();
-        _logger = logger;
     }
 
     public async Task<IEnumerable<Author>> GetAll()

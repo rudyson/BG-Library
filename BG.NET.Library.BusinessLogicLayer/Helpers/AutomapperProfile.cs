@@ -2,16 +2,12 @@ using AutoMapper;
 using BG.NET.Library.Models.Dto.Library;
 using BG.NET.Library.Models.Entities.Library;
 
-namespace BGLibrary.Library.Tools;
+namespace BG.NET.Library.BusinessLogicLayer.Helpers;
 
 public class AutomapperProfile : Profile
 {
     public AutomapperProfile()
     {
-        // Deprecated
-        CreateMap<NewBookDto, Book>();
-        CreateMap<UpdateBookDto, Book>();
-        CreateMap<NewAuthorDto, Author>();
         // DTO -> Author
         CreateMap<AuthorDtoBase, Author>();
         CreateMap<AuthorDtoFull, Author>();
@@ -29,6 +25,7 @@ public class AutomapperProfile : Profile
         // Book -> DTO
         CreateMap<Book, BookDtoShort>();
         CreateMap<Book, BookDtoFull>();
+        CreateMap<Book, BookDtoBase>();
         
     }
 }

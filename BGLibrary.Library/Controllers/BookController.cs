@@ -1,10 +1,7 @@
-using AutoMapper;
-using BG.NET.Library.DataAccessLayer.Interfaces;
+using BG.NET.Library.BusinessLogicLayer.Interfaces;
 using BG.NET.Library.Models.Dto.Library;
-using BG.NET.Library.Models.Entities.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace BGLibrary.Library.Controllers
 {
@@ -13,75 +10,59 @@ namespace BGLibrary.Library.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
-        private readonly ILogger<BookController> _logger;
-        private readonly IBookRepository _repository;
-        private readonly IMapper _mapper;
+        private readonly IBookService _service;
 
         public BookController(
-            ILogger<BookController> logger,
-            IBookRepository repository,
-            IMapper mapper)
+            IBookService service)
         {
-            _logger = logger;
-            _repository = repository;
-            _mapper = mapper;
+            _service = service;
         }
 
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllBooks()
         {
-            var bookList = await _repository.GetAll();
-            return bookList.IsNullOrEmpty() ? NotFound() : Ok(bookList);
+            var bookList = await _service.AllFull();
+            return bookList!=null
+                ? Ok(bookList)
+                : NotFound();
         }
 
         [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetBook(int id)
         {
-            var book = await _repository.GetSingle(id);
-            return book == null ? NotFound() : Ok(book);
+            var book = await _service.FindFull(id);
+            return book != null
+                ? Ok(book)
+                : NotFound();
         }
-
+        
         [HttpPost]
-        public async Task<IActionResult> CreateBook(NewBookDto newBook)
+        public async Task<IActionResult> CreateBook(BookDtoNew book)
         {
-            if (!ModelState.IsValid) return BadRequest();
-            var bookConverted = _mapper.Map<NewBookDto, Book>(newBook);
-            return await _repository.Create(bookConverted) ? Ok() : BadRequest();
+            var bookCreated = await _service.Create(book);
+            return bookCreated != null
+                ? CreatedAtAction(nameof(CreateBook),bookCreated)
+                : BadRequest("Book is not created");
         }
-
+        
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateBook(int id, UpdateBookDto updateBook)
+        public async Task<IActionResult> UpdateBook(int id, BookDtoUpdate book)
         {
-            var bookConverted = _mapper.Map<UpdateBookDto, Book>(updateBook);
-            bookConverted.Id = id;
-
-            var author = await _repository.GetAuthor(id);
-            if (author != null && updateBook.AuthorId != author.Id)
-                bookConverted.Author = author;
-
-            return await _repository.Update(bookConverted) ? Ok() : BadRequest();
+            if (await _service.FindShort(id) == null)
+                return NotFound();
+            var bookUpdated = await _service.Update(id, book);
+            return bookUpdated != null
+                ? Ok()
+                : BadRequest("No action needed");
         }
-
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteBook(int id)
         {
-            return await _repository.Delete(id) ? Ok() : BadRequest();
-        }
-
-        [AllowAnonymous]
-        [HttpGet("{id:int}/author")]
-        public async Task<IActionResult> GetAuthor(int id)
-        {
-            var author = await _repository.GetAuthor(id);
-            return author == null ? NotFound() : Ok(author);
-        }
-
-        [HttpPost("{id:int}/author")]
-        public async Task<IActionResult> SetAuthor(int id, int authorId)
-        {
-            return await _repository.SetAuthor(id, authorId) ? BadRequest() : Ok();
+            if (await _service.FindShort(id) == null)
+                return NotFound();
+            return await _service.Delete(id) ? Ok() : BadRequest();
         }
     }
 }
