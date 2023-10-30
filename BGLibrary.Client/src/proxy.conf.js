@@ -1,17 +1,16 @@
 const PROXY_CONFIG = [
   {
     context: [
-      "/auth",
+      "/api/auth/",
     ],
-    target: "http://localhost:9010",
+    target: "https://localhost:44301",
     secure: false
   },
   {
     context: [
-      "/api/books",
-      "/api/authors",
+      "/api/data/"
     ],
-    target: "http://localhost:9012",
+    target: "https://localhost:44303",
     "secure": false,
     "changeOrigin": true,
     "pathRewrite": {"^/api" : ""}

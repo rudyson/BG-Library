@@ -3,11 +3,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
+using BG.NET.Library.Models.Configuration;
 using BG.NET.Library.Models.Dto.Auth;
 using BG.NET.Library.Models.Entities.Auth;
 using BGLibrary.Identity.Contexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BGLibrary.Identity.Controllers;
@@ -20,12 +22,14 @@ public class AuthController : ControllerBase
     private readonly ILogger<AuthController> _logger;
     private readonly IdentityDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IOptions<JwtOptions> _jwtOptions;
 
-    public AuthController(ILogger<AuthController> logger, IdentityDbContext context, IMapper mapper)
+    public AuthController(ILogger<AuthController> logger, IdentityDbContext context, IMapper mapper, IOptions<JwtOptions> jwtOptions)
     {
         _logger = logger;
         _context = context;
         _mapper = mapper;
+        _jwtOptions = jwtOptions;
     }
     /// <summary>
     /// Provides user registration, passing RegisterDto model
@@ -47,9 +51,10 @@ public class AuthController : ControllerBase
 
         var mappedUser = _mapper.Map<RegisterDto, User>(user);
         
-        await _context.Users!.AddAsync(mappedUser);
+        var userEntityEntry = await _context.Users!.AddAsync(mappedUser);
         await _context.SaveChangesAsync();
-        
+        _logger.LogInformation("User @{EntityUsername} registered (UserId: {EntityId})", userEntityEntry.Entity.Username, userEntityEntry.Entity.Id);
+
         return Ok("User registered");
     }
     
@@ -76,39 +81,48 @@ public class AuthController : ControllerBase
         if (userExists == null)
             return NotFound("User is not exists");
         if (!BCrypt.Net.BCrypt.Verify(user.Password, userExists.Password))
+        {
+            _logger.LogWarning("Unsuccessful authorization attempt for user @{UserExistsUsername} (UserId: {UserExistsId})", userExists.Username, userExists.Id);
             return Unauthorized("Wrong password");
-        
-        // Generating JWT token
-        var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "SC2";
-        var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "I2";
-        var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "A2";
+        }
+
+        var secretKey = _jwtOptions.Value.Secret;
+        var issuer = _jwtOptions.Value.Issuer;
+        var audience = _jwtOptions.Value.Audience;
         
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, userExists.Name!),
+            new Claim(ClaimTypes.Name, userExists.Username!),
             new Claim(ClaimTypes.NameIdentifier, userExists.Id.ToString())
         };
 
+        var tokenExpiresAt = DateTime.Now.AddHours(1);
         var tokenOptions = new JwtSecurityToken(
             issuer: issuer,
             audience: audience,
             claims: claims,
-            expires: DateTime.Now.AddHours(1),
+            expires: tokenExpiresAt,
             signingCredentials: signingCredentials
             );
-        var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+        var token = new JwtTokenDto
+        {
+            Token = new JwtSecurityTokenHandler().WriteToken(tokenOptions),
+            Expires = tokenExpiresAt
+        };
         
-        return Ok(tokenString);
+        _logger.LogInformation("Successful authorization for user @{UserExistsUsername} (UserId: {UserExistsId}) at {DateTimeNow}", userExists.Username, userExists.Id, DateTime.Now);
+        
+        return Ok(token);
     }
 
     /// <summary>
     /// Retrieves user's information from database, using JWT Token claims
     /// </summary>
     /// <returns>User model</returns>
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserInfoDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [Authorize]
@@ -123,6 +137,7 @@ public class AuthController : ControllerBase
         var userIdValue = Int32.Parse(userIdClaim.Value);
         var userInfo = await _context.Users!.FirstOrDefaultAsync(u => u.Id == userIdValue);
         if (userInfo == null) return NotFound("User not found");
-        return Ok(userInfo);
+        // Returning safe model
+        return Ok(_mapper.Map<User,UserInfoDto>(userInfo));
     }
 }

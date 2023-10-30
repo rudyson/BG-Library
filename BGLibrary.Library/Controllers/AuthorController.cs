@@ -22,10 +22,14 @@ public class AuthorController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet]
-    public async Task<IActionResult> GetAllAuthors()
+    public async Task<IActionResult> GetAllAuthors(
+        int page = 1,
+        int size = 10
+        )
     {
-        var authors = await _service.AllFull();
-        return authors.IsNullOrEmpty()
+        var authors = await _service.AllPaginatedFull(page,size);
+        if (authors == null) return BadRequest("Pagination model broken");
+        return authors.Entities.IsNullOrEmpty()
             ? NotFound()
             : Ok(authors);
     }
@@ -43,6 +47,7 @@ public class AuthorController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAuthor(AuthorDtoBase author)
     {
+        if (!ModelState.IsValid) return BadRequest(ModelState.Values);
         var authorCreated = await _service.Create(author);
         return authorCreated != null
             ? CreatedAtAction(nameof(CreateAuthor),authorCreated)
@@ -52,6 +57,7 @@ public class AuthorController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateAuthor(int id, AuthorDtoUpdate author)
     {
+        if (!ModelState.IsValid) return BadRequest(ModelState.Values);
         if (await _service.FindShort(id) == null)
             return NotFound();
         var authorUpdated = await _service.Update(id, author);

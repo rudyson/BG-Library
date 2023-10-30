@@ -2,11 +2,24 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {BookListV1Component} from "./components/book-list-v1/book-list-v1.component";
 import {JwtGuard} from "./guards/jwt.guard";
+import {LoginFormComponent} from "./components/login-form/login-form.component";
+import {UserinfoPageComponent} from "./components/userinfo-page/userinfo-page.component";
+import {NotfoundPageComponent} from "./components/notfound-page/notfound-page.component";
+import {RegistrationFormComponent} from "./components/registration-form/registration-form.component";
+import {AuthorsService} from "./services/authors/authors.service";
+import {AuthorListV1Component} from "./components/author-list-v1/author-list-v1.component";
 
 const routes: Routes = [
-  {path:'',component: BookListV1Component},
+  {path:'',component: BookListV1Component, title:'Home'},
   //{path:'books',component: BookListV1Component, canActivate: [JwtGuard]}
-  {path:'books',component: BookListV1Component}
+  {path:'books',component: BookListV1Component, title:'Books'},
+  {path:'books/:id',component: BookListV1Component, title:'Books'},
+  {path:'authors',component: AuthorListV1Component, title:'Authors'},
+  {path:'authors/:id',component: AuthorListV1Component, title:'Authors'},
+  {path:'login',component: LoginFormComponent, title:'Login'},
+  {path:'register',component: RegistrationFormComponent, title:'Registration'},
+  {path:'me',component: UserinfoPageComponent, title:'me'},
+  { path: '**', component: NotfoundPageComponent, title:'404 Not found' }
 ];
 
 @NgModule({

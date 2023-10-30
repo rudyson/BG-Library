@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  contentApiUrl: 'http//localhost:9012',
-  authorizationApiUrl: 'http://localhost:9010'
+  contentApiUrl: 'https://localhost:44304',
+  authorizationApiUrl: 'https://localhost:44302'
 }

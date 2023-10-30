@@ -1,21 +1,18 @@
 <div>
   <div *ngIf="!books">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <h2>Loading book list...</h2>
   </div>
-  <div *ngIf="books && books.length > 0">
+  <div *ngIf="books && books.totalSize > 0">
     <mat-list>
       <mat-divider></mat-divider>
       <div mat-subheader>Books</div>
-      <button mat-icon-button color="accent" aria-label="Refresh" (click)="this.reloadBooks()">
-        <mat-icon>refresh</mat-icon>
-      </button>
-      <mat-list-item *ngFor="let book of books">
+      <mat-list-item *ngFor="let book of books.entities">
         <mat-icon matListItemIcon>book</mat-icon>
-        <h4 matListItemTitle>{{ book.title }}</h4>
+        <h4 matListItemTitle><span *ngIf="book.author!=undefined">{{book.author?.name}} {{book.author?.surname}}— </span>{{ book.title }}</h4>
         <p matListItemLine>{{ book.publishYear }} • {{ book.genre }} • Id: {{ book.id }}</p>
-        <!--<p matListItemLine *ngIf="!(book.author)">Author: {{ book.author }}</p>-->
         <p matListItemMeta>
-          <button mat-icon-button color="warn" aria-label="Delete">
+          <button mat-icon-button color="warn" aria-label="Delete" type="button" (click)="deleteBook(book.id)">
             <mat-icon>delete</mat-icon>
           </button>
           <button mat-icon-button color="accent" aria-label="View information">
@@ -25,5 +22,20 @@
       </mat-list-item>
       <mat-divider></mat-divider>
     </mat-list>
+    <mat-paginator
+      (page)="handlePaginationEvent($event)"
+
+      [pageIndex]="books.page - 1"
+      [pageSize]="books.pageSize"
+
+      [length]="books.totalSize"
+
+      [disabled]="false"
+      [showFirstLastButtons]="true"
+      [pageSizeOptions]="[5,10,20]"
+      [hidePageSize]="false"
+
+      aria-label="Select page">
+    </mat-paginator>
   </div>
 </div>

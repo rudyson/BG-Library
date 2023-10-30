@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {NgForm} from "@angular/forms";
-import {AuthorizationService} from "../../services/authorization.service";
+import {AuthorizationService} from "../../services/authorization/authorization.service";
 import {LoginDto} from "../../special/authorization.models";
 import {Subject} from "rxjs";
 
@@ -11,7 +11,7 @@ import {Subject} from "rxjs";
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.css']
 })
-export class LoginFormComponent {
+export class LoginFormComponent implements OnInit{
   invalidLogin: boolean = false;
   isPasswordVisible: boolean = false;
  constructor(private router: Router,private http: HttpClient, private authorizationService: AuthorizationService) {
@@ -24,15 +24,12 @@ export class LoginFormComponent {
    }
 
    let invalidLogin;
-   if (this.authorizationService.login(credentials)) {
-     invalidLogin = false;
-     this.router.navigate(["/"]);
-   }
-   else {
-     invalidLogin = true;
-   }
+   invalidLogin = !this.authorizationService.login(credentials);
  }
- showPassword() {
-   this.isPasswordVisible = !this.isPasswordVisible;
- }
+
+  ngOnInit(): void {
+    if(this.authorizationService.isLoggedIn()){
+      this.router.navigate(["/"]);
+    }
+  }
 }

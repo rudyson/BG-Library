@@ -1,1 +1,12 @@
-<p>userinfo-page works!</p>
+<h1>User info</h1>
+<section *ngIf="authorized">
+  <h2>{{userInfo?.name}} {{userInfo?.surname}}</h2>
+  <p>@{{userInfo?.username}} (User id: {{userInfo?.id}})</p>
+  <p>Address: {{userInfo?.address}}</p>
+  <p>Birthday: {{userInfo?.birthday}}</p>
+  <p><button mat-flat-button color="primary" (click)="authorizationService.logout()">Logout</button></p>
+</section>
+<section *ngIf="!authorized">
+  <p>You are not authorized</p>
+  <button mat-flat-button color="primary" routerLink="/login">Login</button>
+</section>

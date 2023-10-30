@@ -2,6 +2,7 @@ using BG.NET.Library.BusinessLogicLayer.Interfaces;
 using BG.NET.Library.Models.Dto.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BGLibrary.Library.Controllers
 {
@@ -20,12 +21,16 @@ namespace BGLibrary.Library.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetAllBooks()
+        public async Task<IActionResult> GetAllBooks(
+            int page = 1,
+            int size = 10
+        )
         {
-            var bookList = await _service.AllFull();
-            return bookList!=null
-                ? Ok(bookList)
-                : NotFound();
+            var bookList = await _service.AllPaginatedFull(page,size);
+            if (bookList == null) return BadRequest("Pagination model broken");
+            return bookList.Entities.IsNullOrEmpty()
+                ? NotFound()
+                : Ok(bookList);
         }
 
         [AllowAnonymous]
@@ -41,6 +46,7 @@ namespace BGLibrary.Library.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBook(BookDtoNew book)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState.Values);
             var bookCreated = await _service.Create(book);
             return bookCreated != null
                 ? CreatedAtAction(nameof(CreateBook),bookCreated)
@@ -50,6 +56,7 @@ namespace BGLibrary.Library.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateBook(int id, BookDtoUpdate book)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState.Values);
             if (await _service.FindShort(id) == null)
                 return NotFound();
             var bookUpdated = await _service.Update(id, book);

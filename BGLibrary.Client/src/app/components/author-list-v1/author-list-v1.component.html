@@ -1,0 +1,41 @@
+<div>
+  <div *ngIf="!authors">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <h2>Loading author list...</h2>
+  </div>
+  <div *ngIf="authors && authors.totalSize > 0">
+    <h2 matListItemTitle>Authors</h2>
+    <mat-list *ngFor="let author of authors.entities">
+      <div mat-subheader>
+        {{author.surname}} {{author.name}} ({{author.birthday}})
+          <button mat-icon-button color="warn" aria-label="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button color="accent" aria-label="View information">
+            <mat-icon>info</mat-icon>
+          </button>
+      </div>
+      <mat-list-item *ngFor="let book of author.books">
+        <mat-icon matListItemIcon>book</mat-icon>
+        <h4 matListItemTitle>{{book.title}}</h4>
+        <p matListItemLine>{{book.publishYear}} • {{book.genre}}</p>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+    </mat-list>
+    <mat-paginator
+      (page)="handlePaginationEvent($event)"
+
+      [pageIndex]="authors.page - 1"
+      [pageSize]="authors.pageSize"
+
+      [length]="authors.totalSize"
+
+      [disabled]="false"
+      [showFirstLastButtons]="true"
+      [pageSizeOptions]="[5,10,20]"
+      [hidePageSize]="false"
+
+      aria-label="Select page">
+    </mat-paginator>
+  </div>
+</div>

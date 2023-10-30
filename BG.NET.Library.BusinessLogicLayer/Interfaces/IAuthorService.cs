@@ -1,3 +1,4 @@
+using BG.NET.Library.Models;
 using BG.NET.Library.Models.Dto.Library;
 
 namespace BG.NET.Library.BusinessLogicLayer.Interfaces;
@@ -7,6 +8,7 @@ public interface IAuthorService
     // HTTP.GET {void} => List<AuthorDtoNoBooks>
     public Task<IEnumerable<AuthorDtoNoBooks>?> AllShort();
     public Task<IEnumerable<AuthorDtoFull>?> AllFull();
+    public Task<GenericPaginationModel<AuthorDtoFull>?> AllPaginatedFull(int page, int size);
     // HTTP.GET {id} => AuthorDtoNoBooks
     public Task<AuthorDtoNoBooks?> FindShort(int id);
     public Task<AuthorDtoFull?> FindFull(int id);

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {AuthorizationService} from "../../services/authorization.service";
+import {AuthorizationService} from "../../services/authorization/authorization.service";
 
 @Component({
   selector: 'app-navbar-top',
@@ -7,11 +7,13 @@ import {AuthorizationService} from "../../services/authorization.service";
   styleUrls: ['./navbar-top.component.css']
 })
 export class NavbarTopComponent {
-  constructor(private authorizationService : AuthorizationService) {
+  constructor(public authorizationService : AuthorizationService) {
   }
   authorized: boolean = this.authorizationService.isLoggedIn();
   logout(){
     this.authorizationService.logout();
     this.authorizationService.isLoggedIn();
   }
+
+  protected readonly document = document;
 }

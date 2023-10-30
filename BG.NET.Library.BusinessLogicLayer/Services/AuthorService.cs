@@ -2,6 +2,7 @@ using AutoMapper;
 using BG.NET.Library.BusinessLogicLayer.Interfaces;
 using BG.NET.Library.DataAccessLayer.Contexts;
 using BG.NET.Library.DataAccessLayer.Interfaces;
+using BG.NET.Library.Models;
 using BG.NET.Library.Models.Dto.Library;
 using BG.NET.Library.Models.Entities.Library;
 using Microsoft.EntityFrameworkCore;
@@ -22,14 +23,37 @@ public class AuthorService : IAuthorService
     }
     public async Task<IEnumerable<AuthorDtoNoBooks>?> AllShort()
     {
-        var authors = await _context.Authors!.Include(a => a.Books).ToListAsync();
+        var authors = await _context.Authors!.Include(a => a.Books).OrderBy(a => a.Surname).ToListAsync();
         return _mapper.Map<List<Author>, List<AuthorDtoNoBooks>>(source:authors);
     }
 
     public async Task<IEnumerable<AuthorDtoFull>?> AllFull()
     {
-        var authors = await _context.Authors!.Include(a => a.Books).ToListAsync();
+        var authors = await _context.Authors!.Include(a => a.Books).OrderBy(a => a.Surname).ToListAsync();
         return _mapper.Map<List<Author>, List<AuthorDtoFull>>(source:authors);
+    }
+
+    public async Task<GenericPaginationModel<AuthorDtoFull>?> AllPaginatedFull(int page, int size)
+    {
+        var authors = _context.Authors!
+            .Include(a => a.Books)
+            .OrderBy(x => x.Surname);
+        var countAll = await authors.CountAsync();
+        var numberSkipped = (page - 1) * size;
+        return new GenericPaginationModel<AuthorDtoFull>
+        {
+            Page = page,
+            PageSize = size,
+            TotalSize = countAll,
+            Pages = (int)Math.Ceiling((decimal)countAll / size),
+            NumberSkipped = numberSkipped,
+            Entities = _mapper.Map<List<Author>, List<AuthorDtoFull>>(
+                source: await authors
+                    .Skip(numberSkipped)
+                    .Take(size)
+                    .ToListAsync()
+                )
+        };
     }
 
     public async Task<AuthorDtoNoBooks?> FindShort(int id)

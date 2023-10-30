@@ -1,8 +1,13 @@
 <mat-toolbar color="primary">
+  <div routerLink="/">
     <mat-icon>book</mat-icon>
-    <span>BG Library</span>
+    <span>BG Library — {{document.title}}</span>
+  </div>
   <span class="spacer"></span>
-  <mat-icon *ngIf="authorized" aria-hidden="false" aria-label="**Username**">account_circle</mat-icon>
-  <mat-icon *ngIf="authorized" aria-hidden="false" aria-label="**Username**" (click)="logout()">logout</mat-icon>
-  <mat-icon *ngIf="!authorized" aria-hidden="false" aria-label="Not logged in">no_accounts</mat-icon>
+  <span *ngIf="authorized">
+    <mat-icon aria-hidden="false" aria-label="**Username**" routerLink="me">account_circle</mat-icon>
+    <span>@{{this.authorizationService.userName()}}</span>
+    <mat-icon aria-hidden="false" aria-label="**Username**" (click)="logout()">logout</mat-icon>
+  </span>
+  <mat-icon *ngIf="!authorized" aria-hidden="false" aria-label="Not logged in" routerLink="/login">no_accounts</mat-icon>
 </mat-toolbar>

@@ -2,6 +2,7 @@ using AutoMapper;
 using BG.NET.Library.BusinessLogicLayer.Interfaces;
 using BG.NET.Library.DataAccessLayer.Contexts;
 using BG.NET.Library.DataAccessLayer.Interfaces;
+using BG.NET.Library.Models;
 using BG.NET.Library.Models.Dto.Library;
 using BG.NET.Library.Models.Entities.Library;
 using Microsoft.EntityFrameworkCore;
@@ -54,14 +55,43 @@ public class BookService : IBookService
 
     public async Task<IEnumerable<BookDtoShort>?> AllShort()
     {
-        var books = await _context.Books!.Include(b => b.Author).ToListAsync();
+        var books = await _context.Books!
+            .Include(b => b.Author)
+            .OrderBy(x => x.Title)
+            .ToListAsync();
         return _mapper.Map<List<Book>, List<BookDtoShort>>(source:books);
     }
 
     public async Task<IEnumerable<BookDtoFull>?> AllFull()
     {
-        var books = await _context.Books!.Include(b => b.Author).ToListAsync();
+        var books = await _context.Books!
+            .Include(b => b.Author)
+            .OrderBy(x => x.Title)
+            .ToListAsync();
         return _mapper.Map<List<Book>, List<BookDtoFull>>(source:books);
+    }
+
+    public async Task<GenericPaginationModel<BookDtoFull>?> AllPaginatedFull(int page, int size)
+    {
+        var books = _context.Books!
+            .Include(b => b.Author)
+            .OrderBy(x => x.Title);
+        var countAll = await books.CountAsync();
+        var numberSkipped = (page - 1) * size;
+        return new GenericPaginationModel<BookDtoFull>
+        {
+            Page = page,
+            PageSize = size,
+            TotalSize = countAll,
+            Pages = (int)Math.Ceiling((decimal)countAll / size),
+            NumberSkipped = numberSkipped,
+            Entities = _mapper.Map<List<Book>, List<BookDtoFull>>(
+                source: await books
+                    .Skip(numberSkipped)
+                    .Take(size)
+                    .ToListAsync()
+                )
+        };
     }
 
     public async Task<BookDtoShort?> Update(int id, BookDtoUpdate book)

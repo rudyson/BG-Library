@@ -13,11 +13,24 @@ export interface RegisterDto {
 }
 
 export interface UserInfoDto {
-  id: number,
-  username: string,
-  password: string,
-  name: string,
-  surname: string,
-  birthday: string,
-  address: string
+  id: number;
+  username: string;
+  name: string;
+  surname: string;
+  birthday: string;
+  address: string;
+}
+
+export interface JwtTokenDto {
+  token: string;
+  expires: string;
+}
+export interface JwtToken {
+  aud: string;
+  iss: string;
+
+  exp: number;
+
+  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": string;
+  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier": string;
 }

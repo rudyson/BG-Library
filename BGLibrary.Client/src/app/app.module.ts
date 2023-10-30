@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -31,10 +31,10 @@ import {MatCardModule} from "@angular/material/card";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {JwtModule} from "@auth0/angular-jwt";
 import {config} from "rxjs";
-
-export function tokenGetter(){
-  return localStorage.getItem("jwt");
-}
+import {JwtTokenInterceptorInterceptor} from "./interceptors/jwt/jwt-token.interceptor.interceptor";
+import { NotfoundPageComponent } from './components/notfound-page/notfound-page.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { AuthorListV1Component } from './components/author-list-v1/author-list-v1.component';
 
 @NgModule({
     declarations: [
@@ -47,20 +47,27 @@ export function tokenGetter(){
         RegistrationFormComponent,
         LoginFormComponent,
         UserinfoPageComponent,
-        BookNewFormComponent
+        BookNewFormComponent,
+        NotfoundPageComponent,
+        FooterComponent,
+        AuthorListV1Component
     ],
   imports: [
     BrowserModule, AppRoutingModule, HttpClientModule, NgbModule, BrowserAnimationsModule, MatTableModule, MatPaginatorModule, MatSortModule, MatProgressSpinnerModule, MatListModule, MatIconModule, MatButtonModule, MatToolbarModule, MatTabsModule, MatProgressBarModule, MatInputModule, MatCardModule, ReactiveFormsModule,
     JwtModule.forRoot({
       config: {
-        tokenGetter: tokenGetter,
-        allowedDomains: ["localhost:9010", "localhost:9012", "localhost:4200"],
+        tokenGetter: () =>{
+          return localStorage.getItem("jwt")
+        },
+        allowedDomains: ["localhost:44302","localhost:44304"],
         disallowedRoutes: [],
       },
     }), FormsModule,
   ],
   providers: [
-    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}}
+    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}},
+    {provide: HTTP_INTERCEPTORS, useClass: JwtTokenInterceptorInterceptor, multi: true},
+    provideHttpClient(withInterceptorsFromDi())
   ],
   bootstrap: [AppComponent]
 })
