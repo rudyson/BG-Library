@@ -1,6 +1,5 @@
 **/.env
 *.env
-**/[Aa]ppsettings*
 **/node_modules
 **/npm-debug.log
 **/secrets.dev.yaml
