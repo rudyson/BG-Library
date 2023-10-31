@@ -4,7 +4,7 @@
 
 - Authorization API
 - Library API
-- PostgreSQL database
+- Postgres database
 - Angular Frontend
 - Nginx Reverse proxy
 
@@ -12,10 +12,12 @@
 
 ## Routes
 
-To test API, use routes:
-
-- http://localhost:8080/api/swagger/index.html
-- http://localhost:8080/auth/swagger/index.html
+Data API:
+- http://localhost:44303/swagger/index.html
+- https://localhost:44304/swagger/index.html
+Authorization API:
+- http://localhost:44301/swagger/index.html
+- https://localhost:44302/swagger/index.html
 
 ## Functionality
 
@@ -27,18 +29,18 @@ To test API, use routes:
 
 ### Library:
 
-Books and authors CRUD. You can view avialable books and authors without authorization. If you want to add a new book or author, update its information or even delete it - authorize using JWT token, which you can get using Identity API.
+Books and authors CRUD. You can view available books and authors without authorization. If you want to add a new book or author, update its information or even delete it - authorize using JWT token, which you can get using Identity API.
 
 # First launch
 
-## Build and lauch .docker-compose.yaml to start using application
+## Build and launch .docker-compose.yaml to start using application
 
 ```
 docker-compose build
 docker-compose up
 ```
 
-## If you hava troubles with lauching contenerized applications, run it manualy:
+## If you hava troubles with launching containerized applications, run it manually:
 
 ```
 docker-compose up -d --force-recreate --no-deps --build postgresql
@@ -51,21 +53,20 @@ docker-compose up -d --force-recreate --no-deps --build nginx
 ## Configurations
 
 There are two required files with environment variables:
-**db.env**
 
-```
+**postgres.env**
+```dotenv
 POSTGRES_PASSWORD=password
 POSTGRES_USER=user
 POSTGRES_HOST=postgresql
 POSTGRES_DB=bglibrary
 ```
 
-**jwt.env**
-
-```
-JWT_SECRET=SuperSecretKey
-JWT_ISSUER=BG.Identity
-JWT_AUDIENCE=BG.Library
+```dotenv
+Jwt__Secret=Jwt-Secret-Key
+Jwt__Issuer=Jwt-Issuer
+Jwt__Audience=Jwt-Audience
+ConnectionStrings__LibraryData="Server=postgresql;Database=database;Port=5432;User Id=username;Password=password;"
 ```
 
 ## Database migrations
@@ -74,7 +75,8 @@ To initialize database, create migrations in directories of API (BGLibrary.Ident
 
 ```
 dotnet tool update --global dotnet-ef
-dotnet ef migrations add InitialCreate
+dotnet ef migrations add InitialCreate --context IdentityDbContext
+dotnet ef migrations add InitialCreate --context LibraryDbContext
 dotnet ef database update
 ```
 
