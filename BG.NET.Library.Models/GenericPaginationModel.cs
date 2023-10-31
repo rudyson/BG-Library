@@ -15,5 +15,5 @@ public class GenericPaginationModel<T> where T : class
     public bool OnLastPage => this.Page == this.LastPage;
     public bool HasNextPage => this.NextPage != null;
     public bool HasPreviousPage => this.PreviousPage != null;
-    public IEnumerable<T> Entities { get; init; }
+    public required IEnumerable<T> Entities { get; init; }
 }

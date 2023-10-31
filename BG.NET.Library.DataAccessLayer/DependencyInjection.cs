@@ -1,6 +1,4 @@
 using BG.NET.Library.DataAccessLayer.Contexts;
-using BG.NET.Library.DataAccessLayer.Interfaces;
-using BG.NET.Library.DataAccessLayer.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,12 +11,18 @@ public static class DependencyInjection
     {
         services.AddDbContext<LibraryDbContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("LibraryData"));
+            options.UseNpgsql(
+                configuration.GetConnectionString("LibraryData"), 
+                b => b.MigrationsAssembly("BG.NET.Library.API.Data")
+                );
         });
-        // Repositories
-        services.AddScoped<IAuthorRepository, AuthorRepository>();
-        services.AddScoped<IBookRepository, BookRepository>();
-        // Return
+        services.AddDbContext<IdentityDbContext>(options =>
+        {
+            options.UseNpgsql(
+                configuration.GetConnectionString("LibraryData"),
+                b => b.MigrationsAssembly("BG.NET.Library.API.Identity")
+                );
+        });
         return services;
     }
 }

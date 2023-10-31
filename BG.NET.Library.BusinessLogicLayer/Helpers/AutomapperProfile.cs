@@ -1,5 +1,7 @@
 using AutoMapper;
+using BG.NET.Library.Models.Dto.Auth;
 using BG.NET.Library.Models.Dto.Library;
+using BG.NET.Library.Models.Entities.Auth;
 using BG.NET.Library.Models.Entities.Library;
 
 namespace BG.NET.Library.BusinessLogicLayer.Helpers;
@@ -8,6 +10,8 @@ public class AutomapperProfile : Profile
 {
     public AutomapperProfile()
     {
+        #region Library data
+        
         // DTO -> Author
         CreateMap<AuthorDtoBase, Author>();
         CreateMap<AuthorDtoFull, Author>();
@@ -27,5 +31,14 @@ public class AutomapperProfile : Profile
         CreateMap<Book, BookDtoFull>();
         CreateMap<Book, BookDtoBase>();
         
+        #endregion
+
+        #region Identity
+
+        // Identity
+        CreateMap<RegisterDto, User>();
+        CreateMap<User, UserInfoDto>();
+        
+        #endregion
     }
 }

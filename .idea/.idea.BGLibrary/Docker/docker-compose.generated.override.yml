@@ -4,15 +4,15 @@ services:
   library:
     build:
       context: "D:\\Projects\\BGLibrary"
-      dockerfile: "BGLibrary.Library/Dockerfile"
+      dockerfile: "BG.NET.Library.API.Data/Dockerfile"
       target: "base"
     command: []
     entrypoint:
     - "dotnet"
-    - "/app/bin/Debug/net7.0/BGLibrary.Library.dll"
+    - "/app/bin/Debug/net7.0/BG.NET.Library.API.Data.dll"
     environment: {}
     image: "bgl.library:dev"
     ports: []
     volumes:
-    - "D:\\Projects\\BGLibrary\\BGLibrary.Library:/app:rw"
+    - "D:\\Projects\\BGLibrary\\BG.NET.Library.API.Data:/app:rw"
     working_dir: "/app"

@@ -1,9 +1,9 @@
 using System.Text;
+using BG.NET.Library.BusinessLogicLayer;
+using BG.NET.Library.DataAccessLayer;
+using BG.NET.Library.DatabaseMigrator;
 using BG.NET.Library.Models.Configuration;
-using BGLibrary.Identity.Contexts;
-using BGLibrary.Identity.Tools;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -56,13 +56,6 @@ builder.Services.AddSwaggerGen(options => {
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-builder.Services.AddAutoMapper(typeof(AutomapperProfile).Assembly);
-
-builder.Services.AddDbContext<IdentityDbContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration.GetConnectionString("LibraryData"));
-});
-
 var jwtOptions = config
     .GetSection(JwtOptions.SectionName)
     .Get<JwtOptions>();
@@ -102,6 +95,10 @@ builder.Services.AddCors(
                 .AllowAnyMethod();
         });
     });
+
+builder.Services.ExecuteDatabaseMigrator(config);
+builder.Services.AddDataAccessLayer(config);
+builder.Services.AddBusinessLogicLayer(config);
 
 var app = builder.Build();
 

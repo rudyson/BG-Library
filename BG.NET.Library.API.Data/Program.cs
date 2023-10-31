@@ -101,7 +101,7 @@ builder.Services.AddCors(
 
 builder.Services.ExecuteDatabaseMigrator(config);
 builder.Services.AddDataAccessLayer(config);
-builder.Services.AddBusinessLogicLayer();
+builder.Services.AddBusinessLogicLayer(config);
 
 var app = builder.Build();
 app.UseCors("AllowAll");

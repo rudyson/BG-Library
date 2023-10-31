@@ -4,13 +4,14 @@ using BG.NET.Library.BusinessLogicLayer.Services;
 using BG.NET.Library.BusinessLogicLayer.Validators;
 using BG.NET.Library.Models.Dto.Auth;
 using FluentValidation;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BG.NET.Library.BusinessLogicLayer;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddBusinessLogicLayer(this IServiceCollection services)
+    public static IServiceCollection AddBusinessLogicLayer(this IServiceCollection services, IConfiguration configuration)
     {
         //services.AddValidatorsFromAssembly()
         // Validators
@@ -19,6 +20,7 @@ public static class DependencyInjection
         // Services
         services.AddScoped<IAuthorService, AuthorService>();
         services.AddScoped<IBookService, BookService>();
+        services.AddScoped<IIdentityService, IdentityService>();
         // Mapping
         services.AddAutoMapper(typeof(AutomapperProfile).Assembly);
         return services;

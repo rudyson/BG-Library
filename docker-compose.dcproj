@@ -12,8 +12,10 @@
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
     <None Include=".gitignore" />
-    <None Include="db.env" />
-    <None Include="jwt.env" />
+    <None Include="postgres.env" />
     <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="aspnet.env" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 using BG.NET.Library.Models.Entities.Auth;
 using Microsoft.EntityFrameworkCore;
 
-namespace BGLibrary.Identity.Contexts;
+namespace BG.NET.Library.DataAccessLayer.Contexts;
 
 public class IdentityDbContext: DbContext
 {

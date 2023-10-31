@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BGLibrary.Library.Controllers
+namespace BG.NET.Library.API.Data.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]

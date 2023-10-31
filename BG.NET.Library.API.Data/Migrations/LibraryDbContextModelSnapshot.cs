@@ -3,29 +3,26 @@ using System;
 using BG.NET.Library.DataAccessLayer.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace BGLibrary.Library.Migrations
+namespace BG.NET.Library.API.Data.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20231015174845_InitialCreate")]
-    partial class InitialCreate
+    partial class LibraryDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.12")
+                .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("BGLibrary.Library.Entities.Author", b =>
+            modelBuilder.Entity("BG.NET.Library.Models.Entities.Library.Author", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -49,7 +46,7 @@ namespace BGLibrary.Library.Migrations
                     b.ToTable("Authors");
                 });
 
-            modelBuilder.Entity("BGLibrary.Library.Entities.Book", b =>
+            modelBuilder.Entity("BG.NET.Library.Models.Entities.Library.Book", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,16 +75,16 @@ namespace BGLibrary.Library.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("BGLibrary.Library.Entities.Book", b =>
+            modelBuilder.Entity("BG.NET.Library.Models.Entities.Library.Book", b =>
                 {
-                    b.HasOne("BGLibrary.Library.Entities.Author", "Author")
+                    b.HasOne("BG.NET.Library.Models.Entities.Library.Author", "Author")
                         .WithMany("Books")
                         .HasForeignKey("AuthorId");
 
                     b.Navigation("Author");
                 });
 
-            modelBuilder.Entity("BGLibrary.Library.Entities.Author", b =>
+            modelBuilder.Entity("BG.NET.Library.Models.Entities.Library.Author", b =>
                 {
                     b.Navigation("Books");
                 });

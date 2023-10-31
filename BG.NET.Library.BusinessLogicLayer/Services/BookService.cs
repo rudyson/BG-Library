@@ -1,7 +1,6 @@
 using AutoMapper;
 using BG.NET.Library.BusinessLogicLayer.Interfaces;
 using BG.NET.Library.DataAccessLayer.Contexts;
-using BG.NET.Library.DataAccessLayer.Interfaces;
 using BG.NET.Library.Models;
 using BG.NET.Library.Models.Dto.Library;
 using BG.NET.Library.Models.Entities.Library;
@@ -11,13 +10,11 @@ namespace BG.NET.Library.BusinessLogicLayer.Services;
 
 public class BookService : IBookService
 {
-    private readonly IBookRepository _repository;
     private readonly IMapper _mapper;
     private readonly LibraryDbContext _context;
 
-    public BookService(IBookRepository repository, IMapper mapper, LibraryDbContext context)
+    public BookService(IMapper mapper, LibraryDbContext context)
     {
-        _repository = repository;
         _mapper = mapper;
         _context = context;
     }
