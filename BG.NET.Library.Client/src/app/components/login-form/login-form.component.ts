@@ -23,8 +23,7 @@ export class LoginFormComponent implements OnInit{
      password: form.value.password
    }
 
-   let invalidLogin;
-   invalidLogin = !this.authorizationService.login(credentials);
+   let invalidLogin = !this.authorizationService.login(credentials);
  }
 
   ngOnInit(): void {

@@ -12,15 +12,15 @@ public static class DependencyInjection
         services.AddDbContext<LibraryDbContext>(options =>
         {
             options.UseNpgsql(
-                configuration.GetConnectionString("LibraryData"), 
-                b => b.MigrationsAssembly("BG.NET.Library.API.Data")
+                configuration.GetConnectionString("LibraryData")
+                //, b => b.MigrationsAssembly("BG.NET.Library.API.Data")
                 );
         });
         services.AddDbContext<IdentityDbContext>(options =>
         {
             options.UseNpgsql(
-                configuration.GetConnectionString("LibraryData"),
-                b => b.MigrationsAssembly("BG.NET.Library.API.Identity")
+                configuration.GetConnectionString("LibraryData")
+                //,  b => b.MigrationsAssembly("BG.NET.Library.API.Identity")
                 );
         });
         return services;

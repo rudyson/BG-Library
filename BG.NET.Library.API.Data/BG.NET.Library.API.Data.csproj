@@ -1,11 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    </PropertyGroup>
+      <UserSecretsId>fa5d6589-01fe-4b70-ab35-b0419f7603dd</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="EntityFramework" Version="6.4.4" />

@@ -24,7 +24,7 @@ public class BookService : IBookService
         if (book.AuthorId != null)
         {
             var author = await _context.Authors!.FindAsync(book.AuthorId);
-            if (author!=null)
+            if (author != null)
                 mappedBookToCreate.Author = author;
         }
         var createdBook = await _context.Books!.AddAsync(mappedBookToCreate);
@@ -39,7 +39,7 @@ public class BookService : IBookService
         var book = await _context.Books!.Include(b => b.Author).SingleOrDefaultAsync(b => b.Id == id);
         return book == null
             ? null
-            : _mapper.Map<Book, BookDtoShort>(source:book);
+            : _mapper.Map<Book, BookDtoShort>(source: book);
     }
 
     public async Task<BookDtoFull?> FindFull(int id)
@@ -47,7 +47,7 @@ public class BookService : IBookService
         var book = await _context.Books!.Include(b => b.Author).SingleOrDefaultAsync(b => b.Id == id);
         return book == null
             ? null
-            : _mapper.Map<Book, BookDtoFull>(source:book);
+            : _mapper.Map<Book, BookDtoFull>(source: book);
     }
 
     public async Task<IEnumerable<BookDtoShort>?> AllShort()
@@ -56,7 +56,7 @@ public class BookService : IBookService
             .Include(b => b.Author)
             .OrderBy(x => x.Title)
             .ToListAsync();
-        return _mapper.Map<List<Book>, List<BookDtoShort>>(source:books);
+        return _mapper.Map<List<Book>, List<BookDtoShort>>(source: books);
     }
 
     public async Task<IEnumerable<BookDtoFull>?> AllFull()
@@ -65,7 +65,7 @@ public class BookService : IBookService
             .Include(b => b.Author)
             .OrderBy(x => x.Title)
             .ToListAsync();
-        return _mapper.Map<List<Book>, List<BookDtoFull>>(source:books);
+        return _mapper.Map<List<Book>, List<BookDtoFull>>(source: books);
     }
 
     public async Task<GenericPaginationModel<BookDtoFull>?> AllPaginatedFull(int page, int size)
@@ -93,7 +93,7 @@ public class BookService : IBookService
 
     public async Task<BookDtoShort?> Update(int id, BookDtoUpdate book)
     {
-        var bookInstance = await _context.Books!.SingleOrDefaultAsync(b => b.Id == id);
+        var bookInstance = await _context.Books!.FindAsync(id);
         if (bookInstance == null) return null;
         var entryChanged = false;
 
@@ -102,13 +102,13 @@ public class BookService : IBookService
             bookInstance.Genre = book.Genre;
             entryChanged = true;
         }
-        
+
         if (book.Title != null && bookInstance.Title != book.Title)
         {
             bookInstance.Title = book.Title;
             entryChanged = true;
         }
-        
+
         if (book.PublishYear.HasValue && bookInstance.PublishYear != book.PublishYear)
         {
             bookInstance.PublishYear = book.PublishYear.Value;
@@ -117,10 +117,10 @@ public class BookService : IBookService
 
         if (book.AuthorId != null)
         {
-            if (bookInstance.Author != null && bookInstance.Author.Id!=book.AuthorId)
+            if (!(bookInstance.Author != null && bookInstance.Author.Id == book.AuthorId))
             {
                 var author = await _context.Authors!.FindAsync(book.AuthorId);
-                if (author!=null)
+                if (author != null)
                 {
                     bookInstance.Author = author;
                     entryChanged = true;

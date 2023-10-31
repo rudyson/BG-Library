@@ -18,4 +18,7 @@ export class AuthorsService {
       .append("size", size ?? 5);
     return this.http.get<GenericPaginationModel<AuthorFullDto>>(this.contentApiUrl+this.baseRoute, {params: httpParams});
   }
+  deleteAuthor(id: number) : Observable<boolean>{
+    return this.http.delete<boolean>(this.contentApiUrl+this.baseRoute+"/"+id.toString())
+  }
 }

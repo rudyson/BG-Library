@@ -23,11 +23,11 @@ export class BooksService {
   getBook(id: number) : Observable<Book>{
     return this.http.get<Book>(this.contentApiUrl+this.baseRoute+'/'+id.toString());
   }
-  createBook(book: BookNewDto){
-    this.http.post(this.contentApiUrl+this.baseRoute,book);
+  createBook(book: BookNewDto) : Observable<BookNewDto>{
+    return this.http.post<BookNewDto>(this.contentApiUrl+this.baseRoute,book);
   }
-  updateBook(id: number, book: BookNewDto){
-    this.http.post(this.contentApiUrl+this.baseRoute+'/'+id.toString(),book);
+  updateBook(id: number, book: BookNewDto) {
+    return this.http.post(this.contentApiUrl+this.baseRoute+'/'+id.toString(),book);
   }
 
   deleteBook(id: number): Observable<void>{

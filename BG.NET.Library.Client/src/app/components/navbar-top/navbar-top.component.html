@@ -4,10 +4,10 @@
     <span>BG Library — {{document.title}}</span>
   </div>
   <span class="spacer"></span>
-  <span *ngIf="authorized">
-    <mat-icon aria-hidden="false" aria-label="**Username**" routerLink="me">account_circle</mat-icon>
+  <div *ngIf="this.authorizationService.isLoggedIn()" routerLink="me" class="pill">
+    <mat-icon aria-hidden="false" aria-label="**Username**">account_circle</mat-icon>
     <span>@{{this.authorizationService.userName()}}</span>
     <mat-icon aria-hidden="false" aria-label="**Username**" (click)="logout()">logout</mat-icon>
-  </span>
-  <mat-icon *ngIf="!authorized" aria-hidden="false" aria-label="Not logged in" routerLink="/login">no_accounts</mat-icon>
+  </div>
+  <mat-icon *ngIf="!this.authorizationService.isLoggedIn()" aria-hidden="false" aria-label="Not logged in" routerLink="/login">no_accounts</mat-icon>
 </mat-toolbar>

@@ -24,7 +24,7 @@
     <p>
       <mat-form-field>
         <mat-label>Author Id</mat-label>
-        <input matInput type="number" id="authorId" name="authorId" value="{{model?.authorId}}" min="0" required>
+        <input matInput type="number" id="authorId" name="authorId" value="{{model?.authorId ?? 0}}" min="0" required>
       </mat-form-field>
     </p>
     <p *ngIf="!authorizationService.isLoggedIn()" color="red">You have to <a routerLink="/login">authorize</a> first</p>

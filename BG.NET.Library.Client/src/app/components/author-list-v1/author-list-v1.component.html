@@ -8,10 +8,10 @@
     <mat-list *ngFor="let author of authors.entities">
       <div mat-subheader>
         {{author.surname}} {{author.name}} ({{author.birthday}})
-          <button mat-icon-button color="warn" aria-label="Delete">
+          <button mat-icon-button color="warn" aria-label="Delete" type="button" (click)="deleteAuthor(author.id)" matTooltip="Delete">
             <mat-icon>delete</mat-icon>
           </button>
-          <button mat-icon-button color="accent" aria-label="View information">
+          <button mat-icon-button color="accent" aria-label="View information" matTooltip="View/Update">
             <mat-icon>info</mat-icon>
           </button>
       </div>

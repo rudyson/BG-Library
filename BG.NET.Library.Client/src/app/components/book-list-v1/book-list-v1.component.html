@@ -9,13 +9,13 @@
       <div mat-subheader>Books</div>
       <mat-list-item *ngFor="let book of books.entities">
         <mat-icon matListItemIcon>book</mat-icon>
-        <h4 matListItemTitle><span *ngIf="book.author!=undefined">{{book.author?.name}} {{book.author?.surname}}— </span>{{ book.title }}</h4>
+        <h4 matListItemTitle><span *ngIf="book.author!=undefined">{{book.author.name}} {{book.author.surname}}— </span>{{ book.title }}</h4>
         <p matListItemLine>{{ book.publishYear }} • {{ book.genre }} • Id: {{ book.id }}</p>
         <p matListItemMeta>
-          <button mat-icon-button color="warn" aria-label="Delete" type="button" (click)="deleteBook(book.id)">
+          <button mat-icon-button color="warn" aria-label="Delete" type="button" (click)="deleteBook(book.id)" matTooltip="Delete">
             <mat-icon>delete</mat-icon>
           </button>
-          <button mat-icon-button color="accent" aria-label="View information">
+          <button mat-icon-button color="accent" aria-label="View information" routerLink="/book/{{book.id}}" matTooltip="View/Update">
             <mat-icon>info</mat-icon>
           </button>
         </p>
@@ -38,4 +38,15 @@
       aria-label="Select page">
     </mat-paginator>
   </div>
+  <!--
+  <div class="dialog">
+    <h1 mat-dialog-title>Delete file</h1>
+<div mat-dialog-content>
+  Would you like to delete book?
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>No</button>
+  <button mat-button mat-dialog-close cdkFocusInitial>Ok</button>
+</div>
+  </div>-->
 </div>

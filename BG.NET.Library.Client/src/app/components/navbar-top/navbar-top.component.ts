@@ -9,7 +9,7 @@ import {AuthorizationService} from "../../services/authorization/authorization.s
 export class NavbarTopComponent {
   constructor(public authorizationService : AuthorizationService) {
   }
-  authorized: boolean = this.authorizationService.isLoggedIn();
+  //authorized: boolean = this.authorizationService.isLoggedIn();
   logout(){
     this.authorizationService.logout();
     this.authorizationService.isLoggedIn();

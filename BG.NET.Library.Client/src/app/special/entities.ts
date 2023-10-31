@@ -54,5 +54,5 @@ export interface BookNewDto {
   title: string;
   publishYear: number;
   genre: string;
-  authorId: number;
+  authorId: number | undefined;
 }

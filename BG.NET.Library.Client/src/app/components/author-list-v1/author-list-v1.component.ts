@@ -36,4 +36,17 @@ export class AuthorListV1Component implements OnInit{
         }
       })
   }
+  deleteAuthor(id: number){
+    if (confirm("Do you want to delete author with id "+id+"?")){
+      this.authorsService.deleteAuthor(id).subscribe({
+        next: ()=>{
+          this.handlePaginationEvent(undefined)
+        },
+        error:(response)=>{
+          console.log("Deletion error")
+          console.log(response)
+        }
+      })
+    }
+  }
 }

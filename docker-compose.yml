@@ -31,8 +31,8 @@ services:
       dockerfile: BG.NET.Library.API.Identity/Dockerfile
     env_file:
       - aspnet.env
-    depends_on: 
-      - postgresql
+    #depends_on: 
+    #  - postgresql
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
@@ -56,9 +56,9 @@ services:
       dockerfile: BG.NET.Library.API.Data/Dockerfile
     env_file:
       - aspnet.env
-    depends_on:
-      - identity
-      - postgresql
+    #depends_on:
+    #  - identity
+    #  - postgresql
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
@@ -87,7 +87,7 @@ services:
     depends_on:
       - library
       - identity
-      - postgresql
+    #  - postgresql
     networks:
       - webapp
   # Frontend: Nginx

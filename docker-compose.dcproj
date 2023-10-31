@@ -13,9 +13,7 @@
     <None Include=".dockerignore" />
     <None Include=".gitignore" />
     <None Include="postgres.env" />
+    <None Include="aspnet.env" />
     <None Include="README.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="aspnet.env" />
   </ItemGroup>
 </Project>
