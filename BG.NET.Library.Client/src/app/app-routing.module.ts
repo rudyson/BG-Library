@@ -8,12 +8,15 @@ import {NotfoundPageComponent} from "./components/notfound-page/notfound-page.co
 import {RegistrationFormComponent} from "./components/registration-form/registration-form.component";
 import {AuthorsService} from "./services/authors/authors.service";
 import {AuthorListV1Component} from "./components/author-list-v1/author-list-v1.component";
+import {BookPageComponent} from "./components/book-page/book-page.component";
 
 const routes: Routes = [
-  {path:'',component: BookListV1Component, title:'Home'},
+  {path:'',redirectTo: '/books', pathMatch: "full"},
   //{path:'books',component: BookListV1Component, canActivate: [JwtGuard]}
   {path:'books',component: BookListV1Component, title:'Books'},
   {path:'books/:id',component: BookListV1Component, title:'Books'},
+  {path:'book/:id',component: BookPageComponent, title:'Book'},
+  {path:'book',component: BookPageComponent, title:'Book'},
   {path:'authors',component: AuthorListV1Component, title:'Authors'},
   {path:'authors/:id',component: AuthorListV1Component, title:'Authors'},
   {path:'login',component: LoginFormComponent, title:'Login'},

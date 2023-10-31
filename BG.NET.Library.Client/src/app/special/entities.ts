@@ -49,3 +49,10 @@ export interface BookInfoDto {
   publishYear: number;
   genre: string;
 }
+
+export interface BookNewDto {
+  title: string;
+  publishYear: number;
+  genre: string;
+  authorId: number;
+}

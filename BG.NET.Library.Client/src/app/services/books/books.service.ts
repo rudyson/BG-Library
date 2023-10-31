@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {Book, BookFullDto, BookShortDto} from "../../special/entities";
+import {Book, BookFullDto, BookNewDto} from "../../special/entities";
 import {environment} from "../../../environments/environment";
 import {Observable} from "rxjs";
 import {GenericPaginationModel} from "../../special/genericPagination.model";
@@ -23,10 +23,10 @@ export class BooksService {
   getBook(id: number) : Observable<Book>{
     return this.http.get<Book>(this.contentApiUrl+this.baseRoute+'/'+id.toString());
   }
-  createBook(book: Book){
+  createBook(book: BookNewDto){
     this.http.post(this.contentApiUrl+this.baseRoute,book);
   }
-  updateBook(id: number, book: Book){
+  updateBook(id: number, book: BookNewDto){
     this.http.post(this.contentApiUrl+this.baseRoute+'/'+id.toString(),book);
   }
 

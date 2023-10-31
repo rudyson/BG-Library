@@ -35,6 +35,7 @@ import {JwtTokenInterceptorInterceptor} from "./interceptors/jwt/jwt-token.inter
 import { NotfoundPageComponent } from './components/notfound-page/notfound-page.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { AuthorListV1Component } from './components/author-list-v1/author-list-v1.component';
+import { BookPageComponent } from './components/book-page/book-page.component';
 
 @NgModule({
     declarations: [
@@ -50,7 +51,8 @@ import { AuthorListV1Component } from './components/author-list-v1/author-list-v
         BookNewFormComponent,
         NotfoundPageComponent,
         FooterComponent,
-        AuthorListV1Component
+        AuthorListV1Component,
+        BookPageComponent
     ],
   imports: [
     BrowserModule, AppRoutingModule, HttpClientModule, NgbModule, BrowserAnimationsModule, MatTableModule, MatPaginatorModule, MatSortModule, MatProgressSpinnerModule, MatListModule, MatIconModule, MatButtonModule, MatToolbarModule, MatTabsModule, MatProgressBarModule, MatInputModule, MatCardModule, ReactiveFormsModule,
