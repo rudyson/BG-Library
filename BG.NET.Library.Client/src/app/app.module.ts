@@ -37,6 +37,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { AuthorListV1Component } from './components/author-list-v1/author-list-v1.component';
 import { BookPageComponent } from './components/book-page/book-page.component';
 import {MatTooltipModule } from '@angular/material/tooltip';
+import { AuthorPageComponent } from './components/author-page/author-page.component';
 
 @NgModule({
     declarations: [
@@ -53,7 +54,8 @@ import {MatTooltipModule } from '@angular/material/tooltip';
         NotfoundPageComponent,
         FooterComponent,
         AuthorListV1Component,
-        BookPageComponent
+        BookPageComponent,
+        AuthorPageComponent
     ],
   imports: [
     BrowserModule, AppRoutingModule, HttpClientModule, NgbModule, BrowserAnimationsModule, MatTableModule, MatPaginatorModule, MatSortModule, MatProgressSpinnerModule, MatListModule, MatIconModule, MatButtonModule, MatToolbarModule, MatTabsModule, MatProgressBarModule, MatInputModule, MatCardModule, ReactiveFormsModule,MatTooltipModule,

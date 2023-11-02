@@ -1,6 +1,6 @@
 using System.Text;
-using BG.NET.Library.BusinessLogicLayer;
-using BG.NET.Library.DataAccessLayer;
+using BG.NET.Library.BusinessLogic;
+using BG.NET.Library.DataAccess;
 using BG.NET.Library.DatabaseMigrator;
 using BG.NET.Library.Models.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,7 +18,8 @@ builder.Services
     .Bind(config.GetSection(JwtOptions.SectionName))
     .ValidateOnStart();
 
-builder.Services.AddSwaggerGen(options => {
+builder.Services.AddSwaggerGen(options =>
+{
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Auth API for BG.Library",
@@ -31,8 +32,9 @@ builder.Services.AddSwaggerGen(options => {
             Url = new Uri("https://www.linkedin.com/in/rudyson")
         }
     });
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
-        In = ParameterLocation.Header, 
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
         Description = "Please insert JWT with Bearer into field",
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
@@ -40,17 +42,17 @@ builder.Services.AddSwaggerGen(options => {
         Scheme = "Bearer"
     });
     options.AddSecurityRequirement(new OpenApiSecurityRequirement {
-        { 
-            new OpenApiSecurityScheme 
-            { 
-                Reference = new OpenApiReference 
-                { 
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
                     Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer" 
-                } 
+                    Id = "Bearer"
+                }
             },
             Array.Empty<string>()
-        } 
+        }
     });
 });
 
@@ -76,11 +78,11 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuer = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            
+
             ValidAudience = jwtOptions.Audience,
             ValidIssuer = jwtOptions.Issuer,
             IssuerSigningKey = signingKey,
-            
+
             RequireExpirationTime = true
         };
     });

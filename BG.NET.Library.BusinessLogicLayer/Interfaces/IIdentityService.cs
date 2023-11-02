@@ -1,22 +1,23 @@
 using System.Security.Claims;
-using BG.NET.Library.Models.Dto.Auth;
+using BG.NET.Library.Models.Dto;
+using BG.NET.Library.Models.Requests;
 
-namespace BG.NET.Library.BusinessLogicLayer.Interfaces;
+namespace BG.NET.Library.BusinessLogic.Interfaces;
 
 public interface IIdentityService
 {
     /// <summary>
     /// Provides user registration
     /// </summary>
-    /// <param name="user">RegisterDto contains user's credentials</param>
+    /// <param name="user">RegisterRequest contains user's credentials</param>
     /// <returns>User id if it registered successfully</returns>
-    public Task<int?> Register(RegisterDto user);
+    public Task<int?> Register(RegisterRequest user);
     /// <summary>
     /// Provides user authorization
     /// </summary>
-    /// <param name="user">LoginDto contains username and password</param>
+    /// <param name="user">LoginRequest contains username and password</param>
     /// <returns>JWT Token if user exists</returns>
-    public Task<JwtTokenDto?> Login(LoginDto user);
+    public Task<TokenCreatedDto?> Login(LoginRequest user);
     /// <summary>
     /// Retrieves user's information using context and signed JWT token
     /// </summary>

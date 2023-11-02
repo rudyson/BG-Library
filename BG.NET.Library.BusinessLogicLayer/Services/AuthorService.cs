@@ -1,85 +1,75 @@
-using AutoMapper;
-using BG.NET.Library.BusinessLogicLayer.Interfaces;
-using BG.NET.Library.DataAccessLayer.Contexts;
-using BG.NET.Library.Models;
-using BG.NET.Library.Models.Dto.Library;
-using BG.NET.Library.Models.Entities.Library;
+using BG.NET.Library.BusinessLogic.Interfaces;
+using BG.NET.Library.DataAccess.Contexts;
+using BG.NET.Library.DataAccess.Entities;
+using BG.NET.Library.Models.Dto;
+using BG.NET.Library.Models.Generic;
+using BG.NET.Library.Models.Requests;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
-namespace BG.NET.Library.BusinessLogicLayer.Services;
+namespace BG.NET.Library.BusinessLogic.Services;
 
 public class AuthorService : IAuthorService
 {
-    private readonly IMapper _mapper;
     private readonly LibraryDbContext _context;
 
-    public AuthorService(IMapper mapper, LibraryDbContext context)
+    public AuthorService(LibraryDbContext context)
     {
-        _mapper = mapper;
         _context = context;
     }
-    public async Task<IEnumerable<AuthorDtoNoBooks>?> AllShort()
+
+    public async Task<IEnumerable<AuthorFullInfoDto>?> AllFull()
     {
         var authors = await _context.Authors!.Include(a => a.Books).OrderBy(a => a.Surname).ToListAsync();
-        return _mapper.Map<List<Author>, List<AuthorDtoNoBooks>>(source:authors);
+        return authors.Adapt<List<AuthorFullInfoDto>>();
     }
 
-    public async Task<IEnumerable<AuthorDtoFull>?> AllFull()
-    {
-        var authors = await _context.Authors!.Include(a => a.Books).OrderBy(a => a.Surname).ToListAsync();
-        return _mapper.Map<List<Author>, List<AuthorDtoFull>>(source:authors);
-    }
-
-    public async Task<GenericPaginationModel<AuthorDtoFull>?> AllPaginatedFull(int page, int size)
+    public async Task<GenericPaginationModel<AuthorFullInfoDto>?> AllPaginatedFull(int page, int size)
     {
         var authors = _context.Authors!
             .Include(a => a.Books)
             .OrderBy(x => x.Surname);
-        var countAll = await authors.CountAsync();
+        var total = await authors.CountAsync();
         var numberSkipped = (page - 1) * size;
-        return new GenericPaginationModel<AuthorDtoFull>
+        var entities = await authors
+                    .Skip(numberSkipped)
+                    .Take(size)
+                    .ToListAsync();
+        return new GenericPaginationModel<AuthorFullInfoDto>
         {
             Page = page,
             PageSize = size,
-            TotalSize = countAll,
-            Pages = (int)Math.Ceiling((decimal)countAll / size),
+            TotalSize = total,
+            Pages = ((total - 1) / size) + 1, //(int)Math.Ceiling((decimal)countAll / size),
             NumberSkipped = numberSkipped,
-            Entities = _mapper.Map<List<Author>, List<AuthorDtoFull>>(
-                source: await authors
-                    .Skip(numberSkipped)
-                    .Take(size)
-                    .ToListAsync()
-                )
+            Entities = entities.Adapt<List<AuthorFullInfoDto>>()
         };
     }
 
-    public async Task<AuthorDtoNoBooks?> FindShort(int id)
+    public async Task<AuthorShortInfoDto?> FindShort(int id)
     {
         var author = await _context.Authors!.Include(a => a.Books).SingleOrDefaultAsync(a => a.Id == id);
-        return author == null
-            ? null
-            : _mapper.Map<Author, AuthorDtoNoBooks>(source:author);
+        return author?.Adapt<AuthorShortInfoDto>();
     }
 
-    public async Task<AuthorDtoFull?> FindFull(int id)
+    public async Task<AuthorFullInfoDto?> FindFull(int id)
     {
         var author = await _context.Authors!.Include(a => a.Books).SingleOrDefaultAsync(a => a.Id == id);
-        return author == null
-            ? null
-            : _mapper.Map<Author, AuthorDtoFull>(source:author);
+        return author?.Adapt<AuthorFullInfoDto>();
     }
 
-    public async Task<AuthorDtoNoBooks?> Create(AuthorDtoBase author)
+    public async Task<AuthorShortInfoDto?> Create(AuthorCreateRequest author)
     {
-        var mappedAuthorToCreate = _mapper.Map<AuthorDtoBase, Author>(author);
+        var mappedAuthorToCreate = author.Adapt<Author>();
         var createdAuthor = await _context.Authors!.AddAsync(mappedAuthorToCreate);
         return
             await _context.SaveChangesAsync() > 0
-                ? _mapper.Map<Author, AuthorDtoNoBooks>(createdAuthor.Entity)
+                ? createdAuthor.Entity.Adapt<AuthorShortInfoDto>()
                 : null;
     }
 
-    public async Task<AuthorDtoNoBooks?> Update(int id, AuthorDtoUpdate author)
+    public async Task<AuthorShortInfoDto?> Update(int id, AuthorUpdateRequest author)
     {
         var authorInstance = await _context.Authors!.SingleOrDefaultAsync(a => a.Id == id);
         if (authorInstance == null) return null;
@@ -104,7 +94,7 @@ public class AuthorService : IAuthorService
         }
 
         if (entryChanged && await _context.SaveChangesAsync() > 0)
-            return _mapper.Map<Author, AuthorDtoNoBooks>(authorInstance);
+            return authorInstance.Adapt<AuthorShortInfoDto>();
         return null;
     }
 
@@ -116,11 +106,20 @@ public class AuthorService : IAuthorService
         return await _context.SaveChangesAsync() > 0;
     }
 
-    public async Task<AuthorDtoFull?> Books(int id)
+    public async Task<AuthorFullInfoDto?> Books(int id)
     {
-        var authorInstance = await _context.Authors!.Include(a=>a.Books).SingleOrDefaultAsync(a => a.Id == id);
-        return authorInstance == null
-            ? null
-            : _mapper.Map<Author, AuthorDtoFull>(authorInstance);
+        var authorInstance = await _context.Authors!.Include(a => a.Books).SingleOrDefaultAsync(a => a.Id == id);
+        return authorInstance?.Adapt<AuthorFullInfoDto>();
     }
+
+    public IEnumerable<AuthorAutocompleteDto>? Search(string query)
+    {
+        var queryLower = query.ToLower();
+        if (query.IsNullOrEmpty()) return null;
+        return _context.Authors!
+            .Where(a => a.Surname.ToLower().Contains(queryLower) || a.Name.ToLower().Contains(queryLower))
+            .Take(6)
+            .Adapt<IEnumerable<AuthorAutocompleteDto>?>();
+    }
+    public async Task<bool> Exists(int id) => await _context.Authors!.SingleOrDefaultAsync(a => a.Id == id) != null;
 }

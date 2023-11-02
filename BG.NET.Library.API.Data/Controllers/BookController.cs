@@ -1,6 +1,7 @@
-using BG.NET.Library.BusinessLogicLayer.Interfaces;
-using BG.NET.Library.Models;
-using BG.NET.Library.Models.Dto.Library;
+using BG.NET.Library.BusinessLogic.Interfaces;
+using BG.NET.Library.Models.Dto;
+using BG.NET.Library.Models.Generic;
+using BG.NET.Library.Models.Requests;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,39 +15,37 @@ namespace BG.NET.Library.API.Data.Controllers
     public class BookController : ControllerBase
     {
         private readonly IBookService _service;
-        private readonly IValidator<BookDtoNew> _validateNewBook;
-        private readonly IValidator<BookDtoUpdate> _validateUpdateBook;
+        private readonly IValidator<BookCreateRequest> _validateNewBook;
+        private readonly IValidator<BookUpdateRequest> _validateUpdateBook;
 
         public BookController(
             IBookService service,
-            IValidator<BookDtoNew> validateNewBook,
-            IValidator<BookDtoUpdate> validateUpdateBook)
+            IValidator<BookCreateRequest> validateNewBook,
+            IValidator<BookUpdateRequest> validateUpdateBook)
         {
             _service = service;
             _validateNewBook = validateNewBook;
             _validateUpdateBook = validateUpdateBook;
         }
 
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenericPaginationModel<BookDtoFull>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenericPaginationModel<BookFullInfoDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllBooks(
             int page = 1,
             int size = 10
         )
         {
-            var bookList = await _service.AllPaginatedFull(page,size);
+            var bookList = await _service.AllPaginatedFull(page, size);
             if (bookList == null) return BadRequest("Pagination model broken");
             return bookList.Entities.IsNullOrEmpty()
                 ? NotFound()
                 : Ok(bookList);
         }
 
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookDtoFull))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookFullInfoDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetBook(int id)
         {
@@ -56,11 +55,11 @@ namespace BG.NET.Library.API.Data.Controllers
                 : NotFound();
         }
 
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BookDtoNew))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BookFullInfoDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost]
-        public async Task<IActionResult> CreateBook(BookDtoNew book)
+        public async Task<IActionResult> CreateBook(BookCreateRequest book)
         {
             var validationResult = await _validateNewBook.ValidateAsync(book);
             if (!validationResult.IsValid)
@@ -69,39 +68,38 @@ namespace BG.NET.Library.API.Data.Controllers
             }
             var bookCreated = await _service.Create(book);
             return bookCreated != null
-                ? CreatedAtAction(nameof(CreateBook),bookCreated)
+                ? CreatedAtAction(nameof(CreateBook), bookCreated)
                 : BadRequest("Book is not created");
         }
 
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BookFullInfoDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateBook(int id, BookDtoUpdate book)
+        public async Task<IActionResult> UpdateBook(int id, BookUpdateRequest book)
         {
             var validationResult = await _validateUpdateBook.ValidateAsync(book);
             if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.ToDictionary());
             }
-            if (await _service.FindShort(id) == null)
+            if (await _service.FindFull(id) == null)
                 return NotFound();
             var bookUpdated = await _service.Update(id, book);
             return bookUpdated != null
-                ? Ok()
+                ? CreatedAtAction(nameof(UpdateBook), bookUpdated)
                 : BadRequest("No action needed");
         }
 
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteBook(int id)
         {
-            if (await _service.FindShort(id) == null)
-                return NotFound();
+            if (await _service.FindFull(id) == null) return NotFound();
             return await _service.Delete(id) ? Ok() : BadRequest();
         }
     }

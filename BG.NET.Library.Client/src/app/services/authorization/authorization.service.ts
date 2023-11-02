@@ -22,11 +22,19 @@ export class AuthorizationService {
           return true;
         },
         error: (response) =>{
+          if(response.name == 'NetworkError'){
+            alert("API not run")
+          }
           console.log(response);
           return false;
         }});
     return false;
   }
+
+  registerRequest(model: RegisterDto) : Observable<boolean> {
+    return this.http.post<boolean>(this.authorizationApiUrl+this.baseRoute+'register',model);
+  }
+
   login(model: LoginDto) : boolean {
     this.http.post<JwtTokenDto>(
       this.authorizationApiUrl+this.baseRoute+'login',
@@ -38,12 +46,21 @@ export class AuthorizationService {
         return true;
       },
       error: (response) =>{
+        if(response.name == 'NetworkError'){
+          alert("API not run")
+        }
+        alert("error: "+response)
         console.log(response);
         return false;
       }
     })
     return false;
   }
+
+  loginRequest(model: LoginDto) : Observable<boolean> {
+    return this.http.post<boolean>(this.authorizationApiUrl+this.baseRoute+'login',model);
+  }
+
   logout() : boolean{
     localStorage.removeItem("jwt");
     location.reload();

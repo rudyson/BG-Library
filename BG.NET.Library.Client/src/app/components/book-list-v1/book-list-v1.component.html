@@ -6,7 +6,10 @@
   <div *ngIf="books && books.totalSize > 0">
     <mat-list>
       <mat-divider></mat-divider>
-      <div mat-subheader>Books</div>
+      <div mat-subheader>
+        Books
+        <a routerLink="/book"> Add book</a>
+      </div>
       <mat-list-item *ngFor="let book of books.entities">
         <mat-icon matListItemIcon>book</mat-icon>
         <h4 matListItemTitle><span *ngIf="book.author!=undefined">{{book.author.name}} {{book.author.surname}}— </span>{{ book.title }}</h4>
@@ -25,8 +28,6 @@
     <mat-paginator
       (page)="handlePaginationEvent($event)"
 
-      [pageIndex]="books.page - 1"
-      [pageSize]="books.pageSize"
 
       [length]="books.totalSize"
 
@@ -39,6 +40,8 @@
     </mat-paginator>
   </div>
   <!--
+    [pageIndex]="books.page - 1"
+      [pageSize]="books.pageSize"
   <div class="dialog">
     <h1 mat-dialog-title>Delete file</h1>
 <div mat-dialog-content>

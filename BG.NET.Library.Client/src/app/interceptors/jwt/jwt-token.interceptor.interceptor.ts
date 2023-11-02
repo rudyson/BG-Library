@@ -32,6 +32,9 @@ export class JwtTokenInterceptorInterceptor implements HttpInterceptor {
             this.router.navigate(['login']);
           }
         }
+        console.log("JWT")
+        console.log(err)
+        console.log(err.message)
         return throwError(() => new Error("[JwtTokenInterceptorInterceptor] Unhandled error occured"));
       })
     );

@@ -9,6 +9,7 @@ import {RegistrationFormComponent} from "./components/registration-form/registra
 import {AuthorsService} from "./services/authors/authors.service";
 import {AuthorListV1Component} from "./components/author-list-v1/author-list-v1.component";
 import {BookPageComponent} from "./components/book-page/book-page.component";
+import { AuthorPageComponent } from './components/author-page/author-page.component';
 
 const routes: Routes = [
   {path:'',redirectTo: '/books', pathMatch: "full"},
@@ -19,6 +20,8 @@ const routes: Routes = [
   {path:'book',component: BookPageComponent, title:'Book'},
   {path:'authors',component: AuthorListV1Component, title:'Authors'},
   {path:'authors/:id',component: AuthorListV1Component, title:'Authors'},
+  {path:'author',component: AuthorPageComponent, title:'Author'},
+  {path:'author/:id',component: AuthorPageComponent, title:'Author'},
   {path:'login',component: LoginFormComponent, title:'Login'},
   {path:'register',component: RegistrationFormComponent, title:'Registration'},
   {path:'me',component: UserinfoPageComponent, title:'me'},

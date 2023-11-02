@@ -44,6 +44,26 @@ export interface AuthorFullDto {
   birthday: string;
 }
 
+export interface AuthorDtoUpdate{
+  name: string;
+  surname: string;
+  birthday: string;
+}
+
+export interface AuthorDtoFull {
+  id: number;
+  books: Array<BookInfoDto>;
+  name: string;
+  surname: string;
+  birthday: string;
+}
+export interface AuthorDtoNoBooks {
+  id: number;
+  name: string;
+  surname: string;
+  birthday: string;
+}
+
 export interface BookInfoDto {
   title: string;
   publishYear: number;
@@ -51,6 +71,14 @@ export interface BookInfoDto {
 }
 
 export interface BookNewDto {
+  title: string;
+  publishYear: number;
+  genre: string;
+  authorId: number | undefined;
+}
+
+export interface BookDtoShort{
+  id: number;
   title: string;
   publishYear: number;
   genre: string;

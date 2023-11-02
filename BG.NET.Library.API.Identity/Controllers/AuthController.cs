@@ -1,8 +1,8 @@
 
 using System.Security.Claims;
-using BG.NET.Library.BusinessLogicLayer.Interfaces;
-using BG.NET.Library.Models.Dto.Auth;
-using BG.NET.Library.Models.Entities.Auth;
+using BG.NET.Library.BusinessLogic.Interfaces;
+using BG.NET.Library.Models.Dto;
+using BG.NET.Library.Models.Requests;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,13 +15,13 @@ namespace BG.NET.Library.API.Identity.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IIdentityService _service;
-    private readonly IValidator<RegisterDto> _validateRegistration;
-    private readonly IValidator<LoginDto> _validateLogin;
+    private readonly IValidator<RegisterRequest> _validateRegistration;
+    private readonly IValidator<LoginRequest> _validateLogin;
 
     public AuthController(
         IIdentityService service,
-        IValidator<RegisterDto> validateRegistration,
-        IValidator<LoginDto> validateLogin
+        IValidator<RegisterRequest> validateRegistration,
+        IValidator<LoginRequest> validateLogin
         )
     {
         _service = service;
@@ -30,16 +30,16 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Provides user registration, passing RegisterDto model
+    /// Provides user registration, passing RegisterRequest model
     /// </summary>
-    /// <param name="user">RegisterDto model, which contains required fields to register in system</param>
+    /// <param name="user">RegisterRequest model, which contains required fields to register in system</param>
     /// <returns></returns>
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [AllowAnonymous]
     [Route("register")]
     [HttpPost]
-    public async Task<IActionResult> Register(RegisterDto user)
+    public async Task<IActionResult> Register(RegisterRequest user)
     {
         var validationResult = await _validateRegistration.ValidateAsync(user);
         if (!validationResult.IsValid)
@@ -58,14 +58,14 @@ public class AuthController : ControllerBase
     /// </summary>
     /// <param name="user">Username and password</param>
     /// <returns>JWT Token with 1 hour life duration</returns>
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(JwtTokenDto))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenCreatedDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [AllowAnonymous]
     [Route("login")]
     [HttpPost]
-    public async Task<IActionResult> Login(LoginDto user)
+    public async Task<IActionResult> Login(LoginRequest user)
     {
         var validationResult = await _validateLogin.ValidateAsync(user);
         if (!validationResult.IsValid)
@@ -74,7 +74,7 @@ public class AuthController : ControllerBase
             return BadRequest(validationResult.ToDictionary());
         }
         var token = await _service.Login(user);
-        return token == null 
+        return token == null
             ? NotFound("User is not exists or provided credentials wrong")
             : Ok(token);
     }

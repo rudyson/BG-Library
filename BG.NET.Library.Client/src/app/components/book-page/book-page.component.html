@@ -2,29 +2,28 @@
   <h2 *ngIf="pageHasNoModel()">Create a new book</h2>
   <h2 *ngIf="!pageHasNoModel()">Update existing book</h2>
   <form ngNativeValidate #bookInfoForm="ngForm" (ngSubmit)="submit(bookInfoForm)">
-    <p>Title</p>
     <p>
       <mat-form-field>
         <mat-label>Title</mat-label>
-        <input matInput type="text" id="title" name="title" value="{{model?.title}}" required>
+        <input matInput ngModel type="text" id="title" name="title" value="{{model?.title}}" required>
       </mat-form-field>
     </p>
     <p>
       <mat-form-field>
         <mat-label>Publish year</mat-label>
-        <input matInput type="number" id="publishYear" name="publishYear" value="{{model?.publishYear}}" required>
+        <input matInput ngModel type="number" id="publishYear" name="publishYear" value="{{model?.publishYear}}" required>
       </mat-form-field>
     </p>
     <p>
       <mat-form-field>
         <mat-label>Genre</mat-label>
-        <input matInput type="text" id="genre" name="genre" value="{{model?.genre}}" required>
+        <input matInput ngModel type="text" id="genre" name="genre" value="{{model?.genre}}" required>
       </mat-form-field>
     </p>
     <p>
       <mat-form-field>
         <mat-label>Author Id</mat-label>
-        <input matInput type="number" id="authorId" name="authorId" value="{{model?.authorId ?? 0}}" min="0" required>
+        <input matInput ngModel type="number" id="authorId" name="authorId" value="{{model?.authorId ?? 0}}" min="0" required>
       </mat-form-field>
     </p>
     <p *ngIf="!authorizationService.isLoggedIn()" color="red">You have to <a routerLink="/login">authorize</a> first</p>

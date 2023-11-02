@@ -1,0 +1,26 @@
+<div>
+    <h2 *ngIf="pageHasNoModel()">Create a new author</h2>
+    <h2 *ngIf="!pageHasNoModel()">Update existing author</h2>
+    <form ngNativeValidate #authorInfoForm="ngForm" (ngSubmit)="submit(authorInfoForm)">
+      <p>
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input matInput ngModel type="text" id="name" name="name" value="{{model?.name}}" required>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field>
+          <mat-label>Surname</mat-label>
+          <input matInput ngModel type="text" id="surname" name="surname" value="{{model?.surname}}" required>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field>
+          <mat-label>Birthday</mat-label>
+          <input matInput ngModel type="date" id="birthday" name="birthday" value="{{model?.birthday}}" required>
+        </mat-form-field>
+      <p *ngIf="!authorizationService.isLoggedIn()" color="red">You have to <a routerLink="/login">authorize</a> first</p>
+      <button type="submit" mat-flat-button color="accent" [disabled]="!authorizationService.isLoggedIn()">Send</button>
+    </form>
+  </div>
+  

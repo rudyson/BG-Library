@@ -56,19 +56,39 @@ export class BookPageComponent implements OnInit{
   submit(form: NgForm) {
     console.log(form)
     const bookModel : BookNewDto = {
-      title: form.value.title,
-      genre: form.value.genre,
+      title: form.value.title == "" ? undefined: form.value.title,
+      genre: form.value.genre == "" ? undefined: form.value.genre,
       authorId: (form.value.authorId==0) ? null : form.value.authorId,
-      publishYear: form.value.publishYear
+      publishYear: form.value.publishYear==0 ? undefined : form.value.publishYear
     }
+    console.log(bookModel)
     if (this.pageHasNoModel()){
       console.log("Create condition");
-      this.booksService.createBook(bookModel);
+      this.booksService.createBook(bookModel).subscribe(
+        {
+          next: (book) => {
+            alert("Book created")
+            console.log(book)
+          },
+          error: (response) =>{
+            console.log("Create book");
+            console.log(response)
+          }
+        }
+      );
     }
     else {
       if (this.id != undefined) {
         console.log("Update condition");
-        this.booksService.updateBook(this.id, bookModel)
+        this.booksService.updateBook(this.id, bookModel).subscribe({
+          next: (book) => {
+            alert("Book updated")
+          },
+          error: (response) =>{
+            console.log("Update book");
+            console.log(response)
+          }
+        })
       }
       else{
         console.log("Return condition");

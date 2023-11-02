@@ -1,26 +1,25 @@
-using AutoMapper;
-using BG.NET.Library.BusinessLogicLayer.Interfaces;
-using BG.NET.Library.DataAccessLayer.Contexts;
-using BG.NET.Library.Models;
-using BG.NET.Library.Models.Dto.Library;
-using BG.NET.Library.Models.Entities.Library;
+using BG.NET.Library.BusinessLogic.Interfaces;
+using BG.NET.Library.DataAccess.Contexts;
+using BG.NET.Library.DataAccess.Entities;
+using BG.NET.Library.Models.Dto;
+using BG.NET.Library.Models.Generic;
+using BG.NET.Library.Models.Requests;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
-namespace BG.NET.Library.BusinessLogicLayer.Services;
+namespace BG.NET.Library.BusinessLogic.Services;
 
 public class BookService : IBookService
 {
-    private readonly IMapper _mapper;
     private readonly LibraryDbContext _context;
 
-    public BookService(IMapper mapper, LibraryDbContext context)
+    public BookService(LibraryDbContext context)
     {
-        _mapper = mapper;
         _context = context;
     }
-    public async Task<BookDtoFull?> Create(BookDtoNew book)
+    public async Task<BookFullInfoDto?> Create(BookCreateRequest book)
     {
-        var mappedBookToCreate = _mapper.Map<BookDtoNew, Book>(book);
+        var mappedBookToCreate = book.Adapt<Book>();
         if (book.AuthorId != null)
         {
             var author = await _context.Authors!.FindAsync(book.AuthorId);
@@ -30,68 +29,48 @@ public class BookService : IBookService
         var createdBook = await _context.Books!.AddAsync(mappedBookToCreate);
         return
             await _context.SaveChangesAsync() > 0
-                ? _mapper.Map<Book, BookDtoFull>(createdBook.Entity)
+                ? createdBook.Entity.Adapt<BookFullInfoDto>()
                 : null;
     }
 
-    public async Task<BookDtoShort?> FindShort(int id)
+    public async Task<BookFullInfoDto?> FindFull(int id)
     {
         var book = await _context.Books!.Include(b => b.Author).SingleOrDefaultAsync(b => b.Id == id);
-        return book == null
-            ? null
-            : _mapper.Map<Book, BookDtoShort>(source: book);
+        return book?.Adapt<BookFullInfoDto>();
     }
 
-    public async Task<BookDtoFull?> FindFull(int id)
-    {
-        var book = await _context.Books!.Include(b => b.Author).SingleOrDefaultAsync(b => b.Id == id);
-        return book == null
-            ? null
-            : _mapper.Map<Book, BookDtoFull>(source: book);
-    }
-
-    public async Task<IEnumerable<BookDtoShort>?> AllShort()
+    public async Task<IEnumerable<BookFullInfoDto>?> AllFull()
     {
         var books = await _context.Books!
             .Include(b => b.Author)
             .OrderBy(x => x.Title)
             .ToListAsync();
-        return _mapper.Map<List<Book>, List<BookDtoShort>>(source: books);
+        return books?.Adapt<List<BookFullInfoDto>>();
     }
 
-    public async Task<IEnumerable<BookDtoFull>?> AllFull()
-    {
-        var books = await _context.Books!
-            .Include(b => b.Author)
-            .OrderBy(x => x.Title)
-            .ToListAsync();
-        return _mapper.Map<List<Book>, List<BookDtoFull>>(source: books);
-    }
-
-    public async Task<GenericPaginationModel<BookDtoFull>?> AllPaginatedFull(int page, int size)
+    public async Task<GenericPaginationModel<BookFullInfoDto>?> AllPaginatedFull(int page, int size)
     {
         var books = _context.Books!
             .Include(b => b.Author)
             .OrderBy(x => x.Title);
-        var countAll = await books.CountAsync();
+        var total = await books.CountAsync();
         var numberSkipped = (page - 1) * size;
-        return new GenericPaginationModel<BookDtoFull>
+        var entities = await books
+                    .Skip(numberSkipped)
+                    .Take(size)
+                    .ToListAsync();
+        return new GenericPaginationModel<BookFullInfoDto>
         {
             Page = page,
             PageSize = size,
-            TotalSize = countAll,
-            Pages = (int)Math.Ceiling((decimal)countAll / size),
+            TotalSize = total,
+            Pages = ((total - 1) / size) + 1, //(int)Math.Ceiling((decimal)countAll / size),
             NumberSkipped = numberSkipped,
-            Entities = _mapper.Map<List<Book>, List<BookDtoFull>>(
-                source: await books
-                    .Skip(numberSkipped)
-                    .Take(size)
-                    .ToListAsync()
-                )
+            Entities = entities.Adapt<List<BookFullInfoDto>>()
         };
     }
 
-    public async Task<BookDtoShort?> Update(int id, BookDtoUpdate book)
+    public async Task<BookFullInfoDto?> Update(int id, BookUpdateRequest book)
     {
         var bookInstance = await _context.Books!.FindAsync(id);
         if (bookInstance == null) return null;
@@ -136,7 +115,7 @@ public class BookService : IBookService
             }
         }
         if (entryChanged && await _context.SaveChangesAsync() > 0)
-            return _mapper.Map<Book, BookDtoShort>(bookInstance);
+            return bookInstance.Adapt<BookFullInfoDto>();
         return null;
     }
 
@@ -147,4 +126,5 @@ public class BookService : IBookService
         _context.Books!.Remove(bookInstance);
         return await _context.SaveChangesAsync() > 0;
     }
+    public async Task<bool> Exists(int id) => await _context.Books!.SingleOrDefaultAsync(a => a.Id == id) != null;
 }

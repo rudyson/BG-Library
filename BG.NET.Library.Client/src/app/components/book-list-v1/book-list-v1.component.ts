@@ -22,6 +22,7 @@ export class BookListV1Component implements OnInit{
   ngOnInit(): void {
     this.handlePaginationEvent(undefined);
   }
+
   handlePaginationEvent($event?: PageEvent) {
     this.booksService.getAllBooks(
       $event?.pageIndex===undefined ? Number(this.route.snapshot.paramMap.get('id') ?? 1) : $event?.pageIndex + 1,
@@ -29,13 +30,14 @@ export class BookListV1Component implements OnInit{
     )
       .subscribe({
         next: (books) => {
-          this.books = undefined;
           this.books = books;
+          console.log(books)
           window.history.replaceState({},'',`/books/${this.books.page}`)
         },
         error: (response) =>{
-          this.router.navigate(["/books/1"]);
-          this.handlePaginationEvent(undefined);
+          console.log(response)
+          //this.router.navigate(["/books/1"]);
+          //this.handlePaginationEvent(undefined);
         }
       })
   }

@@ -31,8 +31,9 @@ export class AuthorListV1Component implements OnInit{
           window.history.replaceState({},'',`/authors/${this.authors.page}`)
         },
         error: (response) =>{
-          this.router.navigate(["/authors/1"]);
-          this.handlePaginationEvent(undefined);
+          console.log(response)
+          //this.router.navigate(["/authors/1"]);
+          //this.handlePaginationEvent(undefined);
         }
       })
   }
