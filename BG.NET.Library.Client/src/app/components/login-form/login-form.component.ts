@@ -3,7 +3,7 @@ import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {NgForm} from "@angular/forms";
 import {AuthorizationService} from "../../services/authorization/authorization.service";
-import {LoginDto} from "../../special/authorization.models";
+import {LoginDto} from "../../special/models/authorization.models";
 import {Subject} from "rxjs";
 
 @Component({

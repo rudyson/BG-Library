@@ -41,9 +41,9 @@ public class AuthorService : IAuthorService
             Page = page,
             PageSize = size,
             TotalSize = total,
-            Pages = ((total - 1) / size) + 1, //(int)Math.Ceiling((decimal)countAll / size),
+            Pages = ((total - 1) / size) + 1,
             NumberSkipped = numberSkipped,
-            Entities = entities.Adapt<List<AuthorFullInfoDto>>()
+            Entities = (total > 0) ? entities.Adapt<List<AuthorFullInfoDto>>() : new List<AuthorFullInfoDto>()
         };
     }
 

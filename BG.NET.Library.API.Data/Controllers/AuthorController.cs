@@ -31,7 +31,6 @@ public class AuthorController : ControllerBase
 
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenericPaginationModel<AuthorFullInfoDto>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet]
     public async Task<IActionResult> GetAllAuthors(
         int page = 1,
@@ -40,9 +39,7 @@ public class AuthorController : ControllerBase
     {
         var authors = await _service.AllPaginatedFull(page, size);
         if (authors == null) return BadRequest("Pagination model broken");
-        return authors.Entities.IsNullOrEmpty()
-            ? NotFound()
-            : Ok();
+        return Ok(authors);
     }
 
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorFullInfoDto))]

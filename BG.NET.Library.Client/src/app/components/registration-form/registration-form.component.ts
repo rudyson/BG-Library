@@ -3,7 +3,7 @@ import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {AuthorizationService} from "../../services/authorization/authorization.service";
 import {NgForm} from "@angular/forms";
-import {LoginDto, RegisterDto} from "../../special/authorization.models";
+import {LoginDto, RegisterDto} from "../../special/models/authorization.models";
 
 @Component({
   selector: 'app-registration-form',

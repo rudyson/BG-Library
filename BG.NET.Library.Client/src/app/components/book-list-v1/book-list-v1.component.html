@@ -3,12 +3,15 @@
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     <h2>Loading book list...</h2>
   </div>
+  <div *ngIf="books && books.totalSize == 0">
+    <h1>Book list is empty</h1>
+    <a routerLink="/book"> Add book</a>
+  </div>
   <div *ngIf="books && books.totalSize > 0">
     <mat-list>
       <mat-divider></mat-divider>
       <div mat-subheader>
         Books
-        <a routerLink="/book"> Add book</a>
       </div>
       <mat-list-item *ngFor="let book of books.entities">
         <mat-icon matListItemIcon>book</mat-icon>

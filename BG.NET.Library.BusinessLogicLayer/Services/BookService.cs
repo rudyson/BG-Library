@@ -17,7 +17,7 @@ public class BookService : IBookService
     {
         _context = context;
     }
-    public async Task<BookFullInfoDto?> Create(BookCreateRequest book)
+    public async Task<BookShortInfoDto?> Create(BookCreateRequest book)
     {
         var mappedBookToCreate = book.Adapt<Book>();
         if (book.AuthorId != null)
@@ -29,7 +29,7 @@ public class BookService : IBookService
         var createdBook = await _context.Books!.AddAsync(mappedBookToCreate);
         return
             await _context.SaveChangesAsync() > 0
-                ? createdBook.Entity.Adapt<BookFullInfoDto>()
+                ? createdBook.Entity.Adapt<BookShortInfoDto>()
                 : null;
     }
 
@@ -64,13 +64,13 @@ public class BookService : IBookService
             Page = page,
             PageSize = size,
             TotalSize = total,
-            Pages = ((total - 1) / size) + 1, //(int)Math.Ceiling((decimal)countAll / size),
+            Pages = ((total - 1) / size) + 1,
             NumberSkipped = numberSkipped,
-            Entities = entities.Adapt<List<BookFullInfoDto>>()
+            Entities = (total>0) ? entities.Adapt<List<BookFullInfoDto>>() : new List<BookFullInfoDto>()
         };
     }
 
-    public async Task<BookFullInfoDto?> Update(int id, BookUpdateRequest book)
+    public async Task<BookShortInfoDto?> Update(int id, BookUpdateRequest book)
     {
         var bookInstance = await _context.Books!.FindAsync(id);
         if (bookInstance == null) return null;
@@ -115,7 +115,7 @@ public class BookService : IBookService
             }
         }
         if (entryChanged && await _context.SaveChangesAsync() > 0)
-            return bookInstance.Adapt<BookFullInfoDto>();
+            return bookInstance.Adapt<BookShortInfoDto>();
         return null;
     }
 

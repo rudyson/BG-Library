@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {UserInfoDto} from "../../special/authorization.models";
+import {UserInfoDto} from "../../special/models/authorization.models";
 import {AuthorizationService} from "../../services/authorization/authorization.service";
 
 @Component({

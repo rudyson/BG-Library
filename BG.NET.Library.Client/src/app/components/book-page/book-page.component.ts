@@ -4,6 +4,7 @@ import {Router, ActivatedRoute} from "@angular/router";
 import {BooksService} from "../../services/books/books.service";
 import {NgForm} from "@angular/forms";
 import {AuthorizationService} from "../../services/authorization/authorization.service";
+import { BookCreateRequest } from 'src/app/special/book.models';
 
 @Component({
   selector: 'app-book-page',
@@ -55,7 +56,7 @@ export class BookPageComponent implements OnInit{
 
   submit(form: NgForm) {
     console.log(form)
-    const bookModel : BookNewDto = {
+    const bookModel : BookCreateRequest = {
       title: form.value.title == "" ? undefined: form.value.title,
       genre: form.value.genre == "" ? undefined: form.value.genre,
       authorId: (form.value.authorId==0) ? null : form.value.authorId,

@@ -30,7 +30,6 @@ namespace BG.NET.Library.API.Data.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenericPaginationModel<BookFullInfoDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
         public async Task<IActionResult> GetAllBooks(
             int page = 1,
@@ -39,9 +38,7 @@ namespace BG.NET.Library.API.Data.Controllers
         {
             var bookList = await _service.AllPaginatedFull(page, size);
             if (bookList == null) return BadRequest("Pagination model broken");
-            return bookList.Entities.IsNullOrEmpty()
-                ? NotFound()
-                : Ok(bookList);
+            return Ok(bookList);
         }
 
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookFullInfoDto))]
@@ -55,7 +52,7 @@ namespace BG.NET.Library.API.Data.Controllers
                 : NotFound();
         }
 
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BookFullInfoDto))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BookShortInfoDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -71,7 +68,7 @@ namespace BG.NET.Library.API.Data.Controllers
                 : BadRequest("Book is not created");
         }
 
-        [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(BookFullInfoDto))]
+        [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(BookShortInfoDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -83,7 +83,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Authorize]
     [Route("info")]
-    [HttpGet("Information about user")]
+    [HttpGet]
     public async Task<IActionResult> Info()
     {
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {JwtToken, JwtTokenDto, LoginDto, RegisterDto, UserInfoDto} from "../../special/authorization.models";
+import {JwtToken, JwtTokenDto, LoginDto, RegisterDto, UserInfoDto} from "../../special/models/authorization.models";
 import {Router} from "@angular/router";
 import {JwtHelperService} from "@auth0/angular-jwt";
 
