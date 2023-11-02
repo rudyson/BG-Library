@@ -36,20 +36,17 @@ public class AuthController : ControllerBase
     /// <returns></returns>
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [AllowAnonymous]
     [Route("register")]
     [HttpPost]
     public async Task<IActionResult> Register(RegisterRequest user)
     {
         var validationResult = await _validateRegistration.ValidateAsync(user);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(validationResult.ToDictionary());
-            //return Results.ValidationProblem(validationResult.ToDictionary());
-        }
+        if (!validationResult.IsValid) return UnprocessableEntity(validationResult.ToDictionary());
         var createdUserId = await _service.Register(user);
         return createdUserId == null
-            ? BadRequest("User already exists")
+            ? BadRequest("Unable to register user")
             : Ok($"User registered, Id: {createdUserId}");
     }
 
@@ -62,17 +59,14 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [AllowAnonymous]
     [Route("login")]
     [HttpPost]
     public async Task<IActionResult> Login(LoginRequest user)
     {
         var validationResult = await _validateLogin.ValidateAsync(user);
-        if (!validationResult.IsValid)
-        {
-            //return (IActionResult)Results.ValidationProblem(validationResult.ToDictionary());
-            return BadRequest(validationResult.ToDictionary());
-        }
+        if (!validationResult.IsValid) return UnprocessableEntity(validationResult.ToDictionary());
         var token = await _service.Login(user);
         return token == null
             ? NotFound("User is not exists or provided credentials wrong")
@@ -89,7 +83,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Authorize]
     [Route("info")]
-    [HttpGet]
+    [HttpGet("Information about user")]
     public async Task<IActionResult> Info()
     {
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);

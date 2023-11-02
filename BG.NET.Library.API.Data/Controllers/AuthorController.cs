@@ -42,7 +42,7 @@ public class AuthorController : ControllerBase
         if (authors == null) return BadRequest("Pagination model broken");
         return authors.Entities.IsNullOrEmpty()
             ? NotFound()
-            : Ok(authors);
+            : Ok();
     }
 
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorFullInfoDto))]
@@ -59,37 +59,34 @@ public class AuthorController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AuthorShortInfoDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [HttpPost]
     public async Task<IActionResult> CreateAuthor(AuthorCreateRequest author)
     {
         var validationResult = await _validateNewAuthor.ValidateAsync(author);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(validationResult.ToDictionary());
-        }
+        if (!validationResult.IsValid) return UnprocessableEntity(validationResult.ToDictionary());
+
         var authorCreated = await _service.Create(author);
         return authorCreated != null
             ? CreatedAtAction(nameof(CreateAuthor), authorCreated)
             : BadRequest("Author is not created");
     }
 
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AuthorShortInfoDto))]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(AuthorShortInfoDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateAuthor(int id, AuthorUpdateRequest author)
     {
         var validationResult = await _validateUpdateAuthor.ValidateAsync(author);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(validationResult.ToDictionary());
-        }
-        if (await _service.FindShort(id) == null)
-            return NotFound();
+        if (!validationResult.IsValid) return UnprocessableEntity(validationResult.ToDictionary());
+
+        if (await _service.FindShort(id) == null) return NotFound();
         var authorUpdated = await _service.Update(id, author);
         return authorUpdated != null
-            ? CreatedAtAction(nameof(UpdateAuthor), authorUpdated)
+            ? AcceptedAtAction(nameof(UpdateAuthor), authorUpdated)
             : BadRequest("No action needed");
     }
 
@@ -100,8 +97,7 @@ public class AuthorController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteAuthor(int id)
     {
-        if (await _service.FindFull(id) == null)
-            return NotFound();
+        if (await _service.FindFull(id) == null) return NotFound();
         return await _service.Delete(id) ? Ok() : BadRequest();
     }
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AuthorAutocompleteDto>))]

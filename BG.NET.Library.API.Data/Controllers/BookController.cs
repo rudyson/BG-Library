@@ -58,37 +58,34 @@ namespace BG.NET.Library.API.Data.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BookFullInfoDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [HttpPost]
         public async Task<IActionResult> CreateBook(BookCreateRequest book)
         {
             var validationResult = await _validateNewBook.ValidateAsync(book);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.ToDictionary());
-            }
+            if (!validationResult.IsValid) return UnprocessableEntity(validationResult.ToDictionary());
+
             var bookCreated = await _service.Create(book);
             return bookCreated != null
                 ? CreatedAtAction(nameof(CreateBook), bookCreated)
                 : BadRequest("Book is not created");
         }
 
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BookFullInfoDto))]
+        [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(BookFullInfoDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateBook(int id, BookUpdateRequest book)
         {
             var validationResult = await _validateUpdateBook.ValidateAsync(book);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.ToDictionary());
-            }
-            if (await _service.FindFull(id) == null)
-                return NotFound();
+            if (!validationResult.IsValid) return UnprocessableEntity(validationResult.ToDictionary());
+
+            if (await _service.FindFull(id) == null) return NotFound();
             var bookUpdated = await _service.Update(id, book);
             return bookUpdated != null
-                ? CreatedAtAction(nameof(UpdateBook), bookUpdated)
+                ? AcceptedAtAction(nameof(UpdateBook), bookUpdated)
                 : BadRequest("No action needed");
         }
 
