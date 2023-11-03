@@ -58,7 +58,7 @@ import { AuthorPageComponent } from './components/author-page/author-page.compon
         tokenGetter: () =>{
           return localStorage.getItem("jwt")
         },
-        allowedDomains: ["localhost:44302","localhost:44304"],
+        allowedDomains: ["localhost:44443","localhost:44080"],
         disallowedRoutes: [],
       },
     }), FormsModule,

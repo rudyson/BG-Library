@@ -1,15 +1,11 @@
 const PROXY_CONFIG = [
   {
-    "/apiid":{
-      target: "http://localhost:44301",
-      secure: false
-    }
-  },
-  {
-    "/apidt":{
-      target: "http://localhost:44303",
-      secure: false
-    }
+    context: [
+      "/api/*"
+    ],
+    target: "http://localhost:44080",
+    secure: false,
+    logLevel : "debug"
   }
 ]
 

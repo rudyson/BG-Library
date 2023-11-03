@@ -4,7 +4,6 @@
       <mat-form-field appearance="fill">
         <mat-label>Username</mat-label>
         <input matInput type="text" id="username" ngModel name="username" placeholder="username" required autofocus>
-        <mat-hint *ngIf="invalidLogin">Wrong username or password</mat-hint>
       </mat-form-field>
     </p>
     <p>
@@ -16,6 +15,17 @@
         </button>
       </mat-form-field>
     </p>
+    <!--
+    <div *ngIf="invalidLogin">
+      <p>Validation</p>
+      <div *ngFor="let validation in validationErrors | keyvalue">
+        <p>{{validation.key}}</p>
+        <ul *ngFor="let message in validation.value">
+          <li>{{message}}</li>
+        </ul>
+      </div>
+    </div>
+    -->
     <p>
       <button type="submit" mat-flat-button color="accent">Login</button>
     </p>

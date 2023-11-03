@@ -11,7 +11,7 @@ import { AuthorShortInfoDto } from 'src/app/special/models/author.models';
 })
 export class BooksService {
   private contentApiUrl: string = environment.contentApiUrl;
-  private baseRoute: string = '/api/book';
+  private baseRoute: string = 'book';
   constructor(private http: HttpClient) {}
 
   getAllBooks(page?: number | null, size?: number | null) : Observable<GenericPaginationModel<BookFullInfoDto>>{

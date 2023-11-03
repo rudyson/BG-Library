@@ -14,17 +14,17 @@ import { AuthorPageComponent } from './components/author-page/author-page.compon
 const routes: Routes = [
   {path:'',redirectTo: '/books', pathMatch: "full"},
   //{path:'books',component: BookListV1Component, canActivate: [JwtGuard]}
-  {path:'books',component: BookListV1Component, title:'Books'},
-  {path:'books/:id',component: BookListV1Component, title:'Books'},
-  {path:'book/:id',component: BookPageComponent, title:'Book'},
-  {path:'book',component: BookPageComponent, title:'Book'},
-  {path:'authors',component: AuthorListV1Component, title:'Authors'},
-  {path:'authors/:id',component: AuthorListV1Component, title:'Authors'},
-  {path:'author',component: AuthorPageComponent, title:'Author'},
-  {path:'author/:id',component: AuthorPageComponent, title:'Author'},
+  {path:'books',component: BookListV1Component, title:'Books', canActivate: [JwtGuard]},
+  {path:'books/:id',component: BookListV1Component, title:'Books', canActivate: [JwtGuard]},
+  {path:'book/:id',component: BookPageComponent, title:'Book', canActivate: [JwtGuard]},
+  {path:'book',component: BookPageComponent, title:'Book', canActivate: [JwtGuard]},
+  {path:'authors',component: AuthorListV1Component, title:'Authors', canActivate: [JwtGuard]},
+  {path:'authors/:id',component: AuthorListV1Component, title:'Authors', canActivate: [JwtGuard]},
+  {path:'author',component: AuthorPageComponent, title:'Author', canActivate: [JwtGuard]},
+  {path:'author/:id',component: AuthorPageComponent, title:'Author', canActivate: [JwtGuard]},
   {path:'login',component: LoginFormComponent, title:'Login'},
   {path:'register',component: RegistrationFormComponent, title:'Registration'},
-  {path:'me',component: UserinfoPageComponent, title:'me'},
+  {path:'me',component: UserinfoPageComponent, title:'me', canActivate: [JwtGuard]},
   { path: '**', component: NotfoundPageComponent, title:'404 Not found' }
 ];
 

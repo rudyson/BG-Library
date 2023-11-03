@@ -23,7 +23,8 @@ export interface UserInfoDto {
 
 export interface JwtTokenDto {
   token: string;
-  expires: string;
+  expiresAt: string;
+  createdAt: string;
 }
 export interface JwtToken {
   aud: string;

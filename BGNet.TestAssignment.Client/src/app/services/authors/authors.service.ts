@@ -10,7 +10,7 @@ import { AuthorCreateRequest, AuthorFullInfoDto, AuthorShortInfoDto, AuthorUpdat
 })
 export class AuthorsService {
   private contentApiUrl: string = environment.contentApiUrl;
-  private baseRoute: string = '/api/author';
+  private baseRoute: string = 'author';
   constructor(private http: HttpClient) {}
   getAllAuthors(page?: number | null, size?: number | null) : Observable<GenericPaginationModel<AuthorFullInfoDto>>{
     let httpParams: HttpParams = new HttpParams()

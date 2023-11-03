@@ -9,11 +9,21 @@ import {catchError, Observable, throwError} from 'rxjs';
 import {AuthorizationService} from "../../services/authorization/authorization.service";
 import {Router} from "@angular/router";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class JwtTokenInterceptorInterceptor implements HttpInterceptor {
 
   constructor(private authorizationService: AuthorizationService, private router: Router) {}
 
+  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    return next.handle(request.clone({
+      setHeaders: {
+        Authorization: 'Bearer '+ this.authorizationService.token()
+      }
+    }));
+  }
+/*
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = this.authorizationService.token();
     if (token!=null){
@@ -38,5 +48,5 @@ export class JwtTokenInterceptorInterceptor implements HttpInterceptor {
         return throwError(() => new Error("[JwtTokenInterceptorInterceptor] Unhandled error occured"));
       })
     );
-  }
+    }*/
 }

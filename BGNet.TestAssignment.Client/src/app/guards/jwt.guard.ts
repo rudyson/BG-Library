@@ -1,12 +1,14 @@
 import {Injectable} from "@angular/core";
-import {CanActivate} from "@angular/router";
+import {CanActivate, Router} from "@angular/router";
 import {AuthorizationService} from "../services/authorization/authorization.service";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class JwtGuard implements CanActivate{
-  constructor(private authorizationService: AuthorizationService) {
+  constructor(private authorizationService: AuthorizationService, private router: Router) {
   }
   canActivate() {
-    return this.authorizationService.isLoggedIn();
+    return this.authorizationService.guardCheck();
   }
 }

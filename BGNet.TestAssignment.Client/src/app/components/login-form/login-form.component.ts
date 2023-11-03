@@ -14,6 +14,7 @@ import {Subject} from "rxjs";
 export class LoginFormComponent implements OnInit{
   invalidLogin: boolean = false;
   isPasswordVisible: boolean = false;
+  validationErrors: { [key: string]: string } = {};
  constructor(private router: Router,private http: HttpClient, private authorizationService: AuthorizationService) {
  }
 
@@ -22,8 +23,26 @@ export class LoginFormComponent implements OnInit{
      username: form.value.username,
      password: form.value.password
    }
-
-   let invalidLogin = !this.authorizationService.login(credentials);
+   this.authorizationService.loginRequest(credentials)
+     .subscribe(
+       {
+         next: (jwtToken) => {
+           localStorage.setItem("jwt", jwtToken.token);
+           location.reload();
+           this.invalidLogin = false;
+         },
+         error: (response) =>{
+           if (response.status == 422){
+             this.validationErrors = response.error
+           }
+           if(response.name == 'NetworkError'){
+             console.log("API not run")
+           }
+           console.log(response);
+           this.invalidLogin = true;
+         }
+       });
+   console.log(this.invalidLogin)
  }
 
   ngOnInit(): void {
