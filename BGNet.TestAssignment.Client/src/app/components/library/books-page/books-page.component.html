@@ -1,0 +1,10 @@
+<p>books-page works!</p>
+<div class="card flex justify-content-center">
+  <p-paginator
+    (onPageChange)="onPageChange($any($event))"
+    [first]="first"
+    [rows]="rows"
+    [totalRecords]="120"
+    [rowsPerPageOptions]="[10, 20, 30]"
+  ></p-paginator>
+</div>

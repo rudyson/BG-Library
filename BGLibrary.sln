@@ -3,29 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34009.444
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BG.NET.Library.API.Identity", "BG.NET.Library.API.Identity\BG.NET.Library.API.Identity.csproj", "{7782A2DD-7E2D-4B8A-9D2D-BDD3EA454B4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGNet.TestAssignment.Api", "BGNet.TestAssignment.Api\BGNet.TestAssignment.Api.csproj", "{5361CA92-67B3-4E48-AFAD-86DF4FF08445}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BG.NET.Library.API.Data", "BG.NET.Library.API.Data\BG.NET.Library.API.Data.csproj", "{5361CA92-67B3-4E48-AFAD-86DF4FF08445}"
-EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "BG.NET.Library.Client", "BG.NET.Library.Client\BG.NET.Library.Client.esproj", "{86943EA7-7740-4680-A2DF-A6B6A852FA40}"
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "BGNet.TestAssignment.Client", "BGNet.TestAssignment.Client\BGNet.TestAssignment.Client.esproj", "{86943EA7-7740-4680-A2DF-A6B6A852FA40}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{8F7B156E-AA72-4026-BE9C-0DA6346BA2B9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BG.NET.Library.Models", "BG.NET.Library.Models\BG.NET.Library.Models.csproj", "{5AB19292-B7A6-4C6D-9C0C-A6829610D917}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGNet.TestAssignment.Models", "BGNet.TestAssignment.Models\BGNet.TestAssignment.Models.csproj", "{5AB19292-B7A6-4C6D-9C0C-A6829610D917}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BG.NET.Library.DataAccess", "BG.NET.Library.DataAccessLayer\BG.NET.Library.DataAccess.csproj", "{8528EAAE-824F-43EC-9156-3F81A4B6C585}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGNet.TestAssignment.DataAccess", "BGNet.TestAssignment.DataAccessLayer\BGNet.TestAssignment.DataAccess.csproj", "{8528EAAE-824F-43EC-9156-3F81A4B6C585}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BG.NET.Library.BusinessLogic", "BG.NET.Library.BusinessLogicLayer\BG.NET.Library.BusinessLogic.csproj", "{4C4E6FBF-2FC2-4F7C-971E-A4F03C4AA598}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGNet.TestAssignment.BusinessLogic", "BGNet.TestAssignment.BusinessLogicLayer\BGNet.TestAssignment.BusinessLogic.csproj", "{4C4E6FBF-2FC2-4F7C-971E-A4F03C4AA598}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BG.NET.Library.DatabaseMigrator", "BG.NET.Library.DatabaseMigrator\BG.NET.Library.DatabaseMigrator.csproj", "{EB50BD7C-F80E-4C53-AD43-D975077C08BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGNet.TestAssignment.DatabaseMigrator", "BGNet.TestAssignment.DatabaseMigrator\BGNet.TestAssignment.DatabaseMigrator.csproj", "{EB50BD7C-F80E-4C53-AD43-D975077C08BC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{FC4522A2-0AC8-4B7C-A928-F9CC7112A09E}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{06C7B013-1226-49DA-B66E-8672FF3DDEC8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{5765F49E-8DD4-4832-BAA0-1595CABF94A2}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Layers", "Layers", "{EF1120B2-3134-4175-A569-DE2AD98F6C4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BGNet.TestAssignment.Common", "BGNet.TestAssignment.Common\BGNet.TestAssignment.Common.csproj", "{3A6B2506-4DD7-4A8D-9C04-7B1741A671B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +25,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7782A2DD-7E2D-4B8A-9D2D-BDD3EA454B4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7782A2DD-7E2D-4B8A-9D2D-BDD3EA454B4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7782A2DD-7E2D-4B8A-9D2D-BDD3EA454B4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7782A2DD-7E2D-4B8A-9D2D-BDD3EA454B4A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5361CA92-67B3-4E48-AFAD-86DF4FF08445}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5361CA92-67B3-4E48-AFAD-86DF4FF08445}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5361CA92-67B3-4E48-AFAD-86DF4FF08445}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -67,20 +55,15 @@ Global
 		{EB50BD7C-F80E-4C53-AD43-D975077C08BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB50BD7C-F80E-4C53-AD43-D975077C08BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB50BD7C-F80E-4C53-AD43-D975077C08BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A6B2506-4DD7-4A8D-9C04-7B1741A671B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A6B2506-4DD7-4A8D-9C04-7B1741A671B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A6B2506-4DD7-4A8D-9C04-7B1741A671B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A6B2506-4DD7-4A8D-9C04-7B1741A671B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{7782A2DD-7E2D-4B8A-9D2D-BDD3EA454B4A} = {5765F49E-8DD4-4832-BAA0-1595CABF94A2}
-		{5361CA92-67B3-4E48-AFAD-86DF4FF08445} = {5765F49E-8DD4-4832-BAA0-1595CABF94A2}
-		{86943EA7-7740-4680-A2DF-A6B6A852FA40} = {06C7B013-1226-49DA-B66E-8672FF3DDEC8}
-		{5AB19292-B7A6-4C6D-9C0C-A6829610D917} = {EF1120B2-3134-4175-A569-DE2AD98F6C4F}
-		{8528EAAE-824F-43EC-9156-3F81A4B6C585} = {EF1120B2-3134-4175-A569-DE2AD98F6C4F}
-		{4C4E6FBF-2FC2-4F7C-971E-A4F03C4AA598} = {EF1120B2-3134-4175-A569-DE2AD98F6C4F}
-		{EB50BD7C-F80E-4C53-AD43-D975077C08BC} = {EF1120B2-3134-4175-A569-DE2AD98F6C4F}
-		{5765F49E-8DD4-4832-BAA0-1595CABF94A2} = {FC4522A2-0AC8-4B7C-A928-F9CC7112A09E}
-		{EF1120B2-3134-4175-A569-DE2AD98F6C4F} = {FC4522A2-0AC8-4B7C-A928-F9CC7112A09E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B229C44-1123-4601-9D9E-EEC189B6F5EF}
