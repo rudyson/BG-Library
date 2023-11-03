@@ -24,7 +24,7 @@ const routes: Routes = [
   {path:'author/:id',component: AuthorPageComponent, title:'Author', canActivate: [JwtGuard]},
   {path:'login',component: LoginFormComponent, title:'Login'},
   {path:'register',component: RegistrationFormComponent, title:'Registration'},
-  {path:'me',component: UserinfoPageComponent, title:'me', canActivate: [JwtGuard]},
+  {path:'me',component: UserinfoPageComponent, title:'About me', canActivate: [JwtGuard]},
   { path: '**', component: NotfoundPageComponent, title:'404 Not found' }
 ];
 

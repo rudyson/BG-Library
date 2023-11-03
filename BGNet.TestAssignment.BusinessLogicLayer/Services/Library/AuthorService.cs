@@ -1,12 +1,12 @@
+using BGNet.TestAssignment.BusinessLogic.Interfaces.Library;
+using BGNet.TestAssignment.Common.WebApi.Models.Pagination;
 using BGNet.TestAssignment.DataAccess.Contexts;
 using BGNet.TestAssignment.DataAccess.Entities;
-using BGNet.TestAssignment.Common.WebApi.Models.Pagination;
+using BGNet.TestAssignment.Models.Dto.Library;
+using BGNet.TestAssignment.Models.Requests.Library;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using BGNet.TestAssignment.BusinessLogic.Interfaces.Library;
-using BGNet.TestAssignment.Models.Requests.Library;
-using BGNet.TestAssignment.Models.Dto.Library;
 
 namespace BGNet.TestAssignment.BusinessLogic.Services.Library;
 
@@ -41,7 +41,7 @@ public class AuthorService : IAuthorService
             Page = page,
             PageSize = size,
             TotalSize = total,
-            Pages = PaginationCalculationAssistant.TotalPages(total,size),
+            Pages = PaginationCalculationAssistant.TotalPages(total, size),
             NumberSkipped = numberSkipped,
             Entities = total > 0 ? entities.Adapt<List<AuthorFullInfoDto>>() : new List<AuthorFullInfoDto>()
         };
@@ -63,10 +63,12 @@ public class AuthorService : IAuthorService
     {
         var mappedAuthorToCreate = author.Adapt<Author>();
         var createdAuthor = await _context.Authors.AddAsync(mappedAuthorToCreate);
-        return
-            await _context.SaveChangesAsync() > 0
-                ? createdAuthor.Entity.Adapt<AuthorShortInfoDto>()
-                : null;
+        if (createdAuthor.State == EntityState.Added)
+        {
+            await _context.SaveChangesAsync();
+            return createdAuthor.Entity.Adapt<AuthorShortInfoDto>();
+        }
+        return null;
     }
 
     public async Task<AuthorShortInfoDto?> Update(int id, AuthorUpdateRequest author)
@@ -98,12 +100,14 @@ public class AuthorService : IAuthorService
         return null;
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<AuthorShortInfoDto?> Delete(int id)
     {
         var authorInstance = await _context.Authors.SingleOrDefaultAsync(a => a.Id == id);
-        if (authorInstance == null) return false;
+        if (authorInstance == null) return null;
         _context.Authors.Remove(authorInstance);
-        return await _context.SaveChangesAsync() > 0;
+        if (await _context.SaveChangesAsync() > 0)
+            return authorInstance.Adapt<AuthorShortInfoDto?>();
+        return null;
     }
 
     public async Task<AuthorFullInfoDto?> Books(int id)
@@ -118,7 +122,7 @@ public class AuthorService : IAuthorService
         var queryLower = query.ToLower();
         return _context.Authors
             .Where(a => a.Surname.ToLower().Contains(queryLower) || a.Name.ToLower().Contains(queryLower))
-            .Take(6)
+            .Take(5)
             .Adapt<IEnumerable<AuthorAutocompleteDto>?>();
     }
     public async Task<bool> Exists(int id) => await _context.Authors.SingleOrDefaultAsync(a => a.Id == id) != null;

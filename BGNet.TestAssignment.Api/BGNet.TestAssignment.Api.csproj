@@ -25,6 +25,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BGNet.TestAssignment.BusinessLogicLayer\BGNet.TestAssignment.BusinessLogic.csproj" />
+      <ProjectReference Include="..\BGNet.TestAssignment.Common\BGNet.TestAssignment.Common.csproj" />
       <ProjectReference Include="..\BGNet.TestAssignment.DataAccessLayer\BGNet.TestAssignment.DataAccess.csproj" />
       <ProjectReference Include="..\BGNet.TestAssignment.DatabaseMigrator\BGNet.TestAssignment.DatabaseMigrator.csproj" />
       <ProjectReference Include="..\BGNet.TestAssignment.Models\BGNet.TestAssignment.Models.csproj" />

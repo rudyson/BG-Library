@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {GenericPaginationModel} from "../../special/genericPagination.model";
-import {AuthorFullDto} from "../../special/entities";
+import { AuthorFullInfoDto } from 'src/app/special/models/author.models';
 import {ActivatedRoute, Router} from "@angular/router";
 import {PageEvent} from "@angular/material/paginator";
 import {AuthorsService} from "../../services/authors/authors.service";
@@ -11,7 +11,7 @@ import {AuthorsService} from "../../services/authors/authors.service";
   styleUrls: ['./author-list-v1.component.css']
 })
 export class AuthorListV1Component implements OnInit{
-  public authors?: GenericPaginationModel<AuthorFullDto>;
+  public authors?: GenericPaginationModel<AuthorFullInfoDto>;
   constructor(private authorsService: AuthorsService, private router: Router, private route: ActivatedRoute) {
 
   }
@@ -24,11 +24,9 @@ export class AuthorListV1Component implements OnInit{
       $event?.pageSize
     )
       .subscribe({
-        next: (authors) => {
-          this.authors = undefined;
-          this.authors = authors;
-          console.log(authors);
-          window.history.replaceState({},'',`/authors/${this.authors.page}`)
+        next: (response) => {
+          this.authors = response.data;
+          window.history.replaceState({},'',`/authors/${this.authors?.page}`)
         },
         error: (response) =>{
           console.log(response)

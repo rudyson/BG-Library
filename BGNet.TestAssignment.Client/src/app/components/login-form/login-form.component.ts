@@ -26,10 +26,17 @@ export class LoginFormComponent implements OnInit{
    this.authorizationService.loginRequest(credentials)
      .subscribe(
        {
-         next: (jwtToken) => {
-           localStorage.setItem("jwt", jwtToken.token);
-           location.reload();
-           this.invalidLogin = false;
+         next: (response) => {
+          if (response.hasData&&!response.hasErrors){
+            localStorage.setItem("jwt", response.data?.token ?? "");
+            location.reload();
+            this.invalidLogin = false;
+          }
+          else{
+            for (let index = 0; index < response.errors!.length; index++) {
+              console.error(response.errors![index]);
+            }
+          }
          },
          error: (response) =>{
            if (response.status == 422){
@@ -42,7 +49,6 @@ export class LoginFormComponent implements OnInit{
            this.invalidLogin = true;
          }
        });
-   console.log(this.invalidLogin)
  }
 
   ngOnInit(): void {

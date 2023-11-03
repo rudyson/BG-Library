@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Security.Claims;
 using BGNet.TestAssignment.BusinessLogic.Interfaces.Auth;
+using BGNet.TestAssignment.Common.WebApi.Models.Responses;
 using BGNet.TestAssignment.Models.Dto.Auth;
 using BGNet.TestAssignment.Models.Requests.Auth;
 using FluentValidation;
@@ -39,14 +41,12 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [Route("register")]
     [HttpPost]
-    public async Task<IActionResult> Register(RegisterRequest user)
+    public async Task<ResponseWrapper<UserInfoDto>> Register(RegisterRequest user)
     {
         var validationResult = await _validateRegistration.ValidateAsync(user);
-        if (!validationResult.IsValid) return UnprocessableEntity(validationResult.ToDictionary());
-        var createdUserId = await _service.Register(user);
-        return createdUserId == null
-            ? BadRequest("Unable to register user")
-            : Ok($"User registered, Id: {createdUserId}");
+        if (!validationResult.IsValid)
+            return ResponseWrapper<UserInfoDto>.Wrap(validation: validationResult.ToDictionary());
+        return ResponseWrapper<UserInfoDto>.Wrap(await _service.Register(user));
     }
 
     /// <summary>
@@ -62,14 +62,13 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [Route("login")]
     [HttpPost]
-    public async Task<IActionResult> Login(LoginRequest user)
+    public async Task<ResponseWrapper<TokenCreatedDto>> Login(LoginRequest user)
     {
         var validationResult = await _validateLogin.ValidateAsync(user);
-        if (!validationResult.IsValid) return UnprocessableEntity(validationResult.ToDictionary());
+        if (!validationResult.IsValid)
+            return ResponseWrapper<TokenCreatedDto>.Wrap(validation: validationResult.ToDictionary());
         var token = await _service.Login(user);
-        return token == null
-            ? NotFound("User is not exists or provided credentials wrong")
-            : Ok(token);
+        return ResponseWrapper<TokenCreatedDto>.Wrap(token);
     }
 
     /// <summary>
@@ -83,13 +82,14 @@ public class AuthController : ControllerBase
     [Authorize]
     [Route("info")]
     [HttpGet]
-    public async Task<IActionResult> Info()
+    public async Task<ResponseWrapper<UserInfoDto>> Info()
     {
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-        if (userIdClaim == null) return BadRequest("Wrong JWT token");
+        if (userIdClaim == null) return ResponseWrapper<UserInfoDto>.Wrap(ResponseCodes.WrongAuthorizationToken);
         var userInfo = await _service.Info(userIdClaim);
+
         return userInfo == null
-            ? NotFound("User not found")
-            : Ok(userInfo);
+            ? ResponseWrapper<UserInfoDto>.Wrap(ResponseCodes.NotFound)
+            : ResponseWrapper<UserInfoDto>.Wrap(userInfo);
     }
 }

@@ -1,4 +1,4 @@
-import { AuthorShortInfoDto } from "./models/author.models";
+import { AuthorShortInfoDto } from "./author.models";
 
 export interface BookFullInfoDto
 {

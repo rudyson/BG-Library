@@ -1,4 +1,4 @@
-import { BookShortInfoDto } from "../book.models";
+import { BookShortInfoDto } from "./book.models";
 
 export interface AuthorAutocompleteDto
 {

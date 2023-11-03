@@ -26,7 +26,36 @@
         <input matInput ngModel type="number" id="authorId" name="authorId" value="{{model?.authorId ?? 0}}" min="0" required>
       </mat-form-field>
     </p>
+    <p>
+      <!--
+      <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let option on filteredOptions" [value]="option.name">
+          {{option.name}}
+        </mat-option>
+      </mat-autocomplete>
+      -->
+    </p>
+    <div>
+      <!--<input #authorQuery type="text" (input)="loadAuthors(authorQuery.value)">-->
+      <!--
+        <p *ngFor="let author in authorQuery">
+        {{author.surname}} {{author.name}}
+      </p>
+      <mat-form-field class="example-full-width">
+        <mat-label>Author Id</mat-label>
+        <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+            {{option.name}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>-->
+    </div>
     <p *ngIf="!authorizationService.isLoggedIn()" color="red">You have to <a routerLink="/login">authorize</a> first</p>
-    <button type="submit" mat-flat-button color="accent" [disabled]="!authorizationService.isLoggedIn()">Send</button>
+    <p>
+      <button type="submit" mat-flat-button color="accent" [disabled]="!authorizationService.isLoggedIn()">Send</button>
+      <button type="button" mat-flat-button color="primary" routerLink="/books">Return to book list</button>
+    </p>
   </form>
 </div>

@@ -5,6 +5,7 @@ import {Observable} from "rxjs";
 import {JwtToken, JwtTokenDto, LoginDto, RegisterDto, UserInfoDto} from "../../special/models/authorization.models";
 import {Router} from "@angular/router";
 import {JwtHelperService} from "@auth0/angular-jwt";
+import { ResponseWrapper } from 'src/app/special/models/request.models';
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +15,21 @@ export class AuthorizationService {
 
   constructor(private router: Router,private http: HttpClient, private jwtHelperService:JwtHelperService) { }
   register(model: RegisterDto) : boolean {
-    this.http.post(this.authorizationApiUrl+'register',model)
+    this.registerRequest(model)
       .subscribe({
-        next: () => {
-          location.reload();
-          return true;
+        next: (response) => {
+          if (response.hasData&&!response.hasErrors){
+            location.reload();
+            return true;
+          }
+          else {
+            console.log("Error due registration:")
+            for (let index = 0; index < response.errors!.length; index++) {
+              console.error(response.errors![index])
+            }
+
+            return false;
+          }
         },
         error: (response) =>{
           if(response.name == 'NetworkError'){
@@ -30,16 +41,22 @@ export class AuthorizationService {
     return false;
   }
 
-  registerRequest(model: RegisterDto) : Observable<boolean> {
-    return this.http.post<boolean>(this.authorizationApiUrl+'register',model);
+  registerRequest(model: RegisterDto) : Observable<ResponseWrapper<UserInfoDto>> {
+    return this.http.post<ResponseWrapper<UserInfoDto>>(this.authorizationApiUrl+'register',model);
+  }
+  loginRequest(model: LoginDto) : Observable<ResponseWrapper<JwtTokenDto>> {
+    return this.http.post<ResponseWrapper<JwtTokenDto>>(this.authorizationApiUrl+'login',model);
+  }
+  aboutMe() : Observable<ResponseWrapper<UserInfoDto>>{
+    return this.http.get<ResponseWrapper<UserInfoDto>>(this.authorizationApiUrl+'info');
   }
 
   login(model: LoginDto) : boolean {
     this.loginRequest(model)
       .subscribe(
         {
-          next: (jwtToken) => {
-            localStorage.setItem("jwt", jwtToken.token);
+          next: (jwtTokenRequest) => {
+            localStorage.setItem("jwt", jwtTokenRequest.data?.token ?? "");
             location.reload();
             return true;
           },
@@ -52,11 +69,7 @@ export class AuthorizationService {
             return false;
           }
         });
-    return false;
-  }
-
-  loginRequest(model: LoginDto) : Observable<JwtTokenDto> {
-    return this.http.post<JwtTokenDto>(this.authorizationApiUrl+'login',model);
+        return false;
   }
 
   logout() : boolean{
@@ -64,9 +77,7 @@ export class AuthorizationService {
     location.reload();
     return true;
   }
-  aboutMe() : Observable<UserInfoDto>{
-    return this.http.get<UserInfoDto>(this.authorizationApiUrl+'info');
-  }
+  
   userName() : string | undefined{
     const token: string | null = localStorage.getItem("jwt");
     if (token===null) return undefined;

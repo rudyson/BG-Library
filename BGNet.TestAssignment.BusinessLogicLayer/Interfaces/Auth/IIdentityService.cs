@@ -11,7 +11,7 @@ public interface IIdentityService
     /// </summary>
     /// <param name="user">RegisterRequest contains user's credentials</param>
     /// <returns>User id if it registered successfully</returns>
-    public Task<int?> Register(RegisterRequest user);
+    public Task<UserInfoDto?> Register(RegisterRequest user);
     /// <summary>
     /// Provides user authorization
     /// </summary>

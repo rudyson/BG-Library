@@ -8,7 +8,7 @@ namespace BGNet.TestAssignment.DataAccess.Entities.Configurations
         public void Configure(EntityTypeBuilder<Book> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(p => p.Id).ValueGeneratedOnAdd();
+           // builder.Property(p => p.Id).ValueGeneratedOnAdd();
             builder.Property(x => x.Title).IsRequired();
             builder.Property(x => x.PublishYear).IsRequired();
         }

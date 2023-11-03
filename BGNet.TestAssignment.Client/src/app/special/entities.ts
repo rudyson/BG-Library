@@ -1,3 +1,4 @@
+/*
 export interface Book {
   id: number;
   title: string;
@@ -84,3 +85,4 @@ export interface BookDtoShort{
   genre: string;
   authorId: number | undefined;
 }
+*/

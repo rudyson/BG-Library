@@ -1,10 +1,11 @@
+using BGNet.TestAssignment.BusinessLogic.Interfaces.Library;
 using BGNet.TestAssignment.Common.WebApi.Models.Pagination;
+using BGNet.TestAssignment.Common.WebApi.Models.Responses;
+using BGNet.TestAssignment.Models.Dto.Library;
+using BGNet.TestAssignment.Models.Requests.Library;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using BGNet.TestAssignment.BusinessLogic.Interfaces.Library;
-using BGNet.TestAssignment.Models.Requests.Library;
-using BGNet.TestAssignment.Models.Dto.Library;
 
 namespace BGNet.TestAssignment.Api.Controllers.Library
 {
@@ -30,25 +31,26 @@ namespace BGNet.TestAssignment.Api.Controllers.Library
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenericPaginationModel<BookFullInfoDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet]
-        public async Task<IActionResult> GetAllBooks(
+        public async Task<ResponseWrapper<GenericPaginationModel<BookFullInfoDto>>> GetAllBooks(
             int page = 1,
             int size = 10
         )
         {
             var bookList = await _service.AllPaginatedFull(page, size);
-            if (bookList == null) return BadRequest("Pagination model broken");
-            return Ok(bookList);
+            return (bookList == null)
+                ? ResponseWrapper<GenericPaginationModel<BookFullInfoDto>>.Wrap(ResponseCodes.PaginationBroken)
+                : ResponseWrapper<GenericPaginationModel<BookFullInfoDto>>.Wrap(bookList);
         }
 
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookFullInfoDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetBook(int id)
+        public async Task<ResponseWrapper<BookFullInfoDto>> GetBook(int id)
         {
             var book = await _service.FindFull(id);
             return book != null
-                ? Ok(book)
-                : NotFound();
+                ? ResponseWrapper<BookFullInfoDto>.Wrap(book)
+                : ResponseWrapper<BookFullInfoDto>.Wrap(ResponseCodes.NotFound);
         }
 
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BookShortInfoDto))]
@@ -56,15 +58,15 @@ namespace BGNet.TestAssignment.Api.Controllers.Library
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [HttpPost]
-        public async Task<IActionResult> CreateBook(BookCreateRequest book)
+        public async Task<ResponseWrapper<BookShortInfoDto>> CreateBook(BookCreateRequest book)
         {
             var validationResult = await _validateNewBook.ValidateAsync(book);
-            if (!validationResult.IsValid) return UnprocessableEntity(validationResult.ToDictionary());
+            if (!validationResult.IsValid) return ResponseWrapper<BookShortInfoDto>.Wrap(validationResult.ToDictionary());
 
             var bookCreated = await _service.Create(book);
             return bookCreated != null
-                ? CreatedAtAction(nameof(CreateBook), bookCreated)
-                : BadRequest("Book is not created");
+                ? ResponseWrapper<BookShortInfoDto>.Wrap(bookCreated)
+                : ResponseWrapper<BookShortInfoDto>.Wrap(ResponseCodes.CreateRequestFailed);
         }
 
         [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(BookShortInfoDto))]
@@ -73,27 +75,30 @@ namespace BGNet.TestAssignment.Api.Controllers.Library
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateBook(int id, BookUpdateRequest book)
+        public async Task<ResponseWrapper<BookShortInfoDto>> UpdateBook(int id, BookUpdateRequest book)
         {
             var validationResult = await _validateUpdateBook.ValidateAsync(book);
-            if (!validationResult.IsValid) return UnprocessableEntity(validationResult.ToDictionary());
+            if (!validationResult.IsValid) return ResponseWrapper<BookShortInfoDto>.Wrap(validationResult.ToDictionary());
+            if (!await _service.Exists(id)) return ResponseWrapper<BookShortInfoDto>.Wrap(ResponseCodes.NotFound);
 
-            if (await _service.FindFull(id) == null) return NotFound();
             var bookUpdated = await _service.Update(id, book);
             return bookUpdated != null
-                ? AcceptedAtAction(nameof(UpdateBook), bookUpdated)
-                : BadRequest("No action needed");
+                ? ResponseWrapper<BookShortInfoDto>.Wrap(bookUpdated)
+                : ResponseWrapper<BookShortInfoDto>.Wrap(ResponseCodes.NothingToUpdate);
         }
 
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookFullInfoDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteBook(int id)
+        public async Task<ResponseWrapper<BookFullInfoDto>> DeleteBook(int id)
         {
-            if (await _service.FindFull(id) == null) return NotFound();
-            return await _service.Delete(id) ? Ok() : BadRequest();
+            if (await _service.Exists(id) == false) return ResponseWrapper<BookFullInfoDto>.Wrap(ResponseCodes.NotFound);
+            var deletedBook = await _service.Delete(id);
+            return deletedBook == null
+                ? ResponseWrapper<BookFullInfoDto>.Wrap(ResponseCodes.DeleteRequestFailed)
+                : ResponseWrapper<BookFullInfoDto>.Wrap(deletedBook);
         }
     }
 }

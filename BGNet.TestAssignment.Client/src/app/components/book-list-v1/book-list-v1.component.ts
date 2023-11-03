@@ -3,7 +3,7 @@ import {BooksService} from "../../services/books/books.service";
 import {GenericPaginationModel} from "../../special/genericPagination.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PageEvent} from "@angular/material/paginator";
-import { BookFullInfoDto } from 'src/app/special/book.models';
+import { BookFullInfoDto } from 'src/app/special/models/book.models';
 
 @Component({
   selector: 'app-book-list-v1',
@@ -43,11 +43,10 @@ export class BookListV1Component implements OnInit{
       $event?.pageSize
     )
       .subscribe({
-        next: (books) => {
+        next: (response) => {
           this.unableLoad = false;
-          this.books = books;
-          console.log(books)
-          window.history.replaceState({},'',`/books/${this.books.page}`)
+          this.books = response.data;
+          window.history.replaceState({},'',`/books/${this.books?.page}`)
         },
         error: (response) =>{
           if (response.status==404){

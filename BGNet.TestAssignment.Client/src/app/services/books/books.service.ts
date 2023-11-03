@@ -3,8 +3,9 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {Observable} from "rxjs";
 import {GenericPaginationModel} from "../../special/genericPagination.model";
-import { BookCreateRequest, BookFullInfoDto, BookUpdateRequest } from 'src/app/special/book.models';
+import { BookCreateRequest, BookFullInfoDto, BookShortInfoDto, BookUpdateRequest } from 'src/app/special/models/book.models';
 import { AuthorShortInfoDto } from 'src/app/special/models/author.models';
+import { ResponseWrapper } from 'src/app/special/models/request.models';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class BooksService {
   private baseRoute: string = 'book';
   constructor(private http: HttpClient) {}
 
-  getAllBooks(page?: number | null, size?: number | null) : Observable<GenericPaginationModel<BookFullInfoDto>>{
+  getAllBooks(page?: number | null, size?: number | null) : Observable<ResponseWrapper<GenericPaginationModel<BookFullInfoDto>>>{
     let httpParams: HttpParams = new HttpParams();
     if (page==null){
         httpParams.append("page", 1)
@@ -29,19 +30,18 @@ export class BooksService {
   else {
     httpParams.append("size", size)
   }
-    return this.http.get<GenericPaginationModel<BookFullInfoDto>>(this.contentApiUrl+this.baseRoute, {params: httpParams});
+    return this.http.get<ResponseWrapper<GenericPaginationModel<BookFullInfoDto>>>(this.contentApiUrl+this.baseRoute, {params: httpParams});
   }
-  getBook(id: number) : Observable<BookFullInfoDto>{
-    return this.http.get<BookFullInfoDto>(this.contentApiUrl+this.baseRoute+'/'+id.toString());
+  getBook(id: number) : Observable<ResponseWrapper<BookFullInfoDto>>{
+    return this.http.get<ResponseWrapper<BookFullInfoDto>>(this.contentApiUrl+this.baseRoute+'/'+id.toString());
   }
-  createBook(book: BookCreateRequest) : Observable<AuthorShortInfoDto>{
-    return this.http.post<AuthorShortInfoDto>(this.contentApiUrl+this.baseRoute,book);
+  createBook(book: BookCreateRequest) : Observable<ResponseWrapper<BookShortInfoDto>>{
+    return this.http.post<ResponseWrapper<BookShortInfoDto>>(this.contentApiUrl+this.baseRoute,book);
   }
-  updateBook(id: number, book: BookUpdateRequest) : Observable<AuthorShortInfoDto> {
-    return this.http.put<AuthorShortInfoDto>(this.contentApiUrl+this.baseRoute+'/'+id.toString(),book);
+  updateBook(id: number, book: BookUpdateRequest) : Observable<ResponseWrapper<BookShortInfoDto>> {
+    return this.http.put<ResponseWrapper<BookShortInfoDto>>(this.contentApiUrl+this.baseRoute+'/'+id.toString(),book);
   }
-
-  deleteBook(id: number): Observable<boolean>{
-    return this.http.delete<boolean>(this.contentApiUrl+this.baseRoute+'/'+id.toString());
+  deleteBook(id: number): Observable<ResponseWrapper<BookFullInfoDto>>{
+    return this.http.delete<ResponseWrapper<BookFullInfoDto>>(this.contentApiUrl+this.baseRoute+'/'+id.toString());
   }
 }

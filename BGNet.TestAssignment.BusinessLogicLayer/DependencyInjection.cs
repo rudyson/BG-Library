@@ -18,20 +18,20 @@ public static class DependencyInjection
     {
         // Validators
         services.AddValidatorsFromAssemblyContaining<AuthorService>();
-        
+
         // Services
         services.AddScoped<IAuthorService, AuthorService>();
         services.AddScoped<IBookService, BookService>();
         services.AddScoped<IIdentityService, IdentityService>();
-        
+
         // Mapping
         services.AddMapster();
         MapsterMapperRegistration.Init();
-        
+
         // Dependency Injection
         services.AddDataAccessLayer(configuration);
         services.ExecuteDatabaseMigrator(configuration);
-        
+
         return services;
     }
 }

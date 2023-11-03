@@ -1,10 +1,13 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {BookNewDto} from "../../special/entities";
 import {Router, ActivatedRoute} from "@angular/router";
 import {BooksService} from "../../services/books/books.service";
 import {NgForm} from "@angular/forms";
 import {AuthorizationService} from "../../services/authorization/authorization.service";
-import { BookCreateRequest } from 'src/app/special/book.models';
+import { BookCreateRequest, BookUpdateRequest } from 'src/app/special/models/book.models';
+import { AuthorAutocompleteDto } from 'src/app/special/models/author.models';
+import {Observable} from 'rxjs';
+import { AuthorsService } from 'src/app/services/authors/authors.service';
+import { MatAutocomplete } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-book-page',
@@ -12,25 +15,55 @@ import { BookCreateRequest } from 'src/app/special/book.models';
   styleUrls: ['./book-page.component.css']
 })
 export class BookPageComponent implements OnInit{
-  //@Input() model: BookNewDto | undefined = undefined;
-  //@Input() id: number | undefined = undefined;
   public id: number | undefined = undefined;
-  public model: BookNewDto | undefined = undefined;
+  public model: BookUpdateRequest | undefined = undefined;
 
-  constructor(private router: Router, private route: ActivatedRoute, private booksService: BooksService, public authorizationService: AuthorizationService) {
+  public authors: AuthorAutocompleteDto[] | undefined = [{id: 1, name: "Test", surname:"Author"}];
+  public filteredOptions: Observable<AuthorAutocompleteDto[]> | undefined;
+  myControl: any;
+  dashboardService: any;
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private booksService: BooksService,
+    private authorsService : AuthorsService,
+    public authorizationService: AuthorizationService) {
   }
+
+  displayAuthor(author: AuthorAutocompleteDto): string {
+    return author && author.name && author.surname ? `${author.surname} ${author.name}` : '';
+  }
+
+
+  loadAuthors(q: string) : boolean {
+    this.authorsService.searchAuthor(q).subscribe({
+      next: (response) =>{
+        console.log(response)
+        this.authors = response.data;
+        return true;
+      },
+      error: (err) =>{
+        console.log(err)
+        this.authors = undefined;
+        return false;
+      }
+    });
+    return false;
+  }
+
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.paramMap.get('id') ?? undefined);
     if (this.id===undefined){
       return;
     }
     this.booksService.getBook(this.id).subscribe({
-      next: (book) => {
-        let tempModel: BookNewDto = {
-          authorId: book.author?.id,
-          title: book.title,
-          genre: book.genre,
-          publishYear: book.publishYear
+      next: (response) => {
+        let tempModel: BookUpdateRequest = {
+          authorId: response.data?.author?.id,
+          title: response.data?.title,
+          genre: response.data?.genre,
+          publishYear: response.data?.publishYear
         }
         this.model = tempModel;
       },
@@ -40,7 +73,36 @@ export class BookPageComponent implements OnInit{
         this.router.navigate(["/book"]);
       }
     })
-  }
+    /*
+    this.authorsService.searchAuthor(q).subscribe({
+      next: (author) =>{
+  
+        console.log(author)
+        this.authors = author;
+        return true;
+      },
+      error: (err) =>{
+        console.log(err)
+        this.authors = undefined;
+        return false;
+      }
+    });*/
+    this.myControl.valueChanges
+      .subscribe((value: string) => {
+        if(value.length >= 1){
+          this.authorsService.searchAuthor(value).subscribe({
+            next: (response) =>{
+              this.authors = response.data;
+              return true;
+            },
+            error: (err) =>{
+              console.log(err)
+              this.authors = undefined;
+              return false;
+            }
+          })
+        }})
+      }
   /*
   pageHasNoModel(): boolean{
     return (this.model === undefined || this.id ===undefined);

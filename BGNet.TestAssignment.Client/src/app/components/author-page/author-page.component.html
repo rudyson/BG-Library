@@ -20,7 +20,10 @@
           <input matInput ngModel type="date" id="birthday" name="birthday" value="{{model?.birthday}}" required>
         </mat-form-field>
       <p *ngIf="!authorizationService.isLoggedIn()" color="red">You have to <a routerLink="/login">authorize</a> first</p>
-      <button type="submit" mat-flat-button color="accent" [disabled]="!authorizationService.isLoggedIn()">Send</button>
+      <p>
+        <button type="submit" mat-flat-button color="accent" [disabled]="!authorizationService.isLoggedIn()">Send</button>
+        <button type="button" mat-flat-button color="primary" routerLink="/authors">Return to authors list</button>
+      </p>
     </form>
   </div>
   

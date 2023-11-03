@@ -12,7 +12,7 @@ public interface IAuthorService
     public Task<AuthorFullInfoDto?> FindFull(int id);
     public Task<AuthorShortInfoDto?> Create(AuthorCreateRequest author);
     public Task<AuthorShortInfoDto?> Update(int id, AuthorUpdateRequest author);
-    public Task<bool> Delete(int id);
+    public Task<AuthorShortInfoDto?> Delete(int id);
     public Task<bool> Exists(int id);
     public Task<AuthorFullInfoDto?> Books(int id);
     public IEnumerable<AuthorAutocompleteDto>? Search(string query);

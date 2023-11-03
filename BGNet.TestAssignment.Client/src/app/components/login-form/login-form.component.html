@@ -2,15 +2,15 @@
   <form ngNativeValidate class="login-form" #loginForm="ngForm" (ngSubmit)="login(loginForm)">
     <p>
       <mat-form-field appearance="fill">
-        <mat-label>Username</mat-label>
-        <input matInput type="text" id="username" ngModel name="username" placeholder="username" required autofocus>
+        <mat-label>Enter your username</mat-label>
+        <input matInput type="text" id="username" ngModel name="username" placeholder="Username" required autofocus>
       </mat-form-field>
     </p>
     <p>
       <mat-form-field>
         <mat-label>Enter your password</mat-label>
         <input matInput [type]="isPasswordVisible?'text':'password'" id="password" ngModel name="password" placeholder="Password" required>
-        <button mat-icon-button matSuffix (click)="isPasswordVisible = !isPasswordVisible" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="isPasswordVisible">
+        <button type="button" mat-icon-button matSuffix (click)="isPasswordVisible = !isPasswordVisible" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="isPasswordVisible">
           <mat-icon>{{isPasswordVisible ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
       </mat-form-field>

@@ -3,45 +3,49 @@
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     <h2>Loading book list...</h2>
   </div>
-  <div *ngIf="books && books.totalSize == 0">
-    <h1>Book list is empty</h1>
-    <a routerLink="/book"> Add book</a>
   </div>
-  <div *ngIf="books && books.totalSize > 0">
-    <mat-list>
-      <mat-divider></mat-divider>
-      <div mat-subheader>
-        Books
-      </div>
-      <mat-list-item *ngFor="let book of books.entities">
-        <mat-icon matListItemIcon>book</mat-icon>
-        <h4 matListItemTitle><span *ngIf="book.author!=undefined">{{book.author.name}} {{book.author.surname}}— </span>{{ book.title }}</h4>
-        <p matListItemLine>{{ book.publishYear }} • {{ book.genre }} • Id: {{ book.id }}</p>
-        <p matListItemMeta>
-          <button mat-icon-button color="warn" aria-label="Delete" type="button" (click)="deleteBook(book.id)" matTooltip="Delete">
-            <mat-icon>delete</mat-icon>
-          </button>
-          <button mat-icon-button color="accent" aria-label="View information" routerLink="/book/{{book.id}}" matTooltip="View/Update">
-            <mat-icon>info</mat-icon>
-          </button>
-        </p>
-      </mat-list-item>
-      <mat-divider></mat-divider>
-    </mat-list>
-    <mat-paginator
-      (page)="handlePaginationEvent($event)"
-
-
-      [length]="books.totalSize"
-
-      [disabled]="false"
-      [showFirstLastButtons]="true"
-      [pageSizeOptions]="[5,10,20]"
-      [hidePageSize]="false"
-
-      aria-label="Select page">
-    </mat-paginator>
+  <div *ngIf="books">
+    <h1 *ngIf="books!.totalSize == 0">Book list is empty</h1>
+    <div *ngIf="books!.totalSize > 0">
+      <mat-list>
+        <mat-divider></mat-divider>
+        <div mat-subheader>
+          Books
+        </div>
+        <mat-list-item *ngFor="let book of books!.entities">
+          <mat-icon matListItemIcon>book</mat-icon>
+          <h4 matListItemTitle><span *ngIf="book.author!=undefined">{{book.author.name}} {{book.author.surname}}— </span>{{ book.title }}</h4>
+          <p matListItemLine>{{ book.publishYear }} • {{ book.genre }} • Id: {{ book.id }}</p>
+          <p matListItemMeta>
+            <button mat-icon-button color="warn" aria-label="Delete" type="button" (click)="deleteBook(book.id)" matTooltip="Delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-icon-button color="accent" aria-label="View information" routerLink="/book/{{book.id}}" matTooltip="View/Update">
+              <mat-icon>info</mat-icon>
+            </button>
+          </p>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+      </mat-list>
+      <button type="button"  mat-mini-fab color="warn" aria-label="Add book" routerLink="/book" matTooltip="Add book">
+        <mat-icon>add</mat-icon>
+      </button>
+      <mat-paginator
+        (page)="handlePaginationEvent($event)"
+  
+  
+        [length]="books!.totalSize"
+  
+        [disabled]="false"
+        [showFirstLastButtons]="true"
+        [pageSizeOptions]="[5,10,20]"
+        [hidePageSize]="false"
+  
+        aria-label="Select page">
+      </mat-paginator>
+    </div>
   </div>
+  
   <!--
     [pageIndex]="books.page - 1"
       [pageSize]="books.pageSize"
@@ -55,4 +59,3 @@
   <button mat-button mat-dialog-close cdkFocusInitial>Ok</button>
 </div>
   </div>-->
-</div>

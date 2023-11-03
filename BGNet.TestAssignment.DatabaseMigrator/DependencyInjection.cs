@@ -22,8 +22,8 @@ public static class DependencyInjection
             {
                 Environment.Exit(5432);
             }
-		}
-            
+        }
+
         return services;
     }
 }

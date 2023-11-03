@@ -1,8 +1,6 @@
-import { AuthorDtoUpdate } from 'src/app/special/entities';
 import {Component, Input, OnInit} from '@angular/core';
-import {BookNewDto} from "../../special/entities";
 import {Router, ActivatedRoute} from "@angular/router";
-import {BooksService} from "../../services/books/books.service";
+import { AuthorCreateRequest, AuthorUpdateRequest } from 'src/app/special/models/author.models';
 import {NgForm} from "@angular/forms";
 import {AuthorizationService} from "../../services/authorization/authorization.service";
 import { AuthorsService } from 'src/app/services/authors/authors.service';
@@ -14,7 +12,7 @@ import { AuthorsService } from 'src/app/services/authors/authors.service';
 })
 export class AuthorPageComponent implements OnInit{
   public id: number | undefined = undefined;
-  public model: AuthorDtoUpdate | undefined = undefined;
+  public model: AuthorUpdateRequest | undefined = undefined;
   public hasValidationError: boolean = false;
   //public validationErrors: Array<string> 
 
@@ -26,11 +24,11 @@ export class AuthorPageComponent implements OnInit{
       return;
     }
     this.authorsService.getAuthor(this.id).subscribe({
-      next: (author) => {
-        let tempModel: AuthorDtoUpdate = {
-          name: author.name,
-          surname: author.surname,
-          birthday: author.birthday
+      next: (response) => {
+        let tempModel: AuthorUpdateRequest = {
+          name: response.data?.name,
+          surname: response.data?.surname,
+          birthday: response.data?.birthday
         }
         this.model = tempModel;
       },
@@ -47,13 +45,12 @@ export class AuthorPageComponent implements OnInit{
   }
 
   submit(form: NgForm) {
-    const authorModel : AuthorDtoUpdate = {
-      name: form.value.name == "" ? undefined: form.value.name,
-      surname: form.value.surname == "" ? undefined: form.value.surname,
-      birthday: form.value.birthday == undefined ? undefined: form.value.birthday,
-    }
     if (this.pageHasNoModel()){
-      console.log("Create condition");
+      const authorModel : AuthorCreateRequest = {
+        name: form.value.name == "" ? undefined: form.value.name,
+        surname: form.value.surname == "" ? undefined: form.value.surname,
+        birthday: form.value.birthday == undefined ? undefined: form.value.birthday,
+      }
       this.authorsService.createAuthor(authorModel).subscribe(
         {
           next: (author) => {
@@ -69,7 +66,11 @@ export class AuthorPageComponent implements OnInit{
     }
     else {
       if (this.id != undefined) {
-        console.log("Update condition");
+        const authorModel : AuthorUpdateRequest = {
+          name: form.value.name == "" ? undefined: form.value.name,
+          surname: form.value.surname == "" ? undefined: form.value.surname,
+          birthday: form.value.birthday == undefined ? undefined: form.value.birthday,
+        }
         this.authorsService.updateAuthor(this.id, authorModel).subscribe({
           next: (author) => {
             alert("Author updated")

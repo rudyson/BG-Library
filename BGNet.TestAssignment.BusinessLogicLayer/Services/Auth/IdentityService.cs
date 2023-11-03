@@ -27,7 +27,7 @@ public class IdentityService : IIdentityService
         _logger = logger;
         _jwtOptions = jwtOptions;
     }
-    public async Task<int?> Register(RegisterRequest user)
+    public async Task<UserInfoDto?> Register(RegisterRequest user)
     {
         if (await _context.Users!.AnyAsync(u => u.Username == user.Username!))
             return null;
@@ -39,7 +39,7 @@ public class IdentityService : IIdentityService
         _logger.LogInformation("User @{EntityUsername} registered (UserId: {EntityId})",
             userEntityEntry.Entity.Username, userEntityEntry.Entity.Id);
 
-        return userEntityEntry.Entity.Id;
+        return userEntityEntry.Entity.Adapt<UserInfoDto>();
     }
 
     public async Task<TokenCreatedDto?> Login(LoginRequest user)

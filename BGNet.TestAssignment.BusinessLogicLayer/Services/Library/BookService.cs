@@ -1,11 +1,11 @@
+using BGNet.TestAssignment.BusinessLogic.Interfaces.Library;
+using BGNet.TestAssignment.Common.WebApi.Models.Pagination;
 using BGNet.TestAssignment.DataAccess.Contexts;
 using BGNet.TestAssignment.DataAccess.Entities;
-using BGNet.TestAssignment.Common.WebApi.Models.Pagination;
+using BGNet.TestAssignment.Models.Dto.Library;
+using BGNet.TestAssignment.Models.Requests.Library;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using BGNet.TestAssignment.BusinessLogic.Interfaces.Library;
-using BGNet.TestAssignment.Models.Requests.Library;
-using BGNet.TestAssignment.Models.Dto.Library;
 
 namespace BGNet.TestAssignment.BusinessLogic.Services.Library;
 
@@ -22,15 +22,17 @@ public class BookService : IBookService
         var mappedBookToCreate = book.Adapt<Book>();
         if (book.AuthorId != null)
         {
-            var author = await _context.Authors!.FindAsync(book.AuthorId);
+            var author = await _context.Authors!.SingleOrDefaultAsync(x => x.Id == book.AuthorId);
             if (author != null)
                 mappedBookToCreate.Author = author;
         }
         var createdBook = await _context.Books!.AddAsync(mappedBookToCreate);
-        return
-            await _context.SaveChangesAsync() > 0
-                ? createdBook.Entity.Adapt<BookShortInfoDto>()
-                : null;
+        if (createdBook.State == EntityState.Added)
+        {
+            await _context.SaveChangesAsync();
+            return createdBook.Entity.Adapt<BookShortInfoDto>();
+        }
+        return null;
     }
 
     public async Task<BookFullInfoDto?> FindFull(int id)
@@ -54,7 +56,7 @@ public class BookService : IBookService
             .Include(b => b.Author)
             .OrderBy(x => x.Title);
         var total = await books.CountAsync();
-        var numberSkipped = PaginationCalculationAssistant.Skipped(page,size);
+        var numberSkipped = PaginationCalculationAssistant.Skipped(page, size);
         var entities = await books
                     .Skip(numberSkipped)
                     .Take(size)
@@ -64,7 +66,7 @@ public class BookService : IBookService
             Page = page,
             PageSize = size,
             TotalSize = total,
-            Pages = PaginationCalculationAssistant.TotalPages(total,size),
+            Pages = PaginationCalculationAssistant.TotalPages(total, size),
             NumberSkipped = numberSkipped,
             Entities = total > 0 ? entities.Adapt<List<BookFullInfoDto>>() : new List<BookFullInfoDto>()
         };
@@ -119,12 +121,14 @@ public class BookService : IBookService
         return null;
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<BookFullInfoDto?> Delete(int id)
     {
         var bookInstance = await _context.Books!.SingleOrDefaultAsync(b => b.Id == id);
-        if (bookInstance == null) return false;
+        if (bookInstance == null) return null;
         _context.Books!.Remove(bookInstance);
-        return await _context.SaveChangesAsync() > 0;
+        if (await _context.SaveChangesAsync() > 0)
+            return bookInstance.Adapt<BookFullInfoDto?>();
+        return null;
     }
     public async Task<bool> Exists(int id) => await _context.Books!.SingleOrDefaultAsync(a => a.Id == id) != null;
 }

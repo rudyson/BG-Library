@@ -1,10 +1,11 @@
+using BGNet.TestAssignment.BusinessLogic.Interfaces.Library;
 using BGNet.TestAssignment.Common.WebApi.Models.Pagination;
+using BGNet.TestAssignment.Common.WebApi.Models.Responses;
+using BGNet.TestAssignment.Models.Dto.Library;
+using BGNet.TestAssignment.Models.Requests.Library;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using BGNet.TestAssignment.BusinessLogic.Interfaces.Library;
-using BGNet.TestAssignment.Models.Requests.Library;
-using BGNet.TestAssignment.Models.Dto.Library;
 
 namespace BGNet.TestAssignment.Api.Controllers.Library;
 
@@ -31,25 +32,26 @@ public class AuthorController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenericPaginationModel<AuthorFullInfoDto>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpGet]
-    public async Task<IActionResult> GetAllAuthors(
+    public async Task<ResponseWrapper<GenericPaginationModel<AuthorFullInfoDto>>> GetAllAuthors(
         int page = 1,
         int size = 10
         )
     {
         var authors = await _service.AllPaginatedFull(page, size);
-        if (authors == null) return BadRequest("Pagination model broken");
-        return Ok(authors);
+        return (authors == null)
+            ? ResponseWrapper<GenericPaginationModel<AuthorFullInfoDto>>.Wrap(ResponseCodes.NotFound)
+            : ResponseWrapper<GenericPaginationModel<AuthorFullInfoDto>>.Wrap(authors);
     }
 
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorFullInfoDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetAuthor(int id)
+    public async Task<ResponseWrapper<AuthorFullInfoDto>> GetAuthor(int id)
     {
         var author = await _service.FindFull(id);
         return author != null
-            ? Ok(author)
-            : NotFound();
+            ? ResponseWrapper<AuthorFullInfoDto>.Wrap(author)
+            : ResponseWrapper<AuthorFullInfoDto>.Wrap(ResponseCodes.NotFound);
     }
 
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AuthorShortInfoDto))]
@@ -57,15 +59,15 @@ public class AuthorController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [HttpPost]
-    public async Task<IActionResult> CreateAuthor(AuthorCreateRequest author)
+    public async Task<ResponseWrapper<AuthorShortInfoDto>> CreateAuthor(AuthorCreateRequest author)
     {
         var validationResult = await _validateNewAuthor.ValidateAsync(author);
-        if (!validationResult.IsValid) return UnprocessableEntity(validationResult.ToDictionary());
+        if (!validationResult.IsValid) return ResponseWrapper<AuthorShortInfoDto>.Wrap(validationResult.ToDictionary());
 
         var authorCreated = await _service.Create(author);
         return authorCreated != null
-            ? CreatedAtAction(nameof(CreateAuthor), authorCreated)
-            : BadRequest("Author is not created");
+            ? ResponseWrapper<AuthorShortInfoDto>.Wrap(authorCreated)
+            : ResponseWrapper<AuthorShortInfoDto>.Wrap(ResponseCodes.CreateRequestFailed);
     }
 
     [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(AuthorShortInfoDto))]
@@ -74,36 +76,40 @@ public class AuthorController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateAuthor(int id, AuthorUpdateRequest author)
+    public async Task<ResponseWrapper<AuthorShortInfoDto>> UpdateAuthor(int id, AuthorUpdateRequest author)
     {
         var validationResult = await _validateUpdateAuthor.ValidateAsync(author);
-        if (!validationResult.IsValid) return UnprocessableEntity(validationResult.ToDictionary());
+        if (!validationResult.IsValid) return ResponseWrapper<AuthorShortInfoDto>.Wrap(validationResult.ToDictionary());
 
-        if (await _service.FindShort(id) == null) return NotFound();
+        if (await _service.FindShort(id) == null) return ResponseWrapper<AuthorShortInfoDto>.Wrap(ResponseCodes.NotFound);
         var authorUpdated = await _service.Update(id, author);
         return authorUpdated != null
-            ? AcceptedAtAction(nameof(UpdateAuthor), authorUpdated)
-            : BadRequest("No action needed");
+            ? ResponseWrapper<AuthorShortInfoDto>.Wrap(authorUpdated)
+            : ResponseWrapper<AuthorShortInfoDto>.Wrap(ResponseCodes.NothingToUpdate);
     }
 
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorShortInfoDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteAuthor(int id)
+    public async Task<ResponseWrapper<AuthorShortInfoDto>> DeleteAuthor(int id)
     {
-        if (await _service.FindFull(id) == null) return NotFound();
-        return await _service.Delete(id) ? Ok() : BadRequest();
+        if (await _service.FindFull(id) == null) return ResponseWrapper<AuthorShortInfoDto>.Wrap(ResponseCodes.NotFound);
+        var deletedAuthor = await _service.Delete(id);
+        return deletedAuthor==null
+            ? ResponseWrapper<AuthorShortInfoDto>.Wrap(ResponseCodes.DeleteRequestFailed)
+            : ResponseWrapper<AuthorShortInfoDto>.Wrap(deletedAuthor);
     }
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AuthorAutocompleteDto>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet("search")]
-    public IActionResult SearchAuthors(string query)
+    public ResponseWrapper<List<AuthorAutocompleteDto>> SearchAuthors(string query)
     {
         var authors = _service.Search(query);
-        if (authors == null) return BadRequest("Empty query string");
-        return Ok(authors.ToList());
+        return (authors == null)
+            ? ResponseWrapper<List<AuthorAutocompleteDto>>.Wrap(ResponseCodes.EmptyQuery)
+            : ResponseWrapper<List<AuthorAutocompleteDto>>.Wrap(authors.ToList());
     }
 }

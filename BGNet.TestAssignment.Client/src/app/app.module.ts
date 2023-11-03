@@ -1,5 +1,5 @@
 import {HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
@@ -35,6 +35,10 @@ import { AuthorListV1Component } from './components/author-list-v1/author-list-v
 import { BookPageComponent } from './components/book-page/book-page.component';
 import {MatTooltipModule } from '@angular/material/tooltip';
 import { AuthorPageComponent } from './components/author-page/author-page.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
+import {MatSnackBar, MatSnackBarConfig, MatSnackBarModule} from '@angular/material/snack-bar';
+import { ErrorHandlerService } from './services/error-handler/error-handler.service';
 
 @NgModule({
     declarations: [
@@ -52,7 +56,26 @@ import { AuthorPageComponent } from './components/author-page/author-page.compon
         AuthorPageComponent
     ],
   imports: [
-    BrowserModule, AppRoutingModule, HttpClientModule, NgbModule, BrowserAnimationsModule, MatTableModule, MatPaginatorModule, MatSortModule, MatProgressSpinnerModule, MatListModule, MatIconModule, MatButtonModule, MatToolbarModule, MatTabsModule, MatProgressBarModule, MatInputModule, MatCardModule, ReactiveFormsModule,MatTooltipModule,
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    NgbModule,
+    BrowserAnimationsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatProgressSpinnerModule,
+    MatListModule,
+    MatIconModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatTabsModule,
+    MatProgressBarModule,
+    MatInputModule,
+    MatCardModule,
+    ReactiveFormsModule,
+    MatTooltipModule,
+    MatAutocompleteModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () =>{
@@ -64,8 +87,23 @@ import { AuthorPageComponent } from './components/author-page/author-page.compon
     }), FormsModule,
   ],
   providers: [
-    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}},
-    {provide: HTTP_INTERCEPTORS, useClass: JwtTokenInterceptorInterceptor, multi: true},
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {appearance: 'outline'}
+    },
+    {
+      provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+      useValue: {duration: 2500}
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtTokenInterceptorInterceptor,
+      multi: true
+    },
+    {
+      provide: ErrorHandler,
+      useClass: ErrorHandlerService
+    },
     provideHttpClient(withInterceptorsFromDi())
   ],
   bootstrap: [AppComponent]

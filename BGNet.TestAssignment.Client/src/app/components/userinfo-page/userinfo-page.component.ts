@@ -22,8 +22,8 @@ export class UserinfoPageComponent implements OnInit{
 
       this.authorizationService.aboutMe()
         .subscribe({
-          next: (info) => {
-            this.userInfo = info;
+          next: (response) => {
+            this.userInfo = response.data;
           },
           error: (response) =>
             console.log(response)
