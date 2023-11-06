@@ -10,6 +10,12 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\angularapp</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="src\app\components\" />
+    <Folder Include="src\app\modules\library\components\authors\" />
+    <Folder Include="src\app\modules\library\components\books\" />
+    <Folder Include="src\app\modules\library\pages\authors\" />
+    <Folder Include="src\app\modules\library\pages\books\" />
+    <Folder Include="src\app\modules\unauthorized\components\" />
+    <Folder Include="src\app\modules\unauthorized\pages\" />
+    <Folder Include="src\app\shared\pages\" />
   </ItemGroup>
 </Project>

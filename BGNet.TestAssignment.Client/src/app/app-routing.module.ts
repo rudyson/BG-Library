@@ -1,15 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {BookListV1Component} from "./components/book-list-v1/book-list-v1.component";
-import {JwtGuard} from "./guards/jwt.guard";
-import {LoginFormComponent} from "./components/login-form/login-form.component";
-import {UserinfoPageComponent} from "./components/userinfo-page/userinfo-page.component";
-import {NotfoundPageComponent} from "./components/notfound-page/notfound-page.component";
-import {RegistrationFormComponent} from "./components/registration-form/registration-form.component";
-import {AuthorsService} from "./services/authors/authors.service";
-import {AuthorListV1Component} from "./components/author-list-v1/author-list-v1.component";
-import {BookPageComponent} from "./components/book-page/book-page.component";
-import { AuthorPageComponent } from './components/author-page/author-page.component';
+import {BookListV1Component} from "./modules/library/components/books/book-list-v1/book-list-v1.component";
+import {JwtGuard} from "./core/guards/jwt/jwt.guard";
+import {BookPageComponent} from "./modules/library/components/books/book-page/book-page.component";
+import {AuthorListV1Component} from "./modules/library/components/authors/author-list-v1/author-list-v1.component";
+import {AuthorPageComponent} from "./modules/library/components/authors/author-page/author-page.component";
+import {LoginFormComponent} from "./modules/unauthorized/components/login-form/login-form.component";
+import { RegistrationFormComponent } from "./modules/unauthorized/components/registration-form/registration-form.component";
+import {UserinfoPageComponent} from "./modules/unauthorized/pages/userinfo-page/userinfo-page.component";
+import {NotfoundPageComponent} from "./shared/pages/notfound-page/notfound-page.component";
 
 const routes: Routes = [
   {path:'',redirectTo: '/books', pathMatch: "full"},

@@ -4,9 +4,8 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { BookListV1Component } from './components/book-list-v1/book-list-v1.component';
+
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import {NavbarTopComponent} from "./components/navbar-top/navbar-top.component";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatTableModule} from "@angular/material/table";
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -17,28 +16,34 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
-import { RegistrationFormComponent } from './components/registration-form/registration-form.component';
-import { LoginFormComponent } from './components/login-form/login-form.component';
-import { UserinfoPageComponent } from './components/userinfo-page/userinfo-page.component';
+
+import { RegistrationFormComponent } from './modules/unauthorized/components/registration-form/registration-form.component'
+import { LoginFormComponent } from './modules/unauthorized/components/login-form/login-form.component';
+import { UserinfoPageComponent } from './modules/unauthorized/pages/userinfo-page/userinfo-page.component';
+import { BookListV1Component } from './modules/library/components/books/book-list-v1/book-list-v1.component';
+import {NavbarTopComponent} from "./core/nav/header/navbar-top.component";
+import { JwtInterceptor } from "./core/interceptors/jwt/jwt.interceptor";
+import { NotfoundPageComponent } from './shared/pages/notfound-page/notfound-page.component';
+import { FooterComponent } from "./core/nav/footer/footer.component";
+import { AuthorListV1Component } from './modules/library/components/authors/author-list-v1/author-list-v1.component';
+import { BookPageComponent } from './modules/library/components/books/book-page/book-page.component';
+import { AuthorPageComponent } from './modules/library/components/authors/author-page/author-page.component';
+import { ErrorHandlerService } from './core/services/error-handler/error-handler.service';
+
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatInputModule} from "@angular/material/input";
-import { BookNewFormComponent } from './components/book-new-form/book-new-form.component';
+
 import {MatCardModule} from "@angular/material/card";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {JwtModule} from "@auth0/angular-jwt";
 import {config} from "rxjs";
-import {JwtTokenInterceptorInterceptor} from "./interceptors/jwt/jwt-token.interceptor.interceptor";
-import { NotfoundPageComponent } from './components/notfound-page/notfound-page.component';
-import { FooterComponent } from './components/footer/footer.component';
-import { AuthorListV1Component } from './components/author-list-v1/author-list-v1.component';
-import { BookPageComponent } from './components/book-page/book-page.component';
+
 import {MatTooltipModule } from '@angular/material/tooltip';
-import { AuthorPageComponent } from './components/author-page/author-page.component';
+
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import {MatSnackBar, MatSnackBarConfig, MatSnackBarModule} from '@angular/material/snack-bar';
-import { ErrorHandlerService } from './services/error-handler/error-handler.service';
 
 @NgModule({
     declarations: [
@@ -48,7 +53,6 @@ import { ErrorHandlerService } from './services/error-handler/error-handler.serv
         RegistrationFormComponent,
         LoginFormComponent,
         UserinfoPageComponent,
-        BookNewFormComponent,
         NotfoundPageComponent,
         FooterComponent,
         AuthorListV1Component,
@@ -97,7 +101,7 @@ import { ErrorHandlerService } from './services/error-handler/error-handler.serv
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: JwtTokenInterceptorInterceptor,
+      useClass: JwtInterceptor,
       multi: true
     },
     {
