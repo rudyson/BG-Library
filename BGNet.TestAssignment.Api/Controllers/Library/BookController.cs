@@ -32,11 +32,12 @@ namespace BGNet.TestAssignment.Api.Controllers.Library
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet]
         public async Task<ResponseWrapper<GenericPaginationModel<BookFullInfoDto>>> GetAllBooks(
-            int page = 1,
-            int size = 10
+            int skip = 0,
+            int take = 10,
+            CancellationToken cancellationToken = default
         )
         {
-            var bookList = await _service.AllPaginatedFull(page, size);
+            var bookList = await _service.AllPaginatedSkipTakeFullAsync(skip, take, cancellationToken: cancellationToken);
             return (bookList == null)
                 ? ResponseWrapper<GenericPaginationModel<BookFullInfoDto>>.Wrap(ResponseCodes.PaginationBroken)
                 : ResponseWrapper<GenericPaginationModel<BookFullInfoDto>>.Wrap(bookList);
@@ -45,9 +46,9 @@ namespace BGNet.TestAssignment.Api.Controllers.Library
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookFullInfoDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id:int}")]
-        public async Task<ResponseWrapper<BookFullInfoDto>> GetBook(int id)
+        public async Task<ResponseWrapper<BookFullInfoDto>> GetBook(int id, CancellationToken cancellationToken = default)
         {
-            var book = await _service.FindFull(id);
+            var book = await _service.FindFullAsync(id, cancellationToken: cancellationToken);
             return book != null
                 ? ResponseWrapper<BookFullInfoDto>.Wrap(book)
                 : ResponseWrapper<BookFullInfoDto>.Wrap(ResponseCodes.NotFound);
@@ -58,12 +59,12 @@ namespace BGNet.TestAssignment.Api.Controllers.Library
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [HttpPost]
-        public async Task<ResponseWrapper<BookShortInfoDto>> CreateBook(BookCreateRequest book)
+        public async Task<ResponseWrapper<BookShortInfoDto>> CreateBook(BookCreateRequest book, CancellationToken cancellationToken = default)
         {
-            var validationResult = await _validateNewBook.ValidateAsync(book);
+            var validationResult = await _validateNewBook.ValidateAsync(book, cancellation: cancellationToken);
             if (!validationResult.IsValid) return ResponseWrapper<BookShortInfoDto>.Wrap(validationResult.ToDictionary());
 
-            var bookCreated = await _service.Create(book);
+            var bookCreated = await _service.CreateAsync(book, cancellationToken: cancellationToken);
             return bookCreated != null
                 ? ResponseWrapper<BookShortInfoDto>.Wrap(bookCreated)
                 : ResponseWrapper<BookShortInfoDto>.Wrap(ResponseCodes.CreateRequestFailed);
@@ -75,13 +76,13 @@ namespace BGNet.TestAssignment.Api.Controllers.Library
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [HttpPut("{id:int}")]
-        public async Task<ResponseWrapper<BookShortInfoDto>> UpdateBook(int id, BookUpdateRequest book)
+        public async Task<ResponseWrapper<BookShortInfoDto>> UpdateBook(int id, BookUpdateRequest book, CancellationToken cancellationToken = default)
         {
-            var validationResult = await _validateUpdateBook.ValidateAsync(book);
+            var validationResult = await _validateUpdateBook.ValidateAsync(book, cancellation: cancellationToken);
             if (!validationResult.IsValid) return ResponseWrapper<BookShortInfoDto>.Wrap(validationResult.ToDictionary());
-            if (!await _service.Exists(id)) return ResponseWrapper<BookShortInfoDto>.Wrap(ResponseCodes.NotFound);
+            if (!await _service.ExistsAsync(id, cancellationToken: cancellationToken)) return ResponseWrapper<BookShortInfoDto>.Wrap(ResponseCodes.NotFound);
 
-            var bookUpdated = await _service.Update(id, book);
+            var bookUpdated = await _service.UpdateAsync(id, book, cancellationToken: cancellationToken);
             return bookUpdated != null
                 ? ResponseWrapper<BookShortInfoDto>.Wrap(bookUpdated)
                 : ResponseWrapper<BookShortInfoDto>.Wrap(ResponseCodes.NothingToUpdate);
@@ -92,10 +93,10 @@ namespace BGNet.TestAssignment.Api.Controllers.Library
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id:int}")]
-        public async Task<ResponseWrapper<BookFullInfoDto>> DeleteBook(int id)
+        public async Task<ResponseWrapper<BookFullInfoDto>> DeleteBook(int id, CancellationToken cancellationToken = default)
         {
-            if (await _service.Exists(id) == false) return ResponseWrapper<BookFullInfoDto>.Wrap(ResponseCodes.NotFound);
-            var deletedBook = await _service.Delete(id);
+            if (await _service.ExistsAsync(id, cancellationToken: cancellationToken) == false) return ResponseWrapper<BookFullInfoDto>.Wrap(ResponseCodes.NotFound);
+            var deletedBook = await _service.DeleteAsync(id, cancellationToken: cancellationToken);
             return deletedBook == null
                 ? ResponseWrapper<BookFullInfoDto>.Wrap(ResponseCodes.DeleteRequestFailed)
                 : ResponseWrapper<BookFullInfoDto>.Wrap(deletedBook);

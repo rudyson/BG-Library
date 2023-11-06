@@ -33,11 +33,11 @@ public class AuthorController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpGet]
     public async Task<ResponseWrapper<GenericPaginationModel<AuthorFullInfoDto>>> GetAllAuthors(
-        int page = 1,
-        int size = 10
+        int skip = 0, int take = 10,
+        CancellationToken cancellationToken = default
         )
     {
-        var authors = await _service.AllPaginatedFull(page, size);
+        var authors = await _service.AllPaginatedSkipTakeFullAsync(skip, take, cancellationToken: cancellationToken);
         return (authors == null)
             ? ResponseWrapper<GenericPaginationModel<AuthorFullInfoDto>>.Wrap(ResponseCodes.NotFound)
             : ResponseWrapper<GenericPaginationModel<AuthorFullInfoDto>>.Wrap(authors);
@@ -46,9 +46,9 @@ public class AuthorController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorFullInfoDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet("{id:int}")]
-    public async Task<ResponseWrapper<AuthorFullInfoDto>> GetAuthor(int id)
+    public async Task<ResponseWrapper<AuthorFullInfoDto>> GetAuthor(int id, CancellationToken cancellationToken = default)
     {
-        var author = await _service.FindFull(id);
+        var author = await _service.FindFullAsync(id, cancellationToken: cancellationToken);
         return author != null
             ? ResponseWrapper<AuthorFullInfoDto>.Wrap(author)
             : ResponseWrapper<AuthorFullInfoDto>.Wrap(ResponseCodes.NotFound);
@@ -59,12 +59,12 @@ public class AuthorController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [HttpPost]
-    public async Task<ResponseWrapper<AuthorShortInfoDto>> CreateAuthor(AuthorCreateRequest author)
+    public async Task<ResponseWrapper<AuthorShortInfoDto>> CreateAuthor(AuthorCreateRequest author, CancellationToken cancellationToken = default)
     {
-        var validationResult = await _validateNewAuthor.ValidateAsync(author);
+        var validationResult = await _validateNewAuthor.ValidateAsync(author, cancellation: cancellationToken);
         if (!validationResult.IsValid) return ResponseWrapper<AuthorShortInfoDto>.Wrap(validationResult.ToDictionary());
 
-        var authorCreated = await _service.Create(author);
+        var authorCreated = await _service.CreateAsync(author, cancellationToken: cancellationToken);
         return authorCreated != null
             ? ResponseWrapper<AuthorShortInfoDto>.Wrap(authorCreated)
             : ResponseWrapper<AuthorShortInfoDto>.Wrap(ResponseCodes.CreateRequestFailed);
@@ -76,13 +76,13 @@ public class AuthorController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [HttpPut("{id:int}")]
-    public async Task<ResponseWrapper<AuthorShortInfoDto>> UpdateAuthor(int id, AuthorUpdateRequest author)
+    public async Task<ResponseWrapper<AuthorShortInfoDto>> UpdateAuthor(int id, AuthorUpdateRequest author, CancellationToken cancellationToken = default)
     {
-        var validationResult = await _validateUpdateAuthor.ValidateAsync(author);
+        var validationResult = await _validateUpdateAuthor.ValidateAsync(author, cancellation: cancellationToken);
         if (!validationResult.IsValid) return ResponseWrapper<AuthorShortInfoDto>.Wrap(validationResult.ToDictionary());
 
-        if (await _service.FindShort(id) == null) return ResponseWrapper<AuthorShortInfoDto>.Wrap(ResponseCodes.NotFound);
-        var authorUpdated = await _service.Update(id, author);
+        if (await _service.FindShortAsync(id, cancellationToken: cancellationToken) == null) return ResponseWrapper<AuthorShortInfoDto>.Wrap(ResponseCodes.NotFound);
+        var authorUpdated = await _service.UpdateAsync(id, author, cancellationToken: cancellationToken);
         return authorUpdated != null
             ? ResponseWrapper<AuthorShortInfoDto>.Wrap(authorUpdated)
             : ResponseWrapper<AuthorShortInfoDto>.Wrap(ResponseCodes.NothingToUpdate);
@@ -93,11 +93,11 @@ public class AuthorController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpDelete("{id:int}")]
-    public async Task<ResponseWrapper<AuthorShortInfoDto>> DeleteAuthor(int id)
+    public async Task<ResponseWrapper<AuthorShortInfoDto>> DeleteAuthor(int id, CancellationToken cancellationToken = default)
     {
-        if (await _service.FindFull(id) == null) return ResponseWrapper<AuthorShortInfoDto>.Wrap(ResponseCodes.NotFound);
-        var deletedAuthor = await _service.Delete(id);
-        return deletedAuthor==null
+        if (await _service.FindFullAsync(id, cancellationToken: cancellationToken) == null) return ResponseWrapper<AuthorShortInfoDto>.Wrap(ResponseCodes.NotFound);
+        var deletedAuthor = await _service.DeleteAsync(id, cancellationToken: cancellationToken);
+        return deletedAuthor == null
             ? ResponseWrapper<AuthorShortInfoDto>.Wrap(ResponseCodes.DeleteRequestFailed)
             : ResponseWrapper<AuthorShortInfoDto>.Wrap(deletedAuthor);
     }
@@ -105,9 +105,9 @@ public class AuthorController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet("search")]
-    public ResponseWrapper<List<AuthorAutocompleteDto>> SearchAuthors(string query)
+    public ResponseWrapper<List<AuthorAutocompleteDto>> SearchAuthors(string query, CancellationToken cancellationToken = default)
     {
-        var authors = _service.Search(query);
+        var authors = _service.SearchAsync(query, cancellationToken: cancellationToken);
         return (authors == null)
             ? ResponseWrapper<List<AuthorAutocompleteDto>>.Wrap(ResponseCodes.EmptyQuery)
             : ResponseWrapper<List<AuthorAutocompleteDto>>.Wrap(authors.ToList());

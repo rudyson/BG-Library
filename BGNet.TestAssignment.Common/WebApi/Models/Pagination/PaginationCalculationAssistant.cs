@@ -24,4 +24,8 @@ public static class PaginationCalculationAssistant
     {
         return (total - 1) / size + 1;
     }
+    public static int CurrentPageSkipTake(int skip, int take)
+    {
+        return (skip > 0) ? (skip / take) + 1 : 1;
+    }
 }

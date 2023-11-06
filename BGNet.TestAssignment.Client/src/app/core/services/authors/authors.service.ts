@@ -12,10 +12,12 @@ export class AuthorsService {
   private contentApiUrl: string = environment.contentApiUrl;
   private baseRoute: string = 'author';
   constructor(private http: HttpClient) {}
-  getAllAuthors(page?: number | null, size?: number | null) : Observable<ResponseWrapper<GenericPaginationModel<AuthorFullInfoDto>>>{
+  getAllAuthors(skip?: number | null, take?: number | null) : Observable<ResponseWrapper<GenericPaginationModel<AuthorFullInfoDto>>>{
     let httpParams: HttpParams = new HttpParams()
-      .append("page", page ?? 1)
-      .append("size", size ?? 5);
+      .append("skip", skip ?? 0)
+      .append("take", take ?? 5);
+      //.append("page", page ?? 1)
+      //.append("size", size ?? 5);
     return this.http.get<ResponseWrapper<GenericPaginationModel<AuthorFullInfoDto>>>(this.contentApiUrl+this.baseRoute, {params: httpParams});
   }
   getAuthor(id: number) : Observable<ResponseWrapper<AuthorFullInfoDto>>{

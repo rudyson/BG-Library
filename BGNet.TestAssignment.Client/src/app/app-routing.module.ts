@@ -9,6 +9,7 @@ import {LoginFormComponent} from "./modules/unauthorized/components/login-form/l
 import { RegistrationFormComponent } from "./modules/unauthorized/components/registration-form/registration-form.component";
 import {UserinfoPageComponent} from "./modules/unauthorized/pages/userinfo-page/userinfo-page.component";
 import {NotfoundPageComponent} from "./shared/pages/notfound-page/notfound-page.component";
+import { AuthorListNoBooksComponent } from './modules/library/components/authors/author-list-no-books/author-list-no-books.component';
 
 const routes: Routes = [
   {path:'',redirectTo: '/books', pathMatch: "full"},
@@ -17,8 +18,8 @@ const routes: Routes = [
   {path:'books/:id',component: BookListV1Component, title:'Books', canActivate: [JwtGuard]},
   {path:'book/:id',component: BookPageComponent, title:'Book', canActivate: [JwtGuard]},
   {path:'book',component: BookPageComponent, title:'Book', canActivate: [JwtGuard]},
-  {path:'authors',component: AuthorListV1Component, title:'Authors', canActivate: [JwtGuard]},
-  {path:'authors/:id',component: AuthorListV1Component, title:'Authors', canActivate: [JwtGuard]},
+  {path:'authors',component: AuthorListNoBooksComponent, title:'Authors', canActivate: [JwtGuard]},
+  {path:'authors/:id',component: AuthorListNoBooksComponent, title:'Authors', canActivate: [JwtGuard]},
   {path:'author',component: AuthorPageComponent, title:'Author', canActivate: [JwtGuard]},
   {path:'author/:id',component: AuthorPageComponent, title:'Author', canActivate: [JwtGuard]},
   {path:'login',component: LoginFormComponent, title:'Login'},

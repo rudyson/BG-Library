@@ -1,4 +1,4 @@
-<div>
+<div class="form-container">
     <h2 *ngIf="pageHasNoModel()">Create a new author</h2>
     <h2 *ngIf="!pageHasNoModel()">Update existing author</h2>
     <form ngNativeValidate #authorInfoForm="ngForm" (ngSubmit)="submit(authorInfoForm)">

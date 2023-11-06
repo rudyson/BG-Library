@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Security.Claims;
 using BGNet.TestAssignment.BusinessLogic.Interfaces.Auth;
 using BGNet.TestAssignment.Common.WebApi.Models.Responses;
@@ -41,12 +40,12 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [Route("register")]
     [HttpPost]
-    public async Task<ResponseWrapper<UserInfoDto>> Register(RegisterRequest user)
+    public async Task<ResponseWrapper<UserInfoDto>> Register(RegisterRequest user, CancellationToken cancellationToken = default)
     {
-        var validationResult = await _validateRegistration.ValidateAsync(user);
+        var validationResult = await _validateRegistration.ValidateAsync(user, cancellation: cancellationToken);
         if (!validationResult.IsValid)
             return ResponseWrapper<UserInfoDto>.Wrap(validation: validationResult.ToDictionary());
-        return ResponseWrapper<UserInfoDto>.Wrap(await _service.Register(user));
+        return ResponseWrapper<UserInfoDto>.Wrap(await _service.RegisterAsync(user, cancellationToken: cancellationToken));
     }
 
     /// <summary>
@@ -62,12 +61,12 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [Route("login")]
     [HttpPost]
-    public async Task<ResponseWrapper<TokenCreatedDto>> Login(LoginRequest user)
+    public async Task<ResponseWrapper<TokenCreatedDto>> Login(LoginRequest user, CancellationToken cancellationToken = default)
     {
-        var validationResult = await _validateLogin.ValidateAsync(user);
+        var validationResult = await _validateLogin.ValidateAsync(user, cancellation: cancellationToken);
         if (!validationResult.IsValid)
             return ResponseWrapper<TokenCreatedDto>.Wrap(validation: validationResult.ToDictionary());
-        var token = await _service.Login(user);
+        var token = await _service.LoginAsync(user, cancellationToken);
         return ResponseWrapper<TokenCreatedDto>.Wrap(token);
     }
 
@@ -82,11 +81,11 @@ public class AuthController : ControllerBase
     [Authorize]
     [Route("info")]
     [HttpGet]
-    public async Task<ResponseWrapper<UserInfoDto>> Info()
+    public async Task<ResponseWrapper<UserInfoDto>> Info(CancellationToken cancellationToken = default)
     {
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
         if (userIdClaim == null) return ResponseWrapper<UserInfoDto>.Wrap(ResponseCodes.WrongAuthorizationToken);
-        var userInfo = await _service.Info(userIdClaim);
+        var userInfo = await _service.InfoAsync(userIdClaim, cancellationToken: cancellationToken);
 
         return userInfo == null
             ? ResponseWrapper<UserInfoDto>.Wrap(ResponseCodes.NotFound)

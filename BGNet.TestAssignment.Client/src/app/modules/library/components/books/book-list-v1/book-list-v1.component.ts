@@ -2,8 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {PageEvent} from "@angular/material/paginator";
 import { BookFullInfoDto } from 'src/app/special/models/book.models';
-import {GenericPaginationModel} from "../../../../../special/models/request.models";
+import {GenericPaginationModel, ResponseWrapper} from "../../../../../special/models/request.models";
 import {BooksService} from "../../../../../core/services/books/books.service";
+import { environment } from 'src/app/shared/environment';
 
 @Component({
   selector: 'app-book-list-v1',
@@ -12,6 +13,8 @@ import {BooksService} from "../../../../../core/services/books/books.service";
 })
 export class BookListV1Component implements OnInit{
   public books?: GenericPaginationModel<BookFullInfoDto>;
+  public booksResponse?: ResponseWrapper<GenericPaginationModel<BookFullInfoDto>>;
+  public pageSizeOptions!: number[] | readonly number[];
   public unableLoad: boolean = false;
   constructor(
     private booksService: BooksService,
@@ -20,6 +23,7 @@ export class BookListV1Component implements OnInit{
 
   }
   ngOnInit(): void {
+    this.pageSizeOptions = environment.pageSizeOptions;
     this.handlePaginationEvent(undefined);
   }
 
@@ -46,6 +50,7 @@ export class BookListV1Component implements OnInit{
         next: (response) => {
           this.unableLoad = false;
           this.books = response.data;
+          this.booksResponse = response;
           window.history.replaceState({},'',`/books/${this.books?.page}`)
         },
         error: (response) =>{

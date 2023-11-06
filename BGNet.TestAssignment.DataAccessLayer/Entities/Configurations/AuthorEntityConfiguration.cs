@@ -8,15 +8,10 @@ namespace BGNet.TestAssignment.DataAccess.Entities.Configurations
         public void Configure(EntityTypeBuilder<Author> builder)
         {
             builder.HasKey(x => x.Id);
-            //builder.Property(p => p.Id).ValueGeneratedOnAdd();
+            builder.Property(p => p.Id).ValueGeneratedOnAdd();
             builder.Property(x => x.Name).IsRequired();
             builder.Property(x => x.Surname).IsRequired();
             builder.Property(x => x.Birthday).IsRequired();
-
-            builder
-                .HasMany(x => x.Books)
-                .WithOne(x => x.Author)
-                .HasForeignKey(x => x.Id);
         }
     }
 }

@@ -26,8 +26,8 @@ export interface BookCreateRequest
 
 export interface BookUpdateRequest
 {
-    title: string | undefined;
-    publishYear : number | undefined;
-    genre: string | undefined;
-    authorId: number | undefined;
+    title?: string;
+    publishYear?: number;
+    genre?: string;
+    authorId?: number;
 }

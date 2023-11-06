@@ -44,6 +44,7 @@ import {MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import {MatSnackBar, MatSnackBarConfig, MatSnackBarModule} from '@angular/material/snack-bar';
+import { AuthorListNoBooksComponent } from './modules/library/components/authors/author-list-no-books/author-list-no-books.component';
 
 @NgModule({
     declarations: [
@@ -57,7 +58,8 @@ import {MatSnackBar, MatSnackBarConfig, MatSnackBarModule} from '@angular/materi
         FooterComponent,
         AuthorListV1Component,
         BookPageComponent,
-        AuthorPageComponent
+        AuthorPageComponent,
+        AuthorListNoBooksComponent
     ],
   imports: [
     BrowserModule,

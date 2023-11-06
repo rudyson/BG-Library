@@ -1,4 +1,4 @@
-<div>
+<div class="form-container">
   <h2 *ngIf="pageHasNoModel()">Create a new book</h2>
   <h2 *ngIf="!pageHasNoModel()">Update existing book</h2>
   <form ngNativeValidate #bookInfoForm="ngForm" (ngSubmit)="submit(bookInfoForm)">
@@ -23,7 +23,7 @@
     <p>
       <mat-form-field>
         <mat-label>Author Id</mat-label>
-        <input matInput ngModel type="number" id="authorId" name="authorId" value="{{model?.authorId ?? 0}}" min="0" required>
+        <input matInput ngModel type="number" id="authorId" name="authorId" value="{{model?.authorId ?? 0}}" min="1" required="">
       </mat-form-field>
     </p>
     <p>

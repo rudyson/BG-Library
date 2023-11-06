@@ -6,5 +6,6 @@ public class Book : BaseEntity
     public required int PublishYear { get; set; }
     public required string Genre { get; set; }
 
-    public Author? Author { get; set; }
+    public required int AuthorId { get; set; }
+    public required Author Author { get; set; }
 }

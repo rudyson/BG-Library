@@ -11,17 +11,17 @@ public interface IIdentityService
     /// </summary>
     /// <param name="user">RegisterRequest contains user's credentials</param>
     /// <returns>User id if it registered successfully</returns>
-    public Task<UserInfoDto?> Register(RegisterRequest user);
+    public Task<UserInfoDto?> RegisterAsync(RegisterRequest user, CancellationToken cancellationToken);
     /// <summary>
     /// Provides user authorization
     /// </summary>
     /// <param name="user">LoginRequest contains username and password</param>
     /// <returns>JWT Token if user exists</returns>
-    public Task<TokenCreatedDto?> Login(LoginRequest user);
+    public Task<TokenCreatedDto?> LoginAsync(LoginRequest user, CancellationToken cancellationToken);
     /// <summary>
     /// Retrieves user's information using context and signed JWT token
     /// </summary>
     /// <param name="claim">Security token claims</param>
     /// <returns>UserInfoDto with user's creadentials</returns>
-    public Task<UserInfoDto?> Info(Claim claim);
+    public Task<UserInfoDto?> InfoAsync(Claim claim, CancellationToken cancellationToken);
 }

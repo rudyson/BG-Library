@@ -6,7 +6,7 @@
         {
             /*
             TypeAdapterConfig.GlobalSettings.ForType<Author, AuthorShortInfoDto>()
-                .Map(d => d.BooksCount, s => s.Books.Count(), s => s.Books != null);*/
+                .Map(d => d.BooksCount, s => s.BooksAsync.Count(), s => s.BooksAsync != null);*/
         }
     }
 }

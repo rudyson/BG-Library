@@ -1,0 +1,59 @@
+<div>
+    <div>
+        <div *ngIf="authorsResponse">
+            <div *ngIf="authorsResponse.hasData && !authorsResponse.hasErrors && authorsResponse.data!.totalSize>0">
+                <mat-list>
+                    <div mat-subheader>Authors</div>
+                    <mat-list-item *ngFor="let author of authorsResponse.data?.entities">
+                        <mat-icon matListItemIcon>mood</mat-icon>
+                        <h4 matListItemTitle routerLink="/author/{{author.id}}">{{author.surname}} {{author.name}}</h4>
+                        <p matListItemLine>Id: {{ author.id }} • Birthday: {{ author.birthday }}</p>
+                        <p matListItemMeta>
+                        <button mat-icon-button color="warn" aria-label="Delete" type="button" (click)="deleteAuthor(author.id)" matTooltip="Delete">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                        <button mat-icon-button color="accent" aria-label="View information" routerLink="/author/{{author.id}}" matTooltip="View/Update">
+                            <mat-icon>info</mat-icon>
+                        </button>
+                        </p>
+                    </mat-list-item>
+                </mat-list>
+                
+                  <mat-paginator
+                    (page)="handlePaginationEvent($event)"
+              
+                    [pageIndex]="currentPage"
+                    [pageSize]="pageSize"
+              
+                    [length]="authorsResponse.data!.totalSize"
+              
+                    [disabled]="false"
+                    [showFirstLastButtons]="true"
+                    [pageSizeOptions]="this.pageSizeOptions"
+                    [hidePageSize]="false"
+              
+                    aria-label="Select page">
+                  </mat-paginator>
+            </div>
+            <div *ngIf="!authorsResponse.hasData && authorsResponse.hasErrors">
+                <h4>Errors occured:</h4>
+                <ul>
+                    <li *ngFor="let error of authorsResponse.errors">
+                        {{error}}
+                    </li>
+                </ul>
+            </div>
+            <div *ngIf="authorsResponse.hasData && !authorsResponse.hasErrors && authorsResponse.data!.totalSize==0">
+                <h2>Author list is empty</h2>
+                <p>Create first one:</p>
+            </div>
+            <button type="button" mat-mini-fab color="warn" aria-label="Create author" routerLink="/author" matTooltip="Create author">
+                <mat-icon>add</mat-icon>
+              </button>
+        </div>
+        <div *ngIf="!authorsResponse">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            <h2>Loading author list...</h2>
+        </div>
+    </div>
+</div>

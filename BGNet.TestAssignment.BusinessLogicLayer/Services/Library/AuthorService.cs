@@ -19,23 +19,23 @@ public class AuthorService : IAuthorService
         _context = context;
     }
 
-    public async Task<IEnumerable<AuthorFullInfoDto>?> AllFull()
+    public async Task<IEnumerable<AuthorFullInfoDto>?> AllFullAsync(CancellationToken cancellationToken)
     {
-        var authors = await _context.Authors.Include(a => a.Books).OrderBy(a => a.Surname).ToListAsync();
+        var authors = await _context.Authors.Include(a => a.Books).OrderBy(a => a.Surname).ToListAsync(cancellationToken: cancellationToken);
         return authors.Adapt<List<AuthorFullInfoDto>>();
     }
 
-    public async Task<GenericPaginationModel<AuthorFullInfoDto>?> AllPaginatedFull(int page, int size)
+    public async Task<GenericPaginationModel<AuthorFullInfoDto>?> AllPaginatedPageSizeFullAsync(int page, int size, CancellationToken cancellationToken)
     {
         var authors = _context.Authors
             .Include(a => a.Books)
             .OrderBy(x => x.Surname);
-        var total = await authors.CountAsync();
+        var total = await authors.CountAsync(cancellationToken: cancellationToken);
         var numberSkipped = PaginationCalculationAssistant.Skipped(page, size);
         var entities = await authors
                     .Skip(numberSkipped)
                     .Take(size)
-                    .ToListAsync();
+                    .ToListAsync(cancellationToken: cancellationToken);
         return new GenericPaginationModel<AuthorFullInfoDto>
         {
             Page = page,
@@ -46,34 +46,54 @@ public class AuthorService : IAuthorService
             Entities = total > 0 ? entities.Adapt<List<AuthorFullInfoDto>>() : new List<AuthorFullInfoDto>()
         };
     }
-
-    public async Task<AuthorShortInfoDto?> FindShort(int id)
+    public async Task<GenericPaginationModel<AuthorFullInfoDto>?> AllPaginatedSkipTakeFullAsync(int skip, int take, CancellationToken cancellationToken)
     {
-        var author = await _context.Authors.Include(a => a.Books).SingleOrDefaultAsync(a => a.Id == id);
+        var authors = _context.Authors
+            .Include(a => a.Books)
+            .OrderBy(x => x.Surname);
+        var total = await authors.CountAsync(cancellationToken: cancellationToken);
+        var entities = await authors
+                    .Skip(skip)
+                    .Take(take)
+                    .ToListAsync(cancellationToken: cancellationToken);
+        return new GenericPaginationModel<AuthorFullInfoDto>
+        {
+            Page = PaginationCalculationAssistant.CurrentPageSkipTake(skip, take),
+            PageSize = take,
+            TotalSize = total,
+            Pages = PaginationCalculationAssistant.TotalPages(total, take),
+            NumberSkipped = skip,
+            Entities = total > 0 ? entities.Adapt<List<AuthorFullInfoDto>>() : new List<AuthorFullInfoDto>()
+        };
+    }
+
+    public async Task<AuthorShortInfoDto?> FindShortAsync(int id, CancellationToken cancellationToken)
+    {
+        var author = await _context.Authors.Include(a => a.Books).SingleOrDefaultAsync(a => a.Id == id, cancellationToken: cancellationToken);
         return author?.Adapt<AuthorShortInfoDto>();
     }
 
-    public async Task<AuthorFullInfoDto?> FindFull(int id)
+    public async Task<AuthorFullInfoDto?> FindFullAsync(int id, CancellationToken cancellationToken)
     {
-        var author = await _context.Authors.Include(a => a.Books).SingleOrDefaultAsync(a => a.Id == id);
+        var author = await _context.Authors.Include(a => a.Books).SingleOrDefaultAsync(a => a.Id == id, cancellationToken: cancellationToken);
         return author?.Adapt<AuthorFullInfoDto>();
     }
 
-    public async Task<AuthorShortInfoDto?> Create(AuthorCreateRequest author)
+    public async Task<AuthorShortInfoDto?> CreateAsync(AuthorCreateRequest author, CancellationToken cancellationToken)
     {
         var mappedAuthorToCreate = author.Adapt<Author>();
-        var createdAuthor = await _context.Authors.AddAsync(mappedAuthorToCreate);
+        var createdAuthor = await _context.Authors.AddAsync(mappedAuthorToCreate, cancellationToken: cancellationToken);
         if (createdAuthor.State == EntityState.Added)
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken: cancellationToken);
             return createdAuthor.Entity.Adapt<AuthorShortInfoDto>();
         }
         return null;
     }
 
-    public async Task<AuthorShortInfoDto?> Update(int id, AuthorUpdateRequest author)
+    public async Task<AuthorShortInfoDto?> UpdateAsync(int id, AuthorUpdateRequest author, CancellationToken cancellationToken)
     {
-        var authorInstance = await _context.Authors.SingleOrDefaultAsync(a => a.Id == id);
+        var authorInstance = await _context.Authors.SingleOrDefaultAsync(a => a.Id == id, cancellationToken: cancellationToken);
         if (authorInstance == null) return null;
         var entryChanged = false;
 
@@ -95,28 +115,28 @@ public class AuthorService : IAuthorService
             entryChanged = true;
         }
 
-        if (entryChanged && await _context.SaveChangesAsync() > 0)
+        if (entryChanged && await _context.SaveChangesAsync(cancellationToken: cancellationToken) > 0)
             return authorInstance.Adapt<AuthorShortInfoDto>();
         return null;
     }
 
-    public async Task<AuthorShortInfoDto?> Delete(int id)
+    public async Task<AuthorShortInfoDto?> DeleteAsync(int id, CancellationToken cancellationToken)
     {
-        var authorInstance = await _context.Authors.SingleOrDefaultAsync(a => a.Id == id);
+        var authorInstance = await _context.Authors.SingleOrDefaultAsync(a => a.Id == id, cancellationToken: cancellationToken);
         if (authorInstance == null) return null;
         _context.Authors.Remove(authorInstance);
-        if (await _context.SaveChangesAsync() > 0)
+        if (await _context.SaveChangesAsync(cancellationToken: cancellationToken) > 0)
             return authorInstance.Adapt<AuthorShortInfoDto?>();
         return null;
     }
 
-    public async Task<AuthorFullInfoDto?> Books(int id)
+    public async Task<AuthorFullInfoDto?> BooksAsync(int id, CancellationToken cancellationToken)
     {
-        var authorInstance = await _context.Authors.Include(a => a.Books).SingleOrDefaultAsync(a => a.Id == id);
+        var authorInstance = await _context.Authors.Include(a => a.Books).SingleOrDefaultAsync(a => a.Id == id, cancellationToken: cancellationToken);
         return authorInstance?.Adapt<AuthorFullInfoDto>();
     }
 
-    public IEnumerable<AuthorAutocompleteDto>? Search(string query)
+    public IEnumerable<AuthorAutocompleteDto>? SearchAsync(string query, CancellationToken cancellationToken)
     {
         if (query.IsNullOrEmpty()) return null;
         var queryLower = query.ToLower();
@@ -125,5 +145,5 @@ public class AuthorService : IAuthorService
             .Take(5)
             .Adapt<IEnumerable<AuthorAutocompleteDto>?>();
     }
-    public async Task<bool> Exists(int id) => await _context.Authors.SingleOrDefaultAsync(a => a.Id == id) != null;
+    public async Task<bool> ExistsAsync(int id, CancellationToken cancellationToken) => await _context.Authors.SingleOrDefaultAsync(a => a.Id == id, cancellationToken: cancellationToken) != null;
 }

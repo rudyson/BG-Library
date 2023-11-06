@@ -14,10 +14,11 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
             .WithMessage("This username is already taken");
         RuleFor(x => x.Password)
             .NotEmpty()
-            .MinimumLength(8).WithMessage("Minimal length of password is 8 characters");
-            //.Matches(@"[A-Z]+").WithMessage("Use uppercase letters in password")
-            //.Matches(@"[a-z]+").WithMessage("Use lowercase letters in password")
-            //.Matches(@"[0-9]+").WithMessage("Use at least one number in password");
+            .MinimumLength(8).WithMessage("Minimal length of password is 8 characters")
+            .MaximumLength(32).WithMessage("Maximum length of password is 32 characters");
+        //.Matches(@"[A-Z]+").WithMessage("Use uppercase letters in password")
+        //.Matches(@"[a-z]+").WithMessage("Use lowercase letters in password")
+        //.Matches(@"[0-9]+").WithMessage("Use at least one number in password");
         RuleFor(x => x.Name).NotEmpty();
         RuleFor(x => x.Surname).NotEmpty();
         RuleFor(x => x.Birthday).NotEmpty();

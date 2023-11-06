@@ -1,11 +1,12 @@
 ﻿namespace BGNet.TestAssignment.Common.WebApi.Models.Responses
 {
-    public class ResponseWrapper<T> where T : class 
+    public class ResponseWrapper<T> where T : class
     {
         public Guid RequestId { get; set; } = Guid.NewGuid();
         public DateTime RequestedAt { get; set; } = DateTime.UtcNow;
 
-        public ResponseWrapper(T? data) {
+        public ResponseWrapper(T? data)
+        {
             Data = data;
         }
 

@@ -20,8 +20,8 @@ export class BookPageComponent implements OnInit{
 
   public authors: AuthorAutocompleteDto[] | undefined = [{id: 1, name: "Test", surname:"Author"}];
   public filteredOptions: Observable<AuthorAutocompleteDto[]> | undefined;
-  myControl: any;
-  dashboardService: any;
+  //myControl: any;
+  //dashboardService: any;
 
   constructor(
     private router: Router,
@@ -73,6 +73,7 @@ export class BookPageComponent implements OnInit{
         this.router.navigate(["/book"]);
       }
     })
+  }
     /*
     this.authorsService.searchAuthor(q).subscribe({
       next: (author) =>{
@@ -87,6 +88,7 @@ export class BookPageComponent implements OnInit{
         return false;
       }
     });*/
+    /*
     this.myControl.valueChanges
       .subscribe((value: string) => {
         if(value.length >= 1){
@@ -102,7 +104,7 @@ export class BookPageComponent implements OnInit{
             }
           })
         }})
-      }
+      }*/
   /*
   pageHasNoModel(): boolean{
     return (this.model === undefined || this.id ===undefined);
@@ -119,10 +121,10 @@ export class BookPageComponent implements OnInit{
   submit(form: NgForm) {
     console.log(form)
     const bookModel : BookCreateRequest = {
-      title: form.value.title == "" ? undefined: form.value.title,
-      genre: form.value.genre == "" ? undefined: form.value.genre,
-      authorId: (form.value.authorId==0) ? null : form.value.authorId,
-      publishYear: form.value.publishYear==0 ? undefined : form.value.publishYear
+      title: form.value.title === "" ? undefined: form.value.title,
+      genre: form.value.genre === "" ? undefined: form.value.genre,
+      authorId: Number(form.value.authorId),
+      publishYear: form.value.publishYear===0 || form.value.publishYear===undefined ? undefined : form.value.publishYear
     }
     console.log(bookModel)
     if (this.pageHasNoModel()){
@@ -130,11 +132,11 @@ export class BookPageComponent implements OnInit{
       this.booksService.createBook(bookModel).subscribe(
         {
           next: (book) => {
-            alert("Book created")
+            //alert("Book created")
             console.log(book)
           },
           error: (response) =>{
-            console.log("Create book");
+            //console.log("Create book");
             console.log(response)
           }
         }
@@ -142,10 +144,10 @@ export class BookPageComponent implements OnInit{
     }
     else {
       if (this.id != undefined) {
-        console.log("Update condition");
+        //console.log("Update condition");
         this.booksService.updateBook(this.id, bookModel).subscribe({
-          next: (book) => {
-            alert("Book updated")
+          next: (response) => {
+            console.log(response)
           },
           error: (response) =>{
             console.log("Update book");

@@ -24,10 +24,27 @@ export class RegistrationFormComponent implements OnInit{
       birthday: form.value.birthday,
       address: form.value.address
     }
-    if (this.authorizationService.register(credentials)){
-      this.router.navigate(["/login"]);
-    }
-    else console.log("Registration error");
+    this.authorizationService.registerRequest(credentials)
+      .subscribe({
+        next: (response) => {
+          if (response.hasData&&!response.hasErrors){
+            this.router.navigate(["/login"]);
+          }
+          else {
+            alert("Provided data is not valid (Password/Username)")
+            for (let index = 0; index < response.errors!.length; index++) {
+              console.error(response.errors![index])
+            }
+          }
+        },
+        error: (response) =>{
+          if(response.name == 'NetworkError'){
+            alert("API not run")
+          }
+          console.log(response);
+          return false;
+        }});
+    return false;
   }
 
   ngOnInit(): void {

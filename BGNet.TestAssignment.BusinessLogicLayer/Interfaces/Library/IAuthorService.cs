@@ -6,14 +6,15 @@ namespace BGNet.TestAssignment.BusinessLogic.Interfaces.Library;
 
 public interface IAuthorService
 {
-    public Task<IEnumerable<AuthorFullInfoDto>?> AllFull();
-    public Task<GenericPaginationModel<AuthorFullInfoDto>?> AllPaginatedFull(int page, int size);
-    public Task<AuthorShortInfoDto?> FindShort(int id);
-    public Task<AuthorFullInfoDto?> FindFull(int id);
-    public Task<AuthorShortInfoDto?> Create(AuthorCreateRequest author);
-    public Task<AuthorShortInfoDto?> Update(int id, AuthorUpdateRequest author);
-    public Task<AuthorShortInfoDto?> Delete(int id);
-    public Task<bool> Exists(int id);
-    public Task<AuthorFullInfoDto?> Books(int id);
-    public IEnumerable<AuthorAutocompleteDto>? Search(string query);
+    public Task<IEnumerable<AuthorFullInfoDto>?> AllFullAsync(CancellationToken cancellationToken);
+    public Task<GenericPaginationModel<AuthorFullInfoDto>?> AllPaginatedPageSizeFullAsync(int page, int size, CancellationToken cancellationToken);
+    public Task<GenericPaginationModel<AuthorFullInfoDto>?> AllPaginatedSkipTakeFullAsync(int skip, int take, CancellationToken cancellationToken);
+    public Task<AuthorShortInfoDto?> FindShortAsync(int id, CancellationToken cancellationToken);
+    public Task<AuthorFullInfoDto?> FindFullAsync(int id, CancellationToken cancellationToken);
+    public Task<AuthorShortInfoDto?> CreateAsync(AuthorCreateRequest author, CancellationToken cancellationToken);
+    public Task<AuthorShortInfoDto?> UpdateAsync(int id, AuthorUpdateRequest author, CancellationToken cancellationToken);
+    public Task<AuthorShortInfoDto?> DeleteAsync(int id, CancellationToken cancellationToken);
+    public Task<bool> ExistsAsync(int id, CancellationToken cancellationToken);
+    public Task<AuthorFullInfoDto?> BooksAsync(int id, CancellationToken cancellationToken);
+    public IEnumerable<AuthorAutocompleteDto>? SearchAsync(string query, CancellationToken cancellationToken);
 }

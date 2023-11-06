@@ -27,24 +27,24 @@ public class IdentityService : IIdentityService
         _logger = logger;
         _jwtOptions = jwtOptions;
     }
-    public async Task<UserInfoDto?> Register(RegisterRequest user)
+    public async Task<UserInfoDto?> RegisterAsync(RegisterRequest user, CancellationToken cancellationToken)
     {
-        if (await _context.Users!.AnyAsync(u => u.Username == user.Username!))
+        if (await _context.Users!.AnyAsync(u => u.Username == user.Username!, cancellationToken: cancellationToken))
             return null;
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
 
         var mappedUser = user.Adapt<User>();
-        var userEntityEntry = await _context.Users!.AddAsync(mappedUser);
-        await _context.SaveChangesAsync();
+        var userEntityEntry = await _context.Users!.AddAsync(mappedUser, cancellationToken: cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken: cancellationToken);
         _logger.LogInformation("User @{EntityUsername} registered (UserId: {EntityId})",
             userEntityEntry.Entity.Username, userEntityEntry.Entity.Id);
 
         return userEntityEntry.Entity.Adapt<UserInfoDto>();
     }
 
-    public async Task<TokenCreatedDto?> Login(LoginRequest user)
+    public async Task<TokenCreatedDto?> LoginAsync(LoginRequest user, CancellationToken cancellationToken)
     {
-        var userExists = await _context.Users!.FirstOrDefaultAsync(u => u.Username == user.Username);
+        var userExists = await _context.Users!.FirstOrDefaultAsync(u => u.Username == user.Username, cancellationToken: cancellationToken);
 
         // Credentials validation
         if (userExists == null)
@@ -85,10 +85,10 @@ public class IdentityService : IIdentityService
         };
     }
 
-    public async Task<UserInfoDto?> Info(Claim claim)
+    public async Task<UserInfoDto?> InfoAsync(Claim claim, CancellationToken cancellationToken)
     {
         if (claim.Type != ClaimTypes.NameIdentifier) return null;
-        var userInfo = await _context.Users!.FirstOrDefaultAsync(u => u.Id == int.Parse(claim.Value));
+        var userInfo = await _context.Users!.FirstOrDefaultAsync(u => u.Id == int.Parse(claim.Value), cancellationToken: cancellationToken);
         return userInfo?.Adapt<UserInfoDto>();
     }
 }
