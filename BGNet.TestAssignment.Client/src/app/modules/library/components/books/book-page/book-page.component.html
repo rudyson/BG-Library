@@ -1,61 +1,67 @@
 <div class="form-container">
-  <h2 *ngIf="pageHasNoModel()">Create a new book</h2>
-  <h2 *ngIf="!pageHasNoModel()">Update existing book</h2>
-  <form ngNativeValidate #bookInfoForm="ngForm" (ngSubmit)="submit(bookInfoForm)">
-    <p>
-      <mat-form-field>
-        <mat-label>Title</mat-label>
-        <input matInput ngModel type="text" id="title" name="title" value="{{model?.title}}" required>
-      </mat-form-field>
-    </p>
-    <p>
-      <mat-form-field>
-        <mat-label>Publish year</mat-label>
-        <input matInput ngModel type="number" id="publishYear" name="publishYear" value="{{model?.publishYear}}" required>
-      </mat-form-field>
-    </p>
-    <p>
-      <mat-form-field>
-        <mat-label>Genre</mat-label>
-        <input matInput ngModel type="text" id="genre" name="genre" value="{{model?.genre}}" required>
-      </mat-form-field>
-    </p>
-    <p>
-      <mat-form-field>
-        <mat-label>Author Id</mat-label>
-        <input matInput ngModel type="number" id="authorId" name="authorId" value="{{model?.authorId ?? 0}}" min="1" required="">
-      </mat-form-field>
-    </p>
-    <p>
-      <!--
-      <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
-      <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let option on filteredOptions" [value]="option.name">
-          {{option.name}}
-        </mat-option>
-      </mat-autocomplete>
-      -->
-    </p>
-    <div>
-      <!--<input #authorQuery type="text" (input)="loadAuthors(authorQuery.value)">-->
-      <!--
-        <p *ngFor="let author in authorQuery">
-        {{author.surname}} {{author.name}}
-      </p>
-      <mat-form-field class="example-full-width">
-        <mat-label>Author Id</mat-label>
-        <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto">
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-            {{option.name}}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>-->
-    </div>
-    <p *ngIf="!authorizationService.isLoggedIn()" color="red">You have to <a routerLink="/login">authorize</a> first</p>
-    <p>
-      <button type="submit" mat-flat-button color="accent" [disabled]="!authorizationService.isLoggedIn()">Send</button>
-      <button type="button" mat-flat-button color="primary" routerLink="/books">Return to book list</button>
-    </p>
-  </form>
+    <h2 *ngIf="pageHasNoModel()">Create a new book</h2>
+    <h2 *ngIf="!pageHasNoModel()">Update existing book</h2>
+    <form ngNativeValidate #bookInfoForm="ngForm" (ngSubmit)="submit(bookInfoForm)">
+        <p>
+            <mat-form-field>
+                <mat-label>Title</mat-label>
+                <input matInput ngModel type="text" id="title" name="title" value="{{ model?.title }}" required />
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field>
+                <mat-label>Publish year</mat-label>
+                <input
+                    matInput
+                    ngModel
+                    type="number"
+                    id="publishYear"
+                    name="publishYear"
+                    value="{{ model?.publishYear }}"
+                    max="9999-12-01"
+                    required
+                />
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field>
+                <mat-label>Genre</mat-label>
+                <input matInput ngModel type="text" id="genre" name="genre" value="{{ model?.genre }}" required />
+            </mat-form-field>
+        </p>
+        <mat-form-field>
+            <mat-label>Author</mat-label>
+            <input
+                #authorAutocompleteInput
+                ngModel
+                type="id"
+                matInput
+                id="authorId"
+                name="authorId"
+                value="{{ model?.authorId }}"
+                [matAutocomplete]="auto"
+                (input)="loadAuthors(authorAutocompleteInput.value)"
+                required
+            />
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let authorAutocomplete of authorsAutocompleteResponse?.data!" [value]="authorAutocomplete.id">
+                    {{ authorAutocomplete.surname }} {{ authorAutocomplete.name }} (№{{ authorAutocomplete.id }})
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <ng-container *ngIf="bookCreateUpdateResponse?.errors">
+            <ul class="validation-error-list">
+                <li *ngFor="let error of bookCreateUpdateResponse?.errors">
+                    {{ error }}
+                </li>
+            </ul>
+        </ng-container>
+        <p *ngIf="!authorizationService.isLoggedIn()" color="red">You have to <a routerLink="/login">authorize</a> first</p>
+        <p>
+            <button type="submit" mat-flat-button color="accent" [disabled]="!authorizationService.isLoggedIn()" disabled="!model">
+                Send
+            </button>
+        </p>
+    </form>
+    <button type="button" mat-flat-button color="primary" routerLink="/books">Return to book list</button>
 </div>

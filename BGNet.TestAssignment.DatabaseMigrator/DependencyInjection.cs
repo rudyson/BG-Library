@@ -14,8 +14,6 @@ public static class DependencyInjection
 
         using (var context = new LibraryDbContext(optionsBuilderData.Options))
         {
-            context.Database.Migrate();
-            /*
             try
             {
                 context.Database.Migrate();
@@ -26,7 +24,7 @@ public static class DependencyInjection
                 Console.WriteLine(exception.Source);
                 Console.WriteLine(exception.StackTrace);
                 Environment.Exit(5432);
-            }*/
+            }
         }
 
         return services;

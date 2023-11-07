@@ -1,31 +1,27 @@
 import { AuthorShortInfoDto } from "./author.models";
 
-export interface BookFullInfoDto
-{
-    id : number;
+export interface BookFullInfoDto {
+    id: number;
     title: string;
-    publishYear : number;
+    publishYear: number;
     genre: string;
     author: AuthorShortInfoDto | undefined;
 }
 
-export interface BookShortInfoDto
-{
+export interface BookShortInfoDto {
     title: string;
-    publishYear : number;
+    publishYear: number;
     genre: string;
 }
 
-export interface BookCreateRequest
-{
+export interface BookCreateRequest {
     title: string;
-    publishYear : number;
+    publishYear: number;
     genre: string;
     authorId: number;
 }
 
-export interface BookUpdateRequest
-{
+export interface BookUpdateRequest {
     title?: string;
     publishYear?: number;
     genre?: string;

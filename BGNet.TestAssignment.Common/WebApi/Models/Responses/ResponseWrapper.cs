@@ -45,6 +45,7 @@
                 ResponseCodes.PaginationBroken => "Pagination broken",
                 ResponseCodes.EmptyQuery => "Empty query",
                 ResponseCodes.WrongAuthorizationToken => "Wrong authorization token",
+                ResponseCodes.CancelationTokenHandled => "The operation was canceled using Cancelation Token",
                 _ => "Internal server error",
             };
             return new ResponseWrapper<T>(new List<string> { message }) { Status = 500 };
@@ -68,9 +69,6 @@
             return new ResponseWrapper<T>(new List<string> { errorMessage }) { Status = 500 };
         }
         public int Status { get; set; }
-
-        public bool HasData => Data != null;
-        public bool HasErrors => Errors != null;
         public T? Data { get; set; }
         public IEnumerable<string>? Errors { get; set; }
     }

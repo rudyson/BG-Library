@@ -1,49 +1,76 @@
 <div class="form-container">
-  <form ngNativeValidate class="register-form" #registerForm="ngForm" (ngSubmit)="register(registerForm)">
-    <p>
-      <mat-form-field appearance="fill">
-        <mat-label>Username</mat-label>
-        <input matInput type="text" id="username" ngModel name="username" placeholder="username" required autofocus>
-      </mat-form-field>
-    </p>
-    <p>
-      <mat-form-field>
-        <mat-label>Password</mat-label>
-        <input matInput [type]="isPasswordVisible?'text':'password'" id="password" ngModel name="password" placeholder="Password" required>
-        <button mat-icon-button matSuffix (click)="isPasswordVisible = !isPasswordVisible" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="isPasswordVisible">
-          <mat-icon>{{isPasswordVisible ? 'visibility_off' : 'visibility'}}</mat-icon>
-        </button>
-      </mat-form-field>
-    </p>
-    <p>
-      <mat-form-field appearance="fill">
-        <mat-label>First name</mat-label>
-        <input matInput type="text" id="name" ngModel name="name" placeholder="First name" required>
-      </mat-form-field>
-    </p>
-    <p>
-      <mat-form-field appearance="fill">
-        <mat-label>Last name</mat-label>
-        <input matInput type="text" id="surname" ngModel name="surname" placeholder="Last name" required>
-      </mat-form-field>
-    </p>
-    <p>
-      <mat-form-field appearance="fill">
-        <mat-label>Birthday</mat-label>
-        <input type="date" matInput id="birthday" ngModel name="birthday" placeholder="Birthday" required>
-      </mat-form-field>
-    </p>
-    <p>
-      <mat-form-field appearance="fill">
-        <mat-label>Address</mat-label>
-        <input matInput type="text" id="address" ngModel name="address" placeholder="Address" required>
-      </mat-form-field>
-    </p>
-    <p>
-      <button type="submit" mat-flat-button color="accent">Register</button>
-    </p>
-    <p>
-      Already have account? <a routerLink="/login">Login</a>
-    </p>
-  </form>
+    <form ngNativeValidate class="register-form" #registerForm="ngForm" (ngSubmit)="register(registerForm)">
+        <table>
+            <tr>
+                <td>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Username</mat-label>
+                        <input matInput type="text" id="username" ngModel name="username" placeholder="username" required autofocus />
+                    </mat-form-field>
+                </td>
+                <td>
+                    <mat-form-field>
+                        <mat-label>Password</mat-label>
+                        <input
+                            matInput
+                            [type]="isPasswordVisible ? 'text' : 'password'"
+                            id="password"
+                            ngModel
+                            name="password"
+                            placeholder="Password"
+                            required
+                        />
+                        <button
+                            mat-icon-button
+                            matSuffix
+                            (click)="isPasswordVisible = !isPasswordVisible"
+                            [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="isPasswordVisible"
+                        >
+                            <mat-icon>{{ isPasswordVisible ? "visibility_off" : "visibility" }}</mat-icon>
+                        </button>
+                    </mat-form-field>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <mat-form-field appearance="fill">
+                        <mat-label>First name</mat-label>
+                        <input matInput type="text" id="name" ngModel name="name" placeholder="First name" required />
+                    </mat-form-field>
+                </td>
+                <td>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Last name</mat-label>
+                        <input matInput type="text" id="surname" ngModel name="surname" placeholder="Last name" required />
+                    </mat-form-field>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Birthday</mat-label>
+                        <input type="date" matInput id="birthday" ngModel name="birthday" placeholder="Birthday" required />
+                    </mat-form-field>
+                </td>
+                <td>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Address</mat-label>
+                        <input matInput type="text" id="address" ngModel name="address" placeholder="Address" required />
+                    </mat-form-field>
+                </td>
+            </tr>
+        </table>
+        <ng-container *ngIf="registrationResponse?.errors">
+            <ul class="validation-error-list">
+                <li *ngFor="let error of registrationResponse?.errors">
+                    {{ error }}
+                </li>
+            </ul>
+        </ng-container>
+        <p>
+            <button type="submit" mat-flat-button color="accent">Register</button>
+        </p>
+        <p>Already have account? <a routerLink="/login">Login</a></p>
+    </form>
 </div>

@@ -1,4 +1,3 @@
-using BGNet.TestAssignment.BusinessLogic.Helpers;
 using BGNet.TestAssignment.BusinessLogic.Interfaces.Auth;
 using BGNet.TestAssignment.BusinessLogic.Interfaces.Library;
 using BGNet.TestAssignment.BusinessLogic.Services.Auth;
@@ -26,7 +25,6 @@ public static class DependencyInjection
 
         // Mapping
         services.AddMapster();
-        MapsterMapperRegistration.Init();
 
         // Dependency Injection
         services.AddDataAccessLayer(configuration);

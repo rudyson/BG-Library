@@ -1,39 +1,39 @@
 export interface LoginDto {
-  username: string,
-  password: string
+    username: string;
+    password: string;
 }
 
 export interface RegisterDto {
-  username: string,
-  password: string,
-  name: string,
-  surname: string,
-  birthday: string,
-  address: string
+    username: string;
+    password: string;
+    name: string;
+    surname: string;
+    birthday: string;
+    address: string;
 }
 
 export interface UserInfoDto {
-  id: number;
-  username: string;
-  name: string;
-  surname: string;
-  birthday: string;
-  address: string;
+    id: number;
+    username: string;
+    name: string;
+    surname: string;
+    birthday: string;
+    address: string;
 }
 
 export interface JwtTokenDto {
-  token: string;
-  expiresAt: string;
-  createdAt: string;
+    token: string;
+    expiresAt: string;
+    createdAt: string;
 }
 export interface JwtToken {
-  aud: string;
-  iss: string;
+    "aud": string;
+    "iss": string;
 
-  exp: number;
+    "exp": number;
 
-  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": string;
-  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier": string;
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": string;
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier": string;
 }
 /*
 export interface RegisterRequest {

@@ -1,47 +1,57 @@
 <div *ngIf="authors">
-  <h2 matListItemTitle>Authors</h2>
-  <div *ngIf="authors.totalSize > 0">
-      <mat-list *ngFor="let author of authors.entities">
-        <div mat-subheader>
-          {{author.surname}} {{author.name}} ({{author.birthday}})
-            <button mat-icon-button color="warn" aria-label="Delete" type="button" (click)="deleteAuthor(author.id)" matTooltip="Delete">
-              <mat-icon>delete</mat-icon>
-            </button>
-            <button mat-icon-button color="accent" aria-label="View information" routerLink="/author/{{author.id}}" matTooltip="View/Update">
-              <mat-icon>info</mat-icon>
-            </button>
-        </div>
-        <mat-list-item *ngFor="let book of author.books">
-          <mat-icon matListItemIcon>book</mat-icon>
-          <h4 matListItemTitle>{{book.title}}</h4>
-          <p matListItemLine>{{book.publishYear}} • {{book.genre}}</p>
-        </mat-list-item>
-        <mat-divider></mat-divider>
-      </mat-list>
-      <button type="button" mat-mini-fab color="warn" aria-label="Create author" routerLink="/author" matTooltip="Create author">
-        <mat-icon>add</mat-icon>
-      </button>
-      <mat-paginator
-        (page)="handlePaginationEvent($event)"
-  
-        [pageIndex]="authors.page - 1"
-        [pageSize]="authors.pageSize"
-  
-        [length]="authors.totalSize"
-  
-        [disabled]="false"
-        [showFirstLastButtons]="true"
-        [pageSizeOptions]="[5,10,20]"
-        [hidePageSize]="false"
-  
-        aria-label="Select page">
-      </mat-paginator>
-  </div>
-  <div *ngIf="authors.totalSize == 0">
-    <h1>Author list is empty</h1>
-  </div>
+    <h2 matListItemTitle>Authors</h2>
+    <div *ngIf="authors.totalSize > 0">
+        <mat-list *ngFor="let author of authors.entities">
+            <div mat-subheader>
+                {{ author.surname }} {{ author.name }} ({{ author.birthday }})
+                <button
+                    mat-icon-button
+                    color="warn"
+                    aria-label="Delete"
+                    type="button"
+                    (click)="deleteAuthor(author.id)"
+                    matTooltip="Delete"
+                >
+                    <mat-icon>delete</mat-icon>
+                </button>
+                <button
+                    mat-icon-button
+                    color="accent"
+                    aria-label="View information"
+                    routerLink="/author/{{ author.id }}"
+                    matTooltip="View/Update"
+                >
+                    <mat-icon>info</mat-icon>
+                </button>
+            </div>
+            <mat-list-item *ngFor="let book of author.books">
+                <mat-icon matListItemIcon>book</mat-icon>
+                <h4 matListItemTitle>{{ book.title }}</h4>
+                <p matListItemLine>{{ book.publishYear }} • {{ book.genre }}</p>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-list>
+        <button type="button" mat-mini-fab color="warn" aria-label="Create author" routerLink="/author" matTooltip="Create author">
+            <mat-icon>add</mat-icon>
+        </button>
+        <mat-paginator
+            (page)="handlePaginationEvent($event)"
+            [pageIndex]="authors.page - 1"
+            [pageSize]="authors.pageSize"
+            [length]="authors.totalSize"
+            [disabled]="false"
+            [showFirstLastButtons]="true"
+            [pageSizeOptions]="[5, 10, 20]"
+            [hidePageSize]="false"
+            aria-label="Select page"
+        >
+        </mat-paginator>
+    </div>
+    <div *ngIf="authors.totalSize == 0">
+        <h1>Author list is empty</h1>
+    </div>
 </div>
 <div *ngIf="!authors">
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-  <h2>Loading author list...</h2>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <h2>Loading author list...</h2>
 </div>

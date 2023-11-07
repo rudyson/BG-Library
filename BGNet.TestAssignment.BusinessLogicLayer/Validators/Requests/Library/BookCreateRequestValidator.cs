@@ -16,7 +16,7 @@ namespace BGNet.TestAssignment.BusinessLogic.Validators.Requests.Library
                 .NotEmpty()
                 .GreaterThanOrEqualTo(1)
                 .MustAsync(async (authorId, cancellationToken) => await context.Authors.AnyAsync(x => x.Id == authorId, cancellationToken))
-                .WithMessage("Author with this Id is not exists");
+                .WithMessage(id => $"Author with id {id} is not exists");
         }
     }
 }

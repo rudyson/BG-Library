@@ -33,31 +33,6 @@ public class BookService : IBookService
             return createdBook.Entity.Adapt<BookShortInfoDto>();
         }
         return null;
-        /*
-        var mappedBookToCreate = book.Adapt<Book>();
-        mappedBookToCreate.Id = 0;
-        var createdBook = await _context.Books.AddAsync(mappedBookToCreate, cancellationToken: cancellationToken);
-        if (createdBook.State == EntityState.Added)
-        {
-            await _context.SaveChangesAsync(cancellationToken: cancellationToken);
-            return createdBook.Entity.Adapt<BookShortInfoDto>();
-        }
-        return null;*/
-        /*
-        Book mappedBookToCreate = book.Adapt<Book>();
-        if (book.AuthorId != null && book.AuthorId>0)
-        {
-            var author = await _context.Authors!.SingleOrDefaultAsync(x => x.Id == book.AuthorId, cancellationToken: cancellationToken);
-            if (author != null)
-                mappedBookToCreate.Author = author;
-        }
-        var createdBook = await _context.Books!.AddAsync(mappedBookToCreate, cancellationToken: cancellationToken);
-        if (createdBook.State == EntityState.Added)
-        {
-            await _context.SaveChangesAsync(cancellationToken: cancellationToken);
-            return createdBook.Entity.Adapt<BookShortInfoDto>();
-        }
-        return null;*/
     }
 
     public async Task<BookFullInfoDto?> FindFullAsync(int id, CancellationToken cancellationToken)
@@ -120,7 +95,7 @@ public class BookService : IBookService
 
     public async Task<BookShortInfoDto?> UpdateAsync(int id, BookUpdateRequest book, CancellationToken cancellationToken)
     {
-        var bookInstance = await _context.Books!.FindAsync(id);
+        var bookInstance = await _context.Books!.Include(x => x.Author).SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
         if (bookInstance == null) return null;
         var entryChanged = false;
 
@@ -144,7 +119,7 @@ public class BookService : IBookService
 
         if (book.AuthorId != null)
         {
-            var author = await _context.Authors.FindAsync(book.AuthorId);
+            var author = await _context.Authors.SingleOrDefaultAsync(x => x.Id == book.AuthorId, cancellationToken);
             if (author != null && bookInstance.Author!.Id != book.AuthorId)
             {
                 bookInstance.Author = author;

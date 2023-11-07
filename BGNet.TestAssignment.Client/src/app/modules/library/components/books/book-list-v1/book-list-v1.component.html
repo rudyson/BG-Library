@@ -1,59 +1,73 @@
 <div>
-  <div>
-      <div *ngIf="booksResponse">
-          <div *ngIf="booksResponse.hasData && !booksResponse.hasErrors && booksResponse.data!.totalSize>0">
-              <mat-list>
-                  <div mat-subheader>Books</div>
-                  <mat-list-item *ngFor="let book of books!.entities">
-                    <mat-icon matListItemIcon>book</mat-icon>
-                    <h4 matListItemTitle><span *ngIf="book.author!=undefined">{{book.author.name}} {{book.author.surname}}— </span>{{ book.title }}</h4>
-                    <p matListItemLine>{{ book.publishYear }} • {{ book.genre }} • Id: {{ book.id }}</p>
-                    <p matListItemMeta>
-                      <button mat-icon-button color="warn" aria-label="Delete" type="button" (click)="deleteBook(book.id)" matTooltip="Delete">
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                      <button mat-icon-button color="accent" aria-label="View information" routerLink="/book/{{book.id}}" matTooltip="View/Update">
-                        <mat-icon>info</mat-icon>
-                      </button>
-                    </p>
-                  </mat-list-item>
-              </mat-list>
-              
+    <div>
+        <div *ngIf="booksResponse">
+            <div *ngIf="booksResponse.data!.totalSize > 0">
+                <mat-list>
+                    <div mat-subheader>Books</div>
+                    <mat-list-item *ngFor="let book of books!.entities">
+                        <mat-icon matListItemIcon>book</mat-icon>
+                        <h4 matListItemTitle routerLink="/book/{{ book.id }}">
+                            <span *ngIf="book.author != undefined">{{ book.author.name }} {{ book.author.surname }}— </span
+                            >{{ book.title }} ({{ book.publishYear }})
+                        </h4>
+                        <p matListItemLine>Id: {{ book.id }} • Genre: {{ book.genre }}</p>
+                        <p matListItemMeta>
+                            <button
+                                mat-icon-button
+                                color="warn"
+                                aria-label="Delete"
+                                type="button"
+                                (click)="deleteBook(book.id)"
+                                matTooltip="Delete"
+                            >
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                            <button
+                                mat-icon-button
+                                color="accent"
+                                aria-label="View information"
+                                routerLink="/book/{{ book.id }}"
+                                matTooltip="View/Update"
+                            >
+                                <mat-icon>info</mat-icon>
+                            </button>
+                        </p>
+                    </mat-list-item>
+                </mat-list>
                 <mat-paginator
-                  (page)="handlePaginationEvent($event)"
-            
-                  [pageIndex]="booksResponse.data!.page - 1"
-                  [pageSize]="booksResponse.data!.pageSize"
-            
-                  [length]="booksResponse.data!.totalSize"
-            
-                  [disabled]="false"
-                  [showFirstLastButtons]="true"
-                  [pageSizeOptions]="this.pageSizeOptions"
-                  [hidePageSize]="false"
-            
-                  aria-label="Select page">
+                    (page)="handlePaginationEvent($event)"
+                    [pageIndex]="booksResponse.data!.page - 1"
+                    [pageSize]="booksResponse.data!.pageSize"
+                    [length]="booksResponse.data!.totalSize"
+                    [disabled]="false"
+                    [showFirstLastButtons]="true"
+                    [pageSizeOptions]="this.pageSizeOptions"
+                    [hidePageSize]="false"
+                    aria-label="Select page"
+                >
                 </mat-paginator>
-          </div>
-          <div *ngIf="!booksResponse.hasData && booksResponse.hasErrors">
-              <h4>Errors occured:</h4>
-              <ul>
-                  <li *ngFor="let error of booksResponse.errors">
-                      {{error}}
-                  </li>
-              </ul>
-          </div>
-          <div *ngIf="booksResponse.hasData && !booksResponse.hasErrors && booksResponse.data!.totalSize==0">
-              <h2>Book list is empty</h2>
-              <p>Create first one:</p>
-          </div>
-          <button type="button" mat-mini-fab color="warn" aria-label="Create book" routerLink="/book" matTooltip="Create book">
-              <mat-icon>add</mat-icon>
+            </div>
+            <ng-container *ngIf="booksResponse.errors">
+                <ul class="validation-error-list">
+                    <li *ngFor="let error of booksResponse?.errors">
+                        {{ error }}
+                    </li>
+                </ul>
+            </ng-container>
+            <div *ngIf="booksResponse.data!.totalSize == 0">
+                <h2>Book list is empty</h2>
+                <p>Create first one:</p>
+            </div>
+            <button type="button" mat-flat-button color="accent" aria-label="Create book" routerLink="/book" matTooltip="Create book">
+                <mat-icon>add</mat-icon>Create book
             </button>
-      </div>
-      <div *ngIf="!booksResponse">
-          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-          <h2>Loading books list...</h2>
-      </div>
-  </div>
+        </div>
+        <div *ngIf="!booksResponse && !unableLoad">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            <h2>Loading books list...</h2>
+        </div>
+        <div *ngIf="!booksResponse && unableLoad">
+            <h2>Failed to load books. Network error.</h2>
+        </div>
+    </div>
 </div>

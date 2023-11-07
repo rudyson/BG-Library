@@ -3,17 +3,31 @@
 @import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
 /*@import "../node_modules/@angular/material/prebuilt-themes/indigo-pink.css";*/
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+    height: 100%;
+}
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 form {
     padding: 20px;
     margin: 10px;
 }
 
-div.form-container{
+div.form-container {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
+}
+ul.validation-error-list {
+    list-style-type: none;
+    padding-left: 0px;
+}
+ul.validation-error-list > li {
+    color: red;
+    font-weight: bold;
 }

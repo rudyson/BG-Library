@@ -1,4 +1,5 @@
 using System.Text;
+using BGNet.TestAssignment.Api;
 using BGNet.TestAssignment.BusinessLogic;
 using BGNet.TestAssignment.Models.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,7 +9,10 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
-builder.Services.AddControllers().AddNewtonsoftJson();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<CancelationTokenFilter>();
+});
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services
@@ -97,6 +101,7 @@ builder.Services.AddCors(
     });
 
 builder.Services.AddBusinessLogicLayer(config);
+builder.Services.AddScoped<CancelationTokenFilter>();
 
 var app = builder.Build();
 app.UseCors("AllowAll");

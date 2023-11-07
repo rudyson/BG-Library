@@ -1,55 +1,55 @@
 <section *ngIf="authorized" class="userinfo">
-  <div>
-    <h1>User info</h1>
-    <table>
-      <tr>
-        <td>Address</td>
-        <td>
-          <mat-icon>home</mat-icon>
-        </td>
-        <td>{{userInfo?.address}}</td>
-      </tr>
-      <tr>
-        <td>Username</td>
-        <td>
-          <mat-icon>alternate_email</mat-icon>
-        </td>
-        <td>{{userInfo?.username}}</td>
-      </tr>
-      <tr>
-        <td>Identifier</td>
-        <td>
-          <mat-icon>pin</mat-icon>
-        </td>
-        <td>{{userInfo?.id}}</td>
-      </tr>
-      <tr>
-        <td>Full name</td>
-        <td>
-          <mat-icon>person</mat-icon>
-        </td>
-        <td>{{userInfo?.name}} {{userInfo?.surname}}</td>
-      </tr>
-      <tr>
-        <td>Birthday</td>
-        <td>
-          <mat-icon>cake</mat-icon>
-        </td>
-        <td>{{userInfo?.birthday}}</td>
-      </tr>
-      <tr>
-        <td>
-          <mat-icon></mat-icon>
-        </td>
-        <td></td>
-      </tr>
-    </table>
-    <p><button mat-flat-button color="primary" (click)="authorizationService.logout()">Logout</button></p>
-  </div>
+    <div>
+        <h1>User info</h1>
+        <table>
+            <tr>
+                <td>Address</td>
+                <td>
+                    <mat-icon>home</mat-icon>
+                </td>
+                <td>{{ userInfo?.address }}</td>
+            </tr>
+            <tr>
+                <td>Username</td>
+                <td>
+                    <mat-icon>alternate_email</mat-icon>
+                </td>
+                <td>{{ userInfo?.username }}</td>
+            </tr>
+            <tr>
+                <td>Identifier</td>
+                <td>
+                    <mat-icon>pin</mat-icon>
+                </td>
+                <td>{{ userInfo?.id }}</td>
+            </tr>
+            <tr>
+                <td>Full name</td>
+                <td>
+                    <mat-icon>person</mat-icon>
+                </td>
+                <td>{{ userInfo?.name }} {{ userInfo?.surname }}</td>
+            </tr>
+            <tr>
+                <td>Birthday</td>
+                <td>
+                    <mat-icon>cake</mat-icon>
+                </td>
+                <td>{{ userInfo?.birthday }}</td>
+            </tr>
+            <tr>
+                <td>
+                    <mat-icon></mat-icon>
+                </td>
+                <td></td>
+            </tr>
+        </table>
+        <p><button mat-flat-button color="primary" (click)="authorizationService.logout()">Logout</button></p>
+    </div>
 </section>
 <section *ngIf="!authorized" class="userinfo">
-  <div>
-    <h3>You are not authorized</h3>
-    <button mat-flat-button color="primary" routerLink="/login">Login</button>
-  </div>
+    <div>
+        <h3>You are not authorized</h3>
+        <button mat-flat-button color="primary" routerLink="/login">Login</button>
+    </div>
 </section>

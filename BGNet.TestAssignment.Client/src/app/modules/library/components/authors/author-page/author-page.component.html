@@ -1,29 +1,52 @@
 <div class="form-container">
-    <h2 *ngIf="pageHasNoModel()">Create a new author</h2>
-    <h2 *ngIf="!pageHasNoModel()">Update existing author</h2>
+    <h2 *ngIf="!id">Create a new author</h2>
+    <h2 *ngIf="id">Update existing author</h2>
     <form ngNativeValidate #authorInfoForm="ngForm" (ngSubmit)="submit(authorInfoForm)">
-      <p>
-        <mat-form-field>
-          <mat-label>Name</mat-label>
-          <input matInput ngModel type="text" id="name" name="name" value="{{model?.name}}" required>
-        </mat-form-field>
-      </p>
-      <p>
-        <mat-form-field>
-          <mat-label>Surname</mat-label>
-          <input matInput ngModel type="text" id="surname" name="surname" value="{{model?.surname}}" required>
-        </mat-form-field>
-      </p>
-      <p>
-        <mat-form-field>
-          <mat-label>Birthday</mat-label>
-          <input matInput ngModel type="date" id="birthday" name="birthday" value="{{model?.birthday}}" required>
-        </mat-form-field>
-      <p *ngIf="!authorizationService.isLoggedIn()" color="red">You have to <a routerLink="/login">authorize</a> first</p>
-      <p>
-        <button type="submit" mat-flat-button color="accent" [disabled]="!authorizationService.isLoggedIn()">Send</button>
-        <button type="button" mat-flat-button color="primary" routerLink="/authors">Return to authors list</button>
-      </p>
+        <p>
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput ngModel type="text" id="name" name="name" value="{{ authorInfo?.data?.name }}" required />
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field>
+                <mat-label>Surname</mat-label>
+                <input matInput ngModel type="text" id="surname" name="surname" value="{{ authorInfo?.data?.surname }}" required />
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field>
+                <mat-label>Birthday</mat-label>
+                <input
+                    matInput
+                    ngModel
+                    type="date"
+                    id="birthday"
+                    name="birthday"
+                    value="{{ authorInfo?.data?.birthday }}"
+                    max="9999-12-01"
+                    required
+                />
+            </mat-form-field>
+        </p>
+        <ng-container *ngIf="authorShortInfoResponse?.errors">
+            <ul class="validation-error-list">
+                <li *ngFor="let error of authorShortInfoResponse?.errors">
+                    {{ error }}
+                </li>
+            </ul>
+        </ng-container>
+        <p *ngIf="!authorizationService.isLoggedIn()" color="red">You have to <a routerLink="/login">authorize</a> first</p>
+        <p>
+            <button type="submit" mat-flat-button color="accent" [disabled]="!authorizationService.isLoggedIn()">Send</button>
+            <button type="button" mat-flat-button color="primary" routerLink="/authors">Return to authors list</button>
+        </p>
     </form>
-  </div>
-  
+    <mat-list *ngIf="id && authorInfo?.data">
+        <mat-list-item *ngFor="let book of authorInfo?.data?.books">
+            <mat-icon matListItemIcon>book</mat-icon>
+            <h4 matListItemTitle>{{ book.title }} ({{ book.publishYear }})</h4>
+            <p matListItemLine>Genre: {{ book.genre }}</p>
+        </mat-list-item>
+    </mat-list>
+</div>

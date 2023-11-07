@@ -24,6 +24,12 @@ public static class PaginationCalculationAssistant
     {
         return (total - 1) / size + 1;
     }
+    /// <summary>
+    /// Calculates current page number for skip-take pagination
+    /// </summary>
+    /// <param name="skip">Amount of skipped items</param>
+    /// <param name="take">Amount of taken items</param>
+    /// <returns></returns>
     public static int CurrentPageSkipTake(int skip, int take)
     {
         return (skip > 0) ? (skip / take) + 1 : 1;

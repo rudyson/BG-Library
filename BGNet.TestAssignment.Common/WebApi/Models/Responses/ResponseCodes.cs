@@ -8,6 +8,7 @@
         NothingToUpdate,
         PaginationBroken,
         EmptyQuery,
-        WrongAuthorizationToken
+        WrongAuthorizationToken,
+        CancelationTokenHandled
     }
 }
